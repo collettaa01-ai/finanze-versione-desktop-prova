@@ -2,7 +2,7 @@
   "name": "Tracks All Finances",
   "short_name": "Finances",
   "description": "Gestisci le tue finanze personali",
-  "start_url": "./index.html",
+  "start_url": "/finanze-versione-desktop-prova/index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0F172A",
