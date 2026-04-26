@@ -1,5 +1,5 @@
 const CACHE = 'taf-v1';
-const BASE = '/finanze';
+const BASE = '/finanze-versione-desktop-prova';
 const ASSETS = [
   BASE + '/',
   BASE + '/index.html',
