@@ -1,9 +1,11 @@
-const CACHE = 'taf-v1';
+const CACHE = 'taf-v2';
 const BASE = '/finanze-versione-desktop-prova';
 const ASSETS = [
   BASE + '/',
   BASE + '/index.html',
-  BASE + '/manifest.json'
+  BASE + '/manifest.json',
+  BASE + '/icons/icon-192.png',
+  BASE + '/icons/icon-512.png'
 ];
 
 self.addEventListener('install', e => {
@@ -31,4 +33,5 @@ self.addEventListener('fetch', e => {
       return cached || fresh;
     })
   );
+});
 });
