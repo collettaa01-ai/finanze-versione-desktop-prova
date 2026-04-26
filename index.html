@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0F172A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Finances">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Tracks All Finances</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --navy:#0F172A; --navy-soft:#1E293B;
+  --blue:#3B82F6; --green:#22C55E; --green-light:#F0FDF4;
+  --red:#EF4444; --red-light:#FEF2F2;
+  --text:#0F172A; --text-mid:#475569; --text-soft:#94A3B8;
+  --border:rgba(15,23,42,0.08); --border-mid:rgba(15,23,42,0.14);
+  --surface:#FFFFFF; --bg:#F1F5F9;
+  --radius:16px; --radius-sm:10px;
+  --font:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html, body {
+  height: 100%;
+  width: 100%;
+  /* Rimuoviamo overflow:hidden che blocca la tastiera su iOS Home Screen */
+  overflow: auto; 
+  background: var(--bg);
+  font-family: var(--font);
+  color: var(--text);
+  /* Evita lo scroll elastico che dà fastidio alle web app */
+  position: fixed; 
+}
+#app {
+  /* Usiamo 100dvh per adattarsi dinamicamente quando appare la tastiera */
+  height: 100dvh; 
+  display: flex;
+  flex-direction: column;
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);transition:opacity 0.2s,transform 0.2s;pointer-events:none;opacity:0;transform:translateY(8px);}
+.screen.visible{pointer-events:all;opacity:1;transform:translateY(0);}
+
+/* LOADING */
+.loading-screen{background:var(--navy);align-items:center;justify-content:center;}
+.load-logo{text-align:center;}
+.load-mark{width:60px;height:60px;background:var(--blue);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.load-logo h1{font-size:20px;font-weight:500;color:#fff;letter-spacing:-0.5px;}
+.load-logo p{font-size:13px;color:rgba(255,255,255,0.4);margin-top:6px;}
+.spinner{width:24px;height:24px;border:2px solid rgba(59,130,246,0.3);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;margin:24px auto 0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
+/* AUTH */
+.auth-screen{background:var(--navy);padding:48px 28px 40px;justify-content:center;}
+.auth-logo{margin-bottom:36px;}
+.auth-logo .logo-mark{width:52px;height:52px;background:var(--blue);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.auth-logo h1{font-size:22px;font-weight:500;color:#fff;letter-spacing:-0.5px;}
+.auth-logo p{font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;}
+.auth-form{display:flex;flex-direction:column;gap:12px;}
+.auth-field{display:flex;flex-direction:column;gap:5px;}
+.auth-field label{font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.5px;text-transform:uppercase;}
+.auth-field input{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius-sm);padding:13px 14px;font-size:15px;font-family:var(--font);color:#fff;outline:none;transition:border-color 0.15s;}
+.auth-field input:focus{border-color:var(--blue);}
+.auth-field input::placeholder{color:rgba(255,255,255,0.25);}
+.auth-btn{margin-top:6px;padding:14px;background:var(--blue);color:#fff;font-size:15px;font-weight:500;font-family:var(--font);border:none;border-radius:var(--radius-sm);cursor:pointer;transition:opacity 0.15s,transform 0.1s;}
+.auth-btn:active{transform:scale(0.98);}
+.auth-btn.loading{opacity:0.6;pointer-events:none;}
+.auth-switch{margin-top:14px;text-align:center;font-size:13px;color:rgba(255,255,255,0.4);}
+.auth-switch span{color:var(--blue);cursor:pointer;}
+.auth-err{font-size:12px;color:#FC8181;background:rgba(239,68,68,0.12);padding:8px 12px;border-radius:8px;display:none;}
+.auth-err.show{display:block;}
+
+/* PIN */
+.pin-screen{background:var(--navy);align-items:center;justify-content:center;padding:40px 28px;}
+.pin-header{text-align:center;margin-bottom:32px;}
+.pin-icon{width:56px;height:56px;background:rgba(59,130,246,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.pin-header h2{font-size:20px;font-weight:500;color:#fff;}
+.pin-header p{font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;}
+.pin-dots{display:flex;gap:14px;margin-bottom:32px;}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);transition:all 0.15s;}
+.pin-dot.filled{background:var(--blue);border-color:var(--blue);transform:scale(1.1);}
+.pin-dot.error{background:var(--red);border-color:var(--red);}
+.pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:280px;}
+.pin-key{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;font-size:20px;color:#fff;font-family:var(--mono);transition:background 0.1s,transform 0.1s;user-select:none;}
+.pin-key:active{background:rgba(59,130,246,0.3);transform:scale(0.94);}
+.pin-key.del{font-size:14px;color:rgba(255,255,255,0.5);}
+.pin-key.empty{background:none;border:none;cursor:default;}
+.bio-btn{margin-top:18px;display:flex;align-items:center;gap:8px;color:var(--blue);font-size:13px;cursor:pointer;padding:8px 16px;border-radius:8px;background:rgba(59,130,246,0.1);border:none;font-family:var(--font);}
+.pin-err{font-size:12px;color:#FC8181;margin-top:10px;min-height:18px;text-align:center;}
+
+/* TOP BAR */
+.top-bar{background:var(--navy);padding:52px 20px 18px;flex-shrink:0;}
+.top-bar-inner{display:flex;align-items:center;justify-content:space-between;}
+.top-bar h1{font-size:13px;font-weight:400;color:rgba(255,255,255,0.5);}
+.top-bar .date{font-size:12px;color:rgba(255,255,255,0.3);}
+.logout-btn{background:rgba(255,255,255,0.08);border:none;border-radius:8px;padding:6px 10px;font-size:11px;color:rgba(255,255,255,0.45);cursor:pointer;font-family:var(--font);}
+
+/* CONTENT */
+.main-content{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 16px 100px;-webkit-overflow-scrolling:touch;}
+
+/* TOTAL CARD */
+.total-card{background:var(--navy-soft);border-radius:20px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden;}
+.total-card::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:rgba(59,130,246,0.08);border-radius:50%;}
+.total-lbl{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;}
+.total-amt{font-size:34px;font-weight:300;color:#fff;font-family:var(--mono);letter-spacing:-1px;}
+.circ-row{display:flex;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.07);}
+.circ-wrap{position:relative;width:64px;height:64px;flex-shrink:0;}
+.circ-wrap svg{transform:rotate(-90deg);}
+.circ-mid{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(255,255,255,0.4);}
+.circ-legend{display:flex;flex-direction:column;gap:6px;padding-left:14px;}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.6);}
+.leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* BALANCE CARDS */
+.bal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.bal-card{background:var(--surface);border-radius:var(--radius);padding:14px;border:1px solid var(--border);}
+.bal-card .bl{font-size:10px;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;}
+.bal-card.cc .bl{color:#185FA5;}
+.bal-card.cash .bl{color:#166534;}
+.bal-card input{width:100%;background:transparent;border:none;border-bottom:1.5px solid;font-size:17px;font-weight:500;font-family:var(--mono);padding:2px 0 4px;outline:none;color:var(--text);}
+.bal-card.cc input{border-color:#185FA5;}
+.bal-card.cash input{border-color:#166534;}
+.bal-card .bc{font-size:10px;color:var(--text-soft);margin-top:5px;}
+
+/* BUTTONS */
+.btn-new{width:100%;padding:15px;background:var(--blue);color:#fff;font-size:15px;font-weight:500;font-family:var(--font);border:none;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;transition:opacity 0.15s,transform 0.1s;}
+.btn-new:active{transform:scale(0.98);}
+.plus-ic{width:22px;height:22px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;}
+
+/* TX */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sec-ttl{font-size:13px;font-weight:500;color:var(--text-mid);}
+.sec-lnk{font-size:12px;color:var(--blue);cursor:pointer;}
+.tx-card{background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);padding:11px 13px;display:flex;align-items:center;gap:11px;margin-bottom:6px;}
+.tx-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:500;}
+.tx-dot.entrata{background:var(--green-light);color:#166534;}
+.tx-dot.uscita{background:var(--red-light);color:#991B1B;}
+.tx-info{flex:1;min-width:0;}
+.tx-desc{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tx-meta{font-size:11px;color:var(--text-soft);margin-top:1px;}
+.tx-amt{font-size:13px;font-weight:500;font-family:var(--mono);flex-shrink:0;}
+.tx-amt.entrata{color:#166634;}
+.tx-amt.uscita{color:#991B1B;}
+.empty{text-align:center;padding:28px;color:var(--text-soft);font-size:13px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);}
+
+/* STATS */
+.stats-hdr{background:var(--navy);padding:52px 20px 18px;flex-shrink:0;}
+.stats-hdr h1{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:2px;}
+.stats-hdr .mo{font-size:18px;font-weight:500;color:#fff;letter-spacing:-0.3px;}
+.stats-body{flex:1;overflow-y:auto;padding:16px 16px 100px;-webkit-overflow-scrolling:touch;}
+.s-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.s-card{background:var(--surface);border-radius:var(--radius);padding:14px;border:1px solid var(--border);}
+.s-card .sl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+.s-card.inc .sl{color:#166634;}
+.s-card.exp .sl{color:#991B1B;}
+.s-card.net .sl{color:#185FA5;}
+.s-card .sa{font-size:20px;font-weight:500;font-family:var(--mono);color:var(--text);letter-spacing:-0.5px;}
+.s-card.net{grid-column:span 2;}
+.s-card.net .sa{font-size:24px;}
+.chart-card{background:var(--surface);border-radius:var(--radius);padding:16px;border:1px solid var(--border);margin-bottom:14px;}
+.chart-ttl{font-size:12px;font-weight:500;color:var(--text-mid);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.4px;}
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:120px;}
+.bar-grp{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.bar-pair{display:flex;gap:2px;align-items:flex-end;width:100%;height:96px;}
+.bar{flex:1;border-radius:4px 4px 0 0;min-height:3px;}
+.bar.inc{background:var(--green);opacity:0.8;}
+.bar.exp{background:var(--red);opacity:0.8;}
+.bar-lbl{font-size:9px;color:var(--text-soft);}
+.chart-leg{display:flex;gap:14px;margin-top:10px;}
+.chart-leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-mid);}
+.chart-leg-dot{width:8px;height:8px;border-radius:2px;}
+
+/* STORICO */
+.stor-hdr{background:var(--navy);padding:52px 20px 18px;flex-shrink:0;}
+.stor-hdr h1{font-size:18px;font-weight:500;color:#fff;}
+.stor-hdr p{font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.stor-body{flex:1;overflow-y:auto;padding:16px 16px 100px;-webkit-overflow-scrolling:touch;}
+.filters{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;}
+.chip{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--border-mid);background:var(--surface);color:var(--text-mid);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.15s;}
+.chip.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+
+/* NAV */
+.nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surface);border-top:1px solid var(--border);display:flex;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:50;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 0;}
+.nav-item svg{width:22px;height:22px;}
+.nav-lbl{font-size:10px;color:var(--text-soft);}
+.nav-item.active .nav-lbl{color:var(--blue);font-weight:500;}
+.nav-item.active svg path,.nav-item.active svg rect{fill:var(--blue) !important;}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.25s,visibility 0.25s;}
+.modal-ov.open{opacity:1;pointer-events:all;visibility:visible;}
+.modal-sheet{background:var(--surface);border-radius:22px 22px 0 0;padding:16px 20px calc(28px + env(safe-area-inset-bottom));width:100%;max-width:430px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);}
+.modal-ov.open .modal-sheet{transform:translateY(0);}
+.modal-handle{width:36px;height:4px;background:var(--border-mid);border-radius:2px;margin:0 auto 18px;}
+.modal-ttl{font-size:16px;font-weight:500;color:var(--text);margin-bottom:18px;}
+.type-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.type-btn{padding:11px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;font-family:var(--font);border:1.5px solid var(--border-mid);background:var(--bg);color:var(--text-mid);cursor:pointer;transition:all 0.15s;}
+.type-btn.act-in{background:var(--green-light);border-color:#22C55E;color:#166634;}
+.type-btn.act-out{background:var(--red-light);border-color:#EF4444;color:#991B1B;}
+.type-btn.off{opacity:0.4;}
+.fg{margin-bottom:13px;}
+.fl{font-size:11px;color:var(--text-soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.4px;}
+.fg select,.fg input[type=number],.fg input[type=text]{width:100%;padding:11px 13px;border-radius:var(--radius-sm);border:1px solid var(--border-mid);background:var(--bg);font-size:15px;font-family:var(--font);color:var(--text);outline:none;-webkit-appearance:none;}
+.fg select:focus,.fg input:focus{border-color:var(--blue);}
+.btn-ok{width:100%;padding:14px;background:var(--blue);color:#fff;font-size:15px;font-weight:500;font-family:var(--font);border:none;border-radius:var(--radius-sm);cursor:pointer;margin-top:6px;transition:opacity 0.15s,transform 0.1s;}
+.btn-ok:active{transform:scale(0.98);}
+.btn-ok.loading{opacity:0.6;pointer-events:none;}
+.btn-cancel{width:100%;padding:11px;background:none;border:none;color:var(--text-soft);font-size:13px;font-family:var(--font);cursor:pointer;margin-top:4px;}
+
+/* TOAST */
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-10px);background:var(--navy);color:#fff;font-size:13px;padding:10px 18px;border-radius:10px;z-index:999;opacity:0;transition:all 0.3s;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* Install Banner */
+#install-banner{position:fixed;bottom:0;left:0;right:0;z-index:1000;padding:16px 20px calc(16px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border-mid);display:flex;align-items:center;gap:14px;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);}
+#install-banner.show{transform:translateY(0);}
+#install-banner .ib-icon{width:48px;height:48px;border-radius:12px;flex-shrink:0;}
+#install-banner .ib-text{flex:1;}
+#install-banner .ib-title{font-size:14px;font-weight:600;color:var(--text);}
+#install-banner .ib-sub{font-size:12px;color:var(--text-soft);margin-top:2px;}
+#install-banner .ib-btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;white-space:nowrap;}
+#install-banner .ib-close{background:none;border:none;color:var(--text-soft);font-size:20px;cursor:pointer;padding:4px;line-height:1;}
+#ios-tip{position:fixed;bottom:0;left:0;right:0;z-index:1000;padding:20px 20px calc(20px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border-mid);border-radius:22px 22px 0 0;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);}
+#ios-tip.show{transform:translateY(0);}
+#ios-tip .it-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px;}
+#ios-tip .it-steps{font-size:13px;color:var(--text-soft);line-height:1.8;}
+#ios-tip .it-steps b{color:var(--text);}
+#ios-tip .it-close{margin-top:16px;width:100%;padding:11px;background:none;border:1px solid var(--border-mid);border-radius:10px;color:var(--text-soft);font-size:13px;font-family:var(--font);cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- LOADING -->
+  <div class="screen loading-screen visible" id="screen-loading">
+    <div class="load-logo">
+      <div class="load-mark">
+        <svg width="28" height="28" viewBox="0 0 26 26" fill="none">
+          <path d="M4 13h6M13 4v6M13 16v6M16 13h6" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="13" cy="13" r="3" fill="white"/>
+        </svg>
+      </div>
+      <h1>Tracks All Finances</h1>
+      <p>Caricamento...</p>
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="screen auth-screen" id="screen-register">
+    <div class="auth-logo">
+      <div class="logo-mark">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <path d="M4 13h6M13 4v6M13 16v6M16 13h6" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="13" cy="13" r="3" fill="white"/>
+        </svg>
+      </div>
+      <h1>Tracks All Finances</h1>
+      <p>Crea il tuo account</p>
+    </div>
+    <div class="auth-form">
+      <div class="auth-err" id="reg-err"></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="reg-email" placeholder="nome@email.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="reg-pass" placeholder="Minimo 6 caratteri" autocomplete="new-password"></div>
+      <div class="auth-field"><label>Conferma password</label><input type="password" id="reg-pass2" placeholder="Ripeti la password" autocomplete="new-password"></div>
+      <button class="auth-btn" id="reg-btn" onclick="doRegister()">Crea account</button>
+      <div class="auth-switch">Hai già un account? <span onclick="showScreen('screen-login')">Accedi</span></div>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="screen auth-screen" id="screen-login">
+    <div class="auth-logo">
+      <div class="logo-mark">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <path d="M4 13h6M13 4v6M13 16v6M16 13h6" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="13" cy="13" r="3" fill="white"/>
+        </svg>
+      </div>
+      <h1>Tracks All Finances</h1>
+      <p>Accedi al tuo account</p>
+    </div>
+    <div class="auth-form">
+      <div class="auth-err" id="login-err"></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="login-email" placeholder="nome@email.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="login-pass" placeholder="La tua password" autocomplete="current-password"></div>
+      <button class="auth-btn" id="login-btn" onclick="doLogin()">Accedi</button>
+      <div class="auth-switch">Non hai un account? <span onclick="showScreen('screen-register')">Registrati</span></div>
+    </div>
+  </div>
+
+  <!-- CREATE PIN -->
+  <div class="screen pin-screen" id="screen-createpin">
+    <div class="pin-header">
+      <div class="pin-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="5" y="11" width="14" height="10" rx="2" fill="#3B82F6"/>
+          <path d="M8 11V7a4 4 0 018 0v4" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2>Crea il tuo PIN</h2>
+      <p id="cp-sub">Scegli un PIN a 4 cifre</p>
+    </div>
+    <div class="pin-dots" id="cp-dots">
+      <div class="pin-dot" id="cpd-0"></div><div class="pin-dot" id="cpd-1"></div>
+      <div class="pin-dot" id="cpd-2"></div><div class="pin-dot" id="cpd-3"></div>
+    </div>
+    <div class="pin-keypad" id="cp-pad"></div>
+    <div class="pin-err" id="cp-err"></div>
+  </div>
+
+  <!-- ENTER PIN -->
+  <div class="screen pin-screen" id="screen-pin">
+    <div class="pin-header">
+      <div class="pin-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="5" y="11" width="14" height="10" rx="2" fill="#3B82F6"/>
+          <path d="M8 11V7a4 4 0 018 0v4" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2>Bentornato</h2>
+      <p>Inserisci il PIN</p>
+    </div>
+    <div class="pin-dots" id="ep-dots">
+      <div class="pin-dot" id="epd-0"></div><div class="pin-dot" id="epd-1"></div>
+      <div class="pin-dot" id="epd-2"></div><div class="pin-dot" id="epd-3"></div>
+    </div>
+    <div class="pin-keypad" id="ep-pad"></div>
+    <div class="pin-err" id="ep-err"></div>
+    <button class="bio-btn" id="bio-btn" onclick="tryBio()" style="display:none">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2C8.5 2 5.5 4.5 5.5 8v1M12 2c3.5 0 6.5 2.5 6.5 6v1" stroke="#3B82F6" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="12" cy="12" r="4" fill="#3B82F6" opacity="0.25"/>
+        <circle cx="12" cy="12" r="1.5" fill="#3B82F6"/>
+      </svg>
+      Usa biometria
+    </button>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen" id="screen-home">
+    <div class="top-bar">
+      <div class="top-bar-inner">
+        <div><h1>Tracks All Finances</h1><div class="date" id="date-lbl"></div></div>
+        <button class="logout-btn" onclick="doLogout()">Esci</button>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="total-card">
+        <div class="total-lbl">Patrimonio totale</div>
+        <div class="total-amt" id="total-disp">€ 0,00</div>
+        <div class="circ-row">
+          <div class="circ-wrap">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"/>
+              <circle id="arc-cc" cx="32" cy="32" r="26" fill="none" stroke="#3B82F6" stroke-width="6" stroke-dasharray="0 163.4" stroke-linecap="round"/>
+              <circle id="arc-cash" cx="32" cy="32" r="26" fill="none" stroke="#22C55E" stroke-width="6" stroke-dasharray="0 163.4" stroke-linecap="round"/>
+            </svg>
+            <div class="circ-mid">%</div>
+          </div>
+          <div class="circ-legend">
+            <div class="leg-item"><div class="leg-dot" style="background:#3B82F6"></div><span id="leg-cc">C/C — €0</span></div>
+            <div class="leg-item"><div class="leg-dot" style="background:#22C55E"></div><span id="leg-cash">Contanti — €0</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="bal-row">
+        <div class="bal-card cc">
+          <div class="bl">Conto Corrente</div>
+          <input type="number" id="in-cc" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
+          <div class="bc">€ EUR</div>
+        </div>
+        <div class="bal-card cash">
+          <div class="bl">Contanti</div>
+          <input type="number" id="in-cash" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
+          <div class="bc">€ EUR</div>
+        </div>
+      </div>
+      <button class="btn-new" onclick="openModal()">
+        <div class="plus-ic">+</div>Nuova transazione
+      </button>
+      <div class="sec-hdr">
+        <div class="sec-ttl">Ultime transazioni</div>
+        <div class="sec-lnk" onclick="switchTab('storico')">Vedi tutte</div>
+      </div>
+      <div id="recent-list"></div>
+    </div>
+  </div>
+
+  <!-- STORICO -->
+  <div class="screen" id="screen-storico">
+    <div class="stor-hdr">
+      <h1>Storico</h1>
+      <p id="stor-count">0 transazioni</p>
+    </div>
+    <div class="stor-body">
+      <div class="filters">
+        <div class="chip active" onclick="setFilter('all',this)">Tutte</div>
+        <div class="chip" onclick="setFilter('entrata',this)">Entrate</div>
+        <div class="chip" onclick="setFilter('uscita',this)">Uscite</div>
+        <div class="chip" onclick="setFilter('cc',this)">C/C</div>
+        <div class="chip" onclick="setFilter('cash',this)">Contanti</div>
+      </div>
+      <div id="stor-list"></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="screen" id="screen-stats">
+    <div class="stats-hdr">
+      <h1>Statistiche</h1>
+      <div class="mo" id="stats-mo"></div>
+    </div>
+    <div class="stats-body" id="stats-body"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav-bar" id="nav-bar" style="display:none">
+    <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1v-9.5z" fill="#94A3B8"/><rect x="9" y="14" width="6" height="7" rx="1" fill="#94A3B8" opacity="0.6"/></svg>
+      <span class="nav-lbl">Home</span>
+    </div>
+    <div class="nav-item" id="nav-storico" onclick="switchTab('storico')">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" fill="#94A3B8"/><rect x="7" y="8" width="10" height="1.5" rx="0.75" fill="white"/><rect x="7" y="11.5" width="7" height="1.5" rx="0.75" fill="white"/><rect x="7" y="15" width="5" height="1.5" rx="0.75" fill="white"/></svg>
+      <span class="nav-lbl">Storico</span>
+    </div>
+    <div class="nav-item" id="nav-stats" onclick="switchTab('stats')">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="14" width="4" height="6" rx="1" fill="#94A3B8"/><rect x="10" y="9" width="4" height="11" rx="1" fill="#94A3B8"/><rect x="16" y="4" width="4" height="16" rx="1" fill="#94A3B8"/></svg>
+      <span class="nav-lbl">Statistiche</span>
+    </div>
+  </nav>
+</div>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-ttl">Nuova transazione</div>
+    <div class="type-row">
+      <button class="type-btn" id="btn-in" onclick="setType('entrata')">+ Entrata</button>
+      <button class="type-btn" id="btn-out" onclick="setType('uscita')">− Uscita</button>
+    </div>
+    <div class="fg"><div class="fl">Conto</div>
+      <select id="sel-conto"><option value="cc">Conto Corrente</option><option value="cash">Contanti</option></select>
+    </div>
+    <div class="fg"><div class="fl">Importo (€)</div><input type="number" id="inp-amt" placeholder="0,00" step="0.01" min="0"/></div>
+    <div class="fg"><div class="fl">Descrizione</div><input type="text" id="inp-desc" placeholder="es. Stipendio, Spesa, Affitto..."/></div>
+    <button class="btn-ok" id="btn-ok" onclick="confirmTx()">Conferma</button>
+    <button class="btn-cancel" onclick="closeModal()">Annulla</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── SUPABASE ──
+const SB_URL = 'https://lbtfitxjubjbflwzukvh.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxidGZpdHhqdWJqYmZsd3p1a3ZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODg5NDEsImV4cCI6MjA5MjU2NDk0MX0.X2SxVzGRUVcPxlsjPYtbDtm7IaV9nppVh32eK268oMU';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+// ── STATE ──
+let S = { cc:0, cash:0, txs:[], user:null };
+let txType=null, filterMode='all', balTimer=null;
+let cpStep=0, cpFirst='', pinBuf='';
+const CIRC = 2*Math.PI*26;
+
+// ── UTILS ──
+async function sha256(s){ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)); return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); }
+function eur(n){ return '€\u00A0'+Number(n||0).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fdate(d){ return new Date(d).toLocaleDateString('it-IT',{day:'2-digit',month:'short'})+' '+new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+function setBtn(id,on){ const b=document.getElementById(id); if(b) b.classList.toggle('loading',on); }
+
+// ── SCREEN ──
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+  document.getElementById('nav-bar').style.display=['screen-home','screen-storico','screen-stats'].includes(id)?'flex':'none';
+}
+
+// ── AUTH ──
+async function doRegister(){
+  const email=document.getElementById('reg-email').value.trim();
+  const pass=document.getElementById('reg-pass').value;
+  const pass2=document.getElementById('reg-pass2').value;
+  const err=document.getElementById('reg-err');
+  err.classList.remove('show');
+  if(!email||!email.includes('@')){ err.textContent='Email non valida'; err.classList.add('show'); return; }
+  if(pass.length<6){ err.textContent='Password troppo corta (min 6 caratteri)'; err.classList.add('show'); return; }
+  if(pass!==pass2){ err.textContent='Le password non coincidono'; err.classList.add('show'); return; }
+  setBtn('reg-btn',true);
+  const {data,error}=await sb.auth.signUp({email,password:pass});
+  setBtn('reg-btn',false);
+  if(error){ err.textContent=error.message; err.classList.add('show'); return; }
+  S.user=data.user;
+  startCreatePin();
+}
+
+async function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  const err=document.getElementById('login-err');
+  err.classList.remove('show');
+  if(!email||!pass){ err.textContent='Compila tutti i campi'; err.classList.add('show'); return; }
+  setBtn('login-btn',true);
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  setBtn('login-btn',false);
+  if(error){ err.textContent='Credenziali non valide'; err.classList.add('show'); return; }
+  S.user=data.user;
+  const {data:pd}=await sb.from('user_pins').select('pin_hash').eq('user_id',S.user.id).single();
+  if(!pd){ startCreatePin(); return; }
+  localStorage.setItem('pin_'+S.user.id, pd.pin_hash);
+  startPinEntry();
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  S={cc:0,cash:0,txs:[],user:null};
+  showScreen('screen-login');
+}
+
+// ── CREATE PIN ──
+function startCreatePin(){
+  cpStep=0; cpFirst=''; pinBuf='';
+  document.getElementById('cp-sub').textContent='Scegli un PIN a 4 cifre';
+  document.getElementById('cp-err').textContent='';
+  updateDots('cp',pinBuf);
+  buildPad('cp-pad', async k=>{
+    if(k==='del'){ if(pinBuf.length>0) pinBuf=pinBuf.slice(0,-1); }
+    else if(pinBuf.length<4) pinBuf+=k;
+    updateDots('cp',pinBuf);
+    if(pinBuf.length===4){
+      await new Promise(r=>setTimeout(r,120));
+      if(cpStep===0){
+        cpFirst=pinBuf; pinBuf=''; cpStep=1;
+        document.getElementById('cp-sub').textContent='Conferma il PIN';
+        updateDots('cp',pinBuf);
+      } else {
+        if(pinBuf!==cpFirst){
+          document.getElementById('cp-err').textContent='I PIN non coincidono. Riprova.';
+          pinBuf=''; cpStep=0; cpFirst='';
+          document.getElementById('cp-sub').textContent='Scegli un PIN a 4 cifre';
+          updateDots('cp',pinBuf); shake('cp-dots');
+        } else {
+          const h=await sha256(pinBuf);
+          await sb.from('user_pins').upsert({user_id:S.user.id,pin_hash:h},{onConflict:'user_id'});
+          localStorage.setItem('pin_'+S.user.id,h);
+          enterApp();
+        }
+      }
+    }
+  });
+  showScreen('screen-createpin');
+}
+
+// ── ENTER PIN ──
+function startPinEntry(){
+  pinBuf='';
+  document.getElementById('ep-err').textContent='';
+  updateDots('ep',pinBuf);
+  buildPad('ep-pad', async k=>{
+    if(k==='del'){ if(pinBuf.length>0) pinBuf=pinBuf.slice(0,-1); }
+    else if(pinBuf.length<4) pinBuf+=k;
+    updateDots('ep',pinBuf);
+    if(pinBuf.length===4){
+      await new Promise(r=>setTimeout(r,120));
+      const h=await sha256(pinBuf);
+      const local=localStorage.getItem('pin_'+S.user.id);
+      let ok=local&&h===local;
+      if(!ok){
+        const {data}=await sb.from('user_pins').select('pin_hash').eq('user_id',S.user.id).single();
+        ok=data&&h===data.pin_hash;
+        if(ok) localStorage.setItem('pin_'+S.user.id,h);
+      }
+      if(ok){ enterApp(); }
+      else{ document.getElementById('ep-err').textContent='PIN errato. Riprova.'; shake('ep-dots'); pinBuf=''; updateDots('ep',pinBuf); }
+    }
+  });
+  showScreen('screen-pin');
+  if(window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable){
+    window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(a=>{
+      document.getElementById('bio-btn').style.display=a?'flex':'none';
+      if(a) setTimeout(tryBio,500);
+    });
+  }
+}
+
+async function tryBio(){
+  try{
+    const c=await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rpId:location.hostname||'localhost',allowCredentials:[],userVerification:'required',timeout:30000}});
+    if(c) enterApp();
+  }catch(e){ if(e.name!=='NotAllowedError') toast('Usa il PIN per accedere'); }
+}
+
+function updateDots(prefix,buf){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById(prefix+'d-'+i);
+    if(d) d.className='pin-dot'+(i<buf.length?' filled':'');
+  }
+}
+
+function shake(id){
+  const el=document.getElementById(id);
+  el.querySelectorAll('.pin-dot').forEach(d=>d.classList.add('error'));
+  el.style.animation='shake 0.4s';
+  setTimeout(()=>{el.style.animation='';el.querySelectorAll('.pin-dot').forEach(d=>d.classList.remove('error'));},400);
+}
+
+function buildPad(id,handler){
+  const el=document.getElementById(id);
+  el.innerHTML=['1','2','3','4','5','6','7','8','9','','0','del'].map(k=>{
+    if(k==='') return `<div class="pin-key empty"></div>`;
+    if(k==='del') return `<div class="pin-key del" data-k="del">⌫</div>`;
+    return `<div class="pin-key" data-k="${k}">${k}</div>`;
+  }).join('');
+  el.onclick=e=>{ const k=e.target.dataset.k; if(k!==undefined) handler(k); };
+}
+
+// ── ENTER APP ──
+async function enterApp(){
+  showScreen('screen-loading');
+  await loadData();
+  document.getElementById('date-lbl').textContent=new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('stats-mo').textContent=new Date().toLocaleDateString('it-IT',{month:'long',year:'numeric'});
+  document.getElementById('in-cc').value=S.cc||'';
+  document.getElementById('in-cash').value=S.cash||'';
+  renderAll();
+  switchTab('home');
+}
+
+// ── DATA ──
+async function loadData(){
+  const [pr,tr]=await Promise.all([
+    sb.from('profiles').select('saldo_cc,saldo_contanti').eq('id',S.user.id).single(),
+    sb.from('transactions').select('*').eq('user_id',S.user.id).order('created_at',{ascending:false})
+  ]);
+  if(pr.data){ S.cc=Number(pr.data.saldo_cc)||0; S.cash=Number(pr.data.saldo_contanti)||0; }
+  S.txs=tr.data||[];
+}
+
+async function saveProfile(){
+  await sb.from('profiles').upsert({id:S.user.id,saldo_cc:S.cc,saldo_contanti:S.cash},{onConflict:'id'});
+}
+
+// ── NAV ──
+let curTab='home';
+function switchTab(tab){
+  curTab=tab;
+  ['home','storico','stats'].forEach(t=>{
+    document.getElementById('screen-'+t).classList.toggle('visible',t===tab);
+    document.getElementById('nav-'+t).classList.toggle('active',t===tab);
+  });
+  document.getElementById('nav-bar').style.display='flex';
+  if(tab==='storico') renderStorico();
+  if(tab==='stats') renderStats();
+}
+
+// ── BALANCES ──
+function onBalInput(){
+  S.cc=parseFloat(document.getElementById('in-cc').value)||0;
+  S.cash=parseFloat(document.getElementById('in-cash').value)||0;
+  renderCircle();
+  clearTimeout(balTimer);
+  balTimer=setTimeout(saveProfile,1200);
+}
+
+function renderCircle(){
+  const tot=S.cc+S.cash;
+  document.getElementById('total-disp').textContent=eur(tot);
+  document.getElementById('leg-cc').textContent='C/C — '+eur(S.cc);
+  document.getElementById('leg-cash').textContent='Contanti — '+eur(S.cash);
+  const aCC=document.getElementById('arc-cc'), aCash=document.getElementById('arc-cash');
+  if(!tot){ aCC.setAttribute('stroke-dasharray','0 '+CIRC); aCash.setAttribute('stroke-dasharray','0 '+CIRC); return; }
+  const lCC=(S.cc/tot)*CIRC, lCash=(S.cash/tot)*CIRC;
+  aCC.setAttribute('stroke-dasharray',lCC.toFixed(1)+' '+CIRC); aCC.setAttribute('stroke-dashoffset','0');
+  aCash.setAttribute('stroke-dasharray',lCash.toFixed(1)+' '+CIRC); aCash.setAttribute('stroke-dashoffset',(-lCC).toFixed(1));
+}
+
+// ── MODAL ──
+function openModal(){
+  txType=null;
+  document.getElementById('btn-in').className='type-btn';
+  document.getElementById('btn-out').className='type-btn';
+  document.getElementById('inp-amt').value='';
+  document.getElementById('inp-desc').value='';
+  document.getElementById('modal').classList.add('open');
+  setTimeout(()=>{ document.getElementById('inp-amt').focus(); }, 350);
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+function setType(t){
+  txType=t;
+  document.getElementById('btn-in').className='type-btn'+(t==='entrata'?' act-in':' off');
+  document.getElementById('btn-out').className='type-btn'+(t==='uscita'?' act-out':' off');
+}
+
+async function confirmTx(){
+  if(!txType){ toast('Seleziona Entrata o Uscita'); return; }
+  const amt=parseFloat(document.getElementById('inp-amt').value);
+  if(!amt||amt<=0){ toast('Importo non valido'); return; }
+  const conto=document.getElementById('sel-conto').value;
+  const desc=document.getElementById('inp-desc').value||'—';
+  setBtn('btn-ok',true);
+  const sign=txType==='entrata'?1:-1;
+  if(conto==='cc') S.cc=Math.max(0,S.cc+sign*amt);
+  else S.cash=Math.max(0,S.cash+sign*amt);
+  document.getElementById('in-cc').value=S.cc||'';
+  document.getElementById('in-cash').value=S.cash||'';
+  const [{data:tx}]=await Promise.all([
+    sb.from('transactions').insert({user_id:S.user.id,type:txType,conto,importo:amt,descrizione:desc}).select().single(),
+    saveProfile()
+  ]);
+  setBtn('btn-ok',false);
+  if(tx) S.txs.unshift(tx);
+  renderAll(); closeModal();
+  toast(txType==='entrata'?'+ '+eur(amt)+' aggiunta':'− '+eur(amt)+' registrata');
+}
+
+// ── RENDER ──
+function renderAll(){ renderCircle(); renderRecent(); if(curTab==='storico') renderStorico(); if(curTab==='stats') renderStats(); }
+
+function txCard(tx){
+  const sign=tx.type==='entrata'?'+':'−', icon=tx.type==='entrata'?'↑':'↓';
+  const cl=tx.conto==='cc'?'C/C':'Contanti';
+  const desc=tx.descrizione||'—';
+  return `<div class="tx-card"><div class="tx-dot ${tx.type}">${icon}</div><div class="tx-info"><div class="tx-desc">${desc}</div><div class="tx-meta">${fdate(tx.created_at)} · ${cl}</div></div><div class="tx-amt ${tx.type}">${sign} ${eur(tx.importo)}</div></div>`;
+}
+
+function renderRecent(){
+  const el=document.getElementById('recent-list');
+  const r=S.txs.slice(0,5);
+  el.innerHTML=r.length?r.map(txCard).join(''):'<div class="empty">Nessuna transazione ancora.</div>';
+}
+
+function renderStorico(){
+  const list=S.txs.filter(tx=>filterMode==='all'?true:filterMode==='entrata'||filterMode==='uscita'?tx.type===filterMode:tx.conto===filterMode);
+  document.getElementById('stor-count').textContent=list.length+' transazion'+(list.length===1?'e':'i');
+  document.getElementById('stor-list').innerHTML=list.length?list.map(txCard).join(''):'<div class="empty">Nessuna transazione trovata.</div>';
+}
+
+function setFilter(f,el){
+  filterMode=f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderStorico();
+}
+
+function renderStats(){
+  const now=new Date();
+  const months=[];
+  for(let i=5;i>=0;i--){ const d=new Date(now.getFullYear(),now.getMonth()-i,1); months.push({y:d.getFullYear(),m:d.getMonth(),lbl:d.toLocaleDateString('it-IT',{month:'short'})}); }
+  const md=months.map(mo=>{
+    const txs=S.txs.filter(tx=>{const d=new Date(tx.created_at);return d.getFullYear()===mo.y&&d.getMonth()===mo.m;});
+    return{...mo,inc:txs.filter(t=>t.type==='entrata').reduce((a,t)=>a+Number(t.importo),0),exp:txs.filter(t=>t.type==='uscita').reduce((a,t)=>a+Number(t.importo),0)};
+  });
+  const cur=md[md.length-1], maxV=Math.max(...md.map(m=>Math.max(m.inc,m.exp)),1);
+  document.getElementById('stats-body').innerHTML=`
+    <div class="s-row">
+      <div class="s-card inc"><div class="sl">Entrate mese</div><div class="sa">${eur(cur.inc)}</div></div>
+      <div class="s-card exp"><div class="sl">Uscite mese</div><div class="sa">${eur(cur.exp)}</div></div>
+      <div class="s-card net"><div class="sl">Saldo netto mese</div><div class="sa" style="color:${cur.inc-cur.exp>=0?'#166634':'#991B1B'}">${eur(cur.inc-cur.exp)}</div></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-ttl">Ultimi 6 mesi</div>
+      <div class="bar-chart">${md.map(m=>`<div class="bar-grp"><div class="bar-pair"><div class="bar inc" style="height:${Math.round((m.inc/maxV)*90)}px"></div><div class="bar exp" style="height:${Math.round((m.exp/maxV)*90)}px"></div></div><div class="bar-lbl">${m.lbl}</div></div>`).join('')}</div>
+      <div class="chart-leg"><div class="chart-leg-item"><div class="chart-leg-dot" style="background:#22C55E"></div>Entrate</div><div class="chart-leg-item"><div class="chart-leg-dot" style="background:#EF4444"></div>Uscite</div></div>
+    </div>`;
+}
+
+// ── INIT ──
+async function init(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){
+    S.user=session.user;
+    const {data:pd}=await sb.from('user_pins').select('pin_hash').eq('user_id',S.user.id).single();
+    if(!pd){ startCreatePin(); return; }
+    localStorage.setItem('pin_'+S.user.id,pd.pin_hash);
+    startPinEntry();
+  } else {
+    showScreen('screen-register');
+  }
+}
+
+if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+
+// PWA Install Logic
+let deferredPrompt=null;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+
+if(!isStandalone){
+  if(isIOS){
+    setTimeout(()=>document.getElementById("ios-tip").classList.add("show"),3000);
+  } else {
+    window.addEventListener("beforeinstallprompt",e=>{
+      e.preventDefault(); deferredPrompt=e;
+      setTimeout(()=>document.getElementById("install-banner").classList.add("show"),2000);
+    });
+  }
+}
+
+document.getElementById("ib-install").addEventListener("click",async()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const {outcome}=await deferredPrompt.userChoice;
+  deferredPrompt=null;
+  document.getElementById("install-banner").classList.remove("show");
+});
+document.getElementById("ib-dismiss").addEventListener("click",()=>document.getElementById("install-banner").classList.remove("show"));
+document.getElementById("ios-close").addEventListener("click",()=>document.getElementById("ios-tip").classList.remove("show"));
+document.addEventListener('DOMContentLoaded',init);
+</script>
+
+<!-- Install Banner Android -->
+<div id="install-banner">
+  <img class="ib-icon" src="icons/icon-192.png" alt="icon">
+  <div class="ib-text"><div class="ib-title">Tracks All Finances</div><div class="ib-sub">Installa come app sul tuo dispositivo</div></div>
+  <button class="ib-btn" id="ib-install">Installa</button>
+  <button class="ib-close" id="ib-dismiss">✕</button>
+</div>
+
+<!-- iOS Tip -->
+<div id="ios-tip">
+  <div class="it-title">📲 Installa su iPhone</div>
+  <div class="it-steps">1. Tocca <b>Condividi</b> (icona □↑) in basso nel browser<br>2. Scorri e tocca <b>"Aggiungi a schermata Home"</b><br>3. Conferma con <b>Aggiungi</b></div>
+  <button class="it-close" id="ios-close">Chiudi</button>
+</div>
+</body>
+</html>
