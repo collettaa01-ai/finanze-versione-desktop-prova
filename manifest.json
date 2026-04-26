@@ -3,23 +3,36 @@
   "short_name": "Finances",
   "description": "Gestisci le tue finanze personali",
   "start_url": "/finanze-versione-desktop-prova/index.html",
-  "scope": "./",
+  "scope": "/finanze-versione-desktop-prova/",
   "display": "standalone",
   "background_color": "#0F172A",
   "theme_color": "#0F172A",
   "orientation": "portrait",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "categories": ["finance", "productivity"],
