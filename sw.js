@@ -1,4 +1,4 @@
-const CACHE = 'taf-v2';
+const CACHE = 'taf-v3';
 const BASE = '/finanze-versione-desktop-prova';
 const ASSETS = [
   BASE + '/',
@@ -24,6 +24,9 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // Non intercettare richieste esterne (Supabase, CDN)
+  const url = new URL(e.request.url);
+  if (url.origin !== location.origin) return;
   e.respondWith(
     caches.match(e.request).then(cached => {
       const fresh = fetch(e.request).then(res => {
@@ -33,5 +36,4 @@ self.addEventListener('fetch', e => {
       return cached || fresh;
     })
   );
-});
 });
