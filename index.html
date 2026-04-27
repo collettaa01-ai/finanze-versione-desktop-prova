@@ -213,7 +213,7 @@ html, body {
 .type-btn.off{opacity:0.4;}
 .fg{margin-bottom:13px;}
 .fl{font-size:11px;color:var(--text-soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.4px;}
-.fg select,.fg input[type=number],.fg input[type=text]{width:100%;padding:11px 13px;border-radius:var(--radius-sm);border:1px solid var(--border-mid);background:var(--bg);font-size:15px;font-family:var(--font);color:var(--text);outline:none;-webkit-appearance:none;}
+.fg select,.fg input[type=number],.fg input[type=text]{width:100%;padding:14px 13px;border-radius:var(--radius-sm);border:1px solid var(--border-mid);background:var(--bg);font-size:16px;font-family:var(--font);color:var(--text);outline:none;-webkit-appearance:none;-webkit-user-select:text;user-select:text;touch-action:manipulation;}
 .fg select:focus,.fg input:focus{border-color:var(--blue);}
 .btn-ok{width:100%;padding:14px;background:var(--blue);color:#fff;font-size:15px;font-weight:500;font-family:var(--font);border:none;border-radius:var(--radius-sm);cursor:pointer;margin-top:6px;transition:opacity 0.15s,transform 0.1s;}
 .btn-ok:active{transform:scale(0.98);}
@@ -697,10 +697,13 @@ function openModal(){
   document.getElementById('inp-amt').value='';
   document.getElementById('inp-desc').value='';
   document.getElementById('modal').classList.add('open');
-  // iOS fix: keyboard only opens on direct synchronous user event (no setTimeout)
-  const inp = document.getElementById('inp-amt');
-  inp.focus();
-  inp.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
+  // iOS PWA: autofocus disabilitato (bug WebKit noto - non aprire tastiera automaticamente)
+  // Su non-iOS: focus normale
+  const isIOS = /ipad|iphone|ipod/i.test(navigator.userAgent) || 
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (!isIOS) {
+    document.getElementById('inp-amt').focus();
+  }
 }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
 function setType(t){
