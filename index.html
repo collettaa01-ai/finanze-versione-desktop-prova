@@ -697,7 +697,10 @@ function openModal(){
   document.getElementById('inp-amt').value='';
   document.getElementById('inp-desc').value='';
   document.getElementById('modal').classList.add('open');
-  setTimeout(()=>{ document.getElementById('inp-amt').focus(); }, 350);
+  // iOS fix: keyboard only opens on direct synchronous user event (no setTimeout)
+  const inp = document.getElementById('inp-amt');
+  inp.focus();
+  inp.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
 }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
 function setType(t){
