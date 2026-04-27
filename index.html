@@ -200,8 +200,8 @@ html, body {
 .nav-item.active svg path,.nav-item.active svg rect{fill:var(--blue) !important;}
 
 /* MODAL */
-.modal-ov{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity 0.25s,visibility 0.25s;}
-.modal-ov.open{opacity:1;pointer-events:all;visibility:visible;}
+.modal-ov{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.modal-ov.open{opacity:1;pointer-events:all;}
 .modal-sheet{background:var(--surface);border-radius:22px 22px 0 0;padding:16px 20px calc(28px + env(safe-area-inset-bottom));width:100%;max-width:430px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);}
 .modal-ov.open .modal-sheet{transform:translateY(0);}
 .modal-handle{width:36px;height:4px;background:var(--border-mid);border-radius:2px;margin:0 auto 18px;}
@@ -223,21 +223,22 @@ html, body {
 /* TOAST */
 .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-10px);background:var(--navy);color:#fff;font-size:13px;padding:10px 18px;border-radius:10px;z-index:999;opacity:0;transition:all 0.3s;white-space:nowrap;pointer-events:none;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-/* Install Banner */
-#install-banner{position:fixed;bottom:0;left:0;right:0;z-index:1000;padding:16px 20px calc(16px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border-mid);display:flex;align-items:center;gap:14px;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);}
+
+/* PWA Install Banner */
+#install-banner{position:fixed;bottom:0;left:0;right:0;z-index:1000;padding:16px 20px calc(16px + env(safe-area-inset-bottom));background:#1E293B;border-top:1px solid #334155;display:flex;align-items:center;gap:14px;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);}
 #install-banner.show{transform:translateY(0);}
 #install-banner .ib-icon{width:48px;height:48px;border-radius:12px;flex-shrink:0;}
 #install-banner .ib-text{flex:1;}
-#install-banner .ib-title{font-size:14px;font-weight:600;color:var(--text);}
-#install-banner .ib-sub{font-size:12px;color:var(--text-soft);margin-top:2px;}
-#install-banner .ib-btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;white-space:nowrap;}
-#install-banner .ib-close{background:none;border:none;color:var(--text-soft);font-size:20px;cursor:pointer;padding:4px;line-height:1;}
-#ios-tip{position:fixed;bottom:0;left:0;right:0;z-index:1000;padding:20px 20px calc(20px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border-mid);border-radius:22px 22px 0 0;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);}
+#install-banner .ib-title{font-size:14px;font-weight:600;color:#F1F5F9;}
+#install-banner .ib-sub{font-size:12px;color:#94A3B8;margin-top:2px;}
+#install-banner .ib-btn{background:#3B82F6;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
+#install-banner .ib-close{background:none;border:none;color:#94A3B8;font-size:20px;cursor:pointer;padding:4px;line-height:1;}
+#ios-tip{position:fixed;bottom:0;left:0;right:0;z-index:1000;padding:20px 20px calc(20px + env(safe-area-inset-bottom));background:#1E293B;border-top:1px solid #334155;border-radius:22px 22px 0 0;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);}
 #ios-tip.show{transform:translateY(0);}
-#ios-tip .it-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px;}
-#ios-tip .it-steps{font-size:13px;color:var(--text-soft);line-height:1.8;}
-#ios-tip .it-steps b{color:var(--text);}
-#ios-tip .it-close{margin-top:16px;width:100%;padding:11px;background:none;border:1px solid var(--border-mid);border-radius:10px;color:var(--text-soft);font-size:13px;font-family:var(--font);cursor:pointer;}
+#ios-tip .it-title{font-size:15px;font-weight:600;color:#F1F5F9;margin-bottom:10px;}
+#ios-tip .it-steps{font-size:13px;color:#94A3B8;line-height:1.8;}
+#ios-tip .it-steps b{color:#F1F5F9;}
+#ios-tip .it-close{margin-top:16px;width:100%;padding:11px;background:none;border:1px solid #334155;border-radius:10px;color:#94A3B8;font-size:13px;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -696,7 +697,6 @@ function openModal(){
   document.getElementById('inp-amt').value='';
   document.getElementById('inp-desc').value='';
   document.getElementById('modal').classList.add('open');
-  setTimeout(()=>{ document.getElementById('inp-amt').focus(); }, 350);
 }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
 function setType(t){
@@ -780,65 +780,56 @@ function renderStats(){
 
 // ── INIT ──
 async function init(){
-  try {
-    const timeout = new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 8000));
-    const sessionReq = sb.auth.getSession();
-    const {data:{session}} = await Promise.race([sessionReq, timeout]);
-    if(session){
-      S.user=session.user;
-      const {data:pd}=await sb.from('user_pins').select('pin_hash').eq('user_id',S.user.id).single();
-      if(!pd){ startCreatePin(); return; }
-      localStorage.setItem('pin_'+S.user.id,pd.pin_hash);
-      startPinEntry();
-    } else {
-      showScreen('screen-register');
-    }
-  } catch(err) {
-    console.error('Init error:', err);
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){
+    S.user=session.user;
+    const {data:pd}=await sb.from('user_pins').select('pin_hash').eq('user_id',S.user.id).single();
+    if(!pd){ startCreatePin(); return; }
+    localStorage.setItem('pin_'+S.user.id,pd.pin_hash);
+    startPinEntry();
+  } else {
     showScreen('screen-register');
   }
 }
 
-
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-
 document.addEventListener('DOMContentLoaded',()=>{
   init();
-  // PWA Install Logic
   let deferredPrompt=null;
   const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isStandalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+  const isStandalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
   if(!isStandalone){
     if(isIOS){
-      setTimeout(()=>document.getElementById("ios-tip").classList.add("show"),3000);
+      setTimeout(()=>{ const el=document.getElementById('ios-tip'); if(el) el.classList.add('show'); },3000);
     } else {
-      window.addEventListener("beforeinstallprompt",e=>{
+      window.addEventListener('beforeinstallprompt',e=>{
         e.preventDefault(); deferredPrompt=e;
-        setTimeout(()=>document.getElementById("install-banner").classList.add("show"),2000);
+        setTimeout(()=>{ const el=document.getElementById('install-banner'); if(el) el.classList.add('show'); },2000);
       });
     }
   }
-  document.getElementById("ib-install").addEventListener("click",async()=>{
+  const ibInstall=document.getElementById('ib-install');
+  const ibDismiss=document.getElementById('ib-dismiss');
+  const iosClose=document.getElementById('ios-close');
+  if(ibInstall) ibInstall.addEventListener('click',async()=>{
     if(!deferredPrompt) return;
     deferredPrompt.prompt();
-    const {outcome}=await deferredPrompt.userChoice;
+    await deferredPrompt.userChoice;
     deferredPrompt=null;
-    document.getElementById("install-banner").classList.remove("show");
+    document.getElementById('install-banner').classList.remove('show');
   });
-  document.getElementById("ib-dismiss").addEventListener("click",()=>document.getElementById("install-banner").classList.remove("show"));
-  document.getElementById("ios-close").addEventListener("click",()=>document.getElementById("ios-tip").classList.remove("show"));
+  if(ibDismiss) ibDismiss.addEventListener('click',()=>document.getElementById('install-banner').classList.remove('show'));
+  if(iosClose) iosClose.addEventListener('click',()=>document.getElementById('ios-tip').classList.remove('show'));
 });
 </script>
 
-<!-- Install Banner Android -->
+<!-- PWA Install Banner -->
 <div id="install-banner">
   <img class="ib-icon" src="icons/icon-192.png" alt="icon">
   <div class="ib-text"><div class="ib-title">Tracks All Finances</div><div class="ib-sub">Installa come app sul tuo dispositivo</div></div>
   <button class="ib-btn" id="ib-install">Installa</button>
   <button class="ib-close" id="ib-dismiss">✕</button>
 </div>
-
-<!-- iOS Tip -->
 <div id="ios-tip">
   <div class="it-title">📲 Installa su iPhone</div>
   <div class="it-steps">1. Tocca <b>Condividi</b> (icona □↑) in basso nel browser<br>2. Scorri e tocca <b>"Aggiungi a schermata Home"</b><br>3. Conferma con <b>Aggiungi</b></div>
