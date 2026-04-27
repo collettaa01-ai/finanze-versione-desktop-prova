@@ -1,7 +1,6 @@
-const CACHE = 'taf-v3';
+const CACHE = 'taf-v4';
 const BASE = '/finanze-versione-desktop-prova';
 const ASSETS = [
-  BASE + '/',
   BASE + '/index.html',
   BASE + '/manifest.json',
   BASE + '/icons/icon-192.png',
@@ -24,8 +23,8 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  // Non intercettare richieste esterne (Supabase, CDN)
   const url = new URL(e.request.url);
+  // Non intercettare richieste esterne (Supabase, CDN)
   if (url.origin !== location.origin) return;
   e.respondWith(
     caches.match(e.request).then(cached => {
