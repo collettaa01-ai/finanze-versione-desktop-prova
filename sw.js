@@ -1,4 +1,4 @@
-const CACHE = 'taf-v4';
+const CACHE = 'taf-v5';
 const BASE = '/finanze-versione-desktop-prova';
 const ASSETS = [
   BASE + '/index.html',
