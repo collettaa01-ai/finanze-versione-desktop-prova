@@ -13,7 +13,34 @@
 <title>Tracks All Finances</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Light.woff2') format('woff2');
+    font-weight: 300; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Regular.woff2') format('woff2');
+    font-weight: 400; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Medium.woff2') format('woff2');
+    font-weight: 500; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-SemiBold.woff2') format('woff2');
+    font-weight: 600; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Bold.woff2') format('woff2');
+    font-weight: 700; font-display: swap;
+  }
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ── DESIGN TOKENS v2 ── */
@@ -41,8 +68,8 @@
   --red-bg: #fcebeb;
 
   /* Typography */
-  --font: 'Inter', sans-serif;
-  --mono: 'Playfair Display', serif;
+  --font: 'Geist', sans-serif;
+  --mono: 'Figtree', sans-serif;
 
   /* Radii */
   --r-xs: 6px;
@@ -571,7 +598,103 @@ html, body {
   font-family: var(--font); cursor: pointer; margin-top: 2px;
 }
 
-/* ── TOAST ── */
+/* ── MODAL TABS ── */
+.modal-tabs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: var(--surface-low);
+  border-radius: var(--r-sm);
+  padding: 3px;
+  margin-bottom: 16px;
+}
+.modal-tab {
+  padding: 9px;
+  border: none; border-radius: var(--r-xs);
+  font-size: 13px; font-weight: 500;
+  font-family: var(--font);
+  color: var(--dark-soft);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.modal-tab.active {
+  background: var(--surface);
+  color: var(--dark);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── PIANIFICA ── */
+.plan-day-btn {
+  width: 100%; padding: 12px 13px;
+  border-radius: var(--r-xs);
+  border: 0.5px solid var(--border-mid);
+  background: var(--surface-low);
+  font-size: 13px; font-weight: 300;
+  font-family: var(--font); color: var(--dark-mid);
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.plan-day-btn.selected {
+  background: var(--surface);
+  border-color: var(--dark);
+  color: var(--dark); font-weight: 500;
+}
+
+/* CALENDARIO */
+.cal-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px;
+  margin-top: 6px;
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 400;
+  font-family: var(--mono);
+  color: var(--dark-mid);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.cal-day:hover { background: var(--surface-low); }
+.cal-day.selected {
+  background: var(--dark); color: #fff; font-weight: 600;
+}
+.cal-day.empty { cursor: default; }
+
+/* FREQUENZA */
+.freq-row {
+  display: flex; gap: 8px;
+}
+.freq-row input, .freq-row select {
+  padding: 12px 13px;
+  border-radius: var(--r-xs);
+  border: 0.5px solid var(--border-mid);
+  background: var(--surface-low);
+  font-size: 14px; font-weight: 300;
+  font-family: var(--font); color: var(--dark);
+  outline: none;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-appearance: none;
+}
+.freq-row select { flex: 1; }
+.freq-row input:focus, .freq-row select:focus {
+  background: var(--surface); border-color: var(--dark);
+}
+
+/* ── MODAL SCROLL ── */
+.modal-sheet {
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+
+
 .toast {
   position: fixed; top: 60px;
   left: 50%; transform: translateX(-50%) translateY(-10px);
@@ -847,18 +970,76 @@ html, body {
 <div class="modal-ov" id="modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-ttl">Nuova transazione</div>
-    <div class="type-row">
-      <button class="type-btn" id="btn-in" onclick="setType('entrata')">+ Entrata</button>
-      <button class="type-btn" id="btn-out" onclick="setType('uscita')">− Uscita</button>
+
+    <!-- TAB BAR -->
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-new" onclick="switchModalTab('new')">Nuova</button>
+      <button class="modal-tab" id="tab-plan" onclick="switchModalTab('plan')">Pianifica</button>
     </div>
-    <div class="fg"><div class="fl">Conto</div>
-      <select id="sel-conto"><option value="cc">Conto Corrente</option><option value="cash">Contanti</option></select>
+
+    <!-- TAB: NUOVA TRANSAZIONE -->
+    <div id="modal-panel-new">
+      <div class="type-row">
+        <button class="type-btn" id="btn-in" onclick="setType('entrata')">+ Entrata</button>
+        <button class="type-btn" id="btn-out" onclick="setType('uscita')">− Uscita</button>
+      </div>
+      <div class="fg"><div class="fl">Conto</div>
+        <select id="sel-conto"><option value="cc">Conto Corrente</option><option value="cash">Contanti</option></select>
+      </div>
+      <div class="fg"><div class="fl">Importo (€)</div><input type="number" id="inp-amt" placeholder="0,00" step="0.01" min="0"/></div>
+      <div class="fg"><div class="fl">Descrizione</div><input type="text" id="inp-desc" placeholder="es. Stipendio, Spesa, Affitto..."/></div>
+      <button class="btn-ok" id="btn-ok" onclick="confirmTx()">Conferma</button>
+      <button class="btn-cancel" onclick="closeModal()">Annulla</button>
     </div>
-    <div class="fg"><div class="fl">Importo (€)</div><input type="number" id="inp-amt" placeholder="0,00" step="0.01" min="0"/></div>
-    <div class="fg"><div class="fl">Descrizione</div><input type="text" id="inp-desc" placeholder="es. Stipendio, Spesa, Affitto..."/></div>
-    <button class="btn-ok" id="btn-ok" onclick="confirmTx()">Conferma</button>
-    <button class="btn-cancel" onclick="closeModal()">Annulla</button>
+
+    <!-- TAB: PIANIFICA -->
+    <div id="modal-panel-plan" style="display:none">
+      <div class="type-row">
+        <button class="type-btn" id="plan-btn-in" onclick="setPlanType('entrata')">+ Entrata</button>
+        <button class="type-btn" id="plan-btn-out" onclick="setPlanType('uscita')">− Uscita</button>
+      </div>
+
+      <!-- Pianifica giorno -->
+      <div class="fg">
+        <div class="fl">Giorno di esecuzione</div>
+        <button class="plan-day-btn" id="plan-day-btn" onclick="toggleCalendar()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="var(--dark-mid)" stroke-width="1.5"/><path d="M3 9h18M8 2v4M16 2v4" stroke="var(--dark-mid)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span id="plan-day-label">Scegli giorno del mese</span>
+        </button>
+        <!-- Calendario inline -->
+        <div id="plan-calendar" style="display:none">
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+      </div>
+
+      <!-- Frequenza -->
+      <div class="fg">
+        <div class="fl">Ripeti ogni</div>
+        <div class="freq-row">
+          <input type="number" id="plan-freq-val" value="1" min="1" max="99" style="width:70px;text-align:center"/>
+          <select id="plan-freq-unit">
+            <option value="month">mese/i</option>
+            <option value="year">anno/i</option>
+            <option value="week">settimana/e</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Data fine (opzionale) -->
+      <div class="fg">
+        <div class="fl">Termina il <span style="font-size:9px;color:var(--dark-soft);text-transform:none;letter-spacing:0">(opzionale)</span></div>
+        <input type="date" id="plan-end-date" style="width:100%;padding:12px 13px;border-radius:var(--r-xs);border:0.5px solid var(--border-mid);background:var(--surface-low);font-size:14px;font-family:var(--font);color:var(--dark);outline:none;"/>
+      </div>
+
+      <div class="fg"><div class="fl">Importo (€)</div><input type="number" id="plan-amt" placeholder="0,00" step="0.01" min="0"/></div>
+      <div class="fg"><div class="fl">Conto</div>
+        <select id="plan-conto"><option value="cc">Conto Corrente</option><option value="cash">Contanti</option></select>
+      </div>
+      <div class="fg"><div class="fl">Descrizione</div><input type="text" id="plan-desc" placeholder="es. Netflix, Affitto, Stipendio..."/></div>
+      <button class="btn-ok" id="plan-btn-ok" onclick="confirmRecurring()">Salva transazione ricorrente</button>
+      <button class="btn-cancel" onclick="closeModal()">Annulla</button>
+    </div>
+
   </div>
 </div>
 
@@ -1088,13 +1269,118 @@ function renderCircle(){
   aCash.setAttribute('stroke-dasharray',lCash.toFixed(1)+' '+CIRC); aCash.setAttribute('stroke-dashoffset',(-lCC).toFixed(1));
 }
 
-// ── MODAL ──
+// ── MODAL TABS ──
+function switchModalTab(tab) {
+  document.getElementById('tab-new').classList.toggle('active', tab === 'new');
+  document.getElementById('tab-plan').classList.toggle('active', tab === 'plan');
+  document.getElementById('modal-panel-new').style.display = tab === 'new' ? '' : 'none';
+  document.getElementById('modal-panel-plan').style.display = tab === 'plan' ? '' : 'none';
+}
+
+// ── PIANIFICA ──
+let planType = null, planDay = null;
+
+function setPlanType(t) {
+  planType = t;
+  document.getElementById('plan-btn-in').className = 'type-btn' + (t === 'entrata' ? ' act-in' : ' off');
+  document.getElementById('plan-btn-out').className = 'type-btn' + (t === 'uscita' ? ' act-out' : ' off');
+}
+
+function toggleCalendar() {
+  const cal = document.getElementById('plan-calendar');
+  const open = cal.style.display === 'none';
+  cal.style.display = open ? '' : 'none';
+  if (open) buildCalendar();
+}
+
+function buildCalendar() {
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  // header giorni settimana
+  ['L','M','M','G','V','S','D'].forEach(d => {
+    const h = document.createElement('div');
+    h.className = 'cal-day empty';
+    h.style.cssText = 'font-size:9px;font-weight:500;color:var(--dark-soft);text-transform:uppercase;letter-spacing:0.05em;';
+    h.textContent = d;
+    grid.appendChild(h);
+  });
+  // 31 giorni — offset lunedì=0
+  // Usiamo giorno 1 del mese corrente per sapere offset
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+  const offset = (firstDay === 0 ? 6 : firstDay - 1); // converti dom=0 in lun=0
+  for (let i = 0; i < offset; i++) {
+    const e = document.createElement('div');
+    e.className = 'cal-day empty';
+    grid.appendChild(e);
+  }
+  for (let d = 1; d <= 31; d++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day' + (planDay === d ? ' selected' : '');
+    el.textContent = d;
+    el.onclick = () => selectDay(d);
+    grid.appendChild(el);
+  }
+}
+
+function selectDay(d) {
+  planDay = d;
+  document.getElementById('plan-day-label').textContent = `Giorno ${d} del mese`;
+  document.getElementById('plan-day-btn').classList.add('selected');
+  document.getElementById('plan-calendar').style.display = 'none';
+  // aggiorna selezione visiva
+  document.querySelectorAll('.cal-day').forEach(el => {
+    el.classList.toggle('selected', parseInt(el.textContent) === d && el.textContent !== '');
+  });
+}
+
+async function confirmRecurring() {
+  if (!planType) { toast('Seleziona Entrata o Uscita'); return; }
+  if (!planDay) { toast('Scegli il giorno del mese'); return; }
+  const amt = parseFloat(document.getElementById('plan-amt').value);
+  if (!amt || amt <= 0) { toast('Importo non valido'); return; }
+  const freqVal = parseInt(document.getElementById('plan-freq-val').value) || 1;
+  const freqUnit = document.getElementById('plan-freq-unit').value;
+  const endDate = document.getElementById('plan-end-date').value || null;
+  const conto = document.getElementById('plan-conto').value;
+  const desc = document.getElementById('plan-desc').value || '—';
+
+  setBtn('plan-btn-ok', true);
+  const { error } = await sb.from('recurring_transactions').insert({
+    user_id: S.user.id,
+    type: planType,
+    conto,
+    importo: amt,
+    descrizione: desc,
+    day_of_month: planDay,
+    freq_value: freqVal,
+    freq_unit: freqUnit,
+    end_date: endDate,
+    active: true
+  });
+  setBtn('plan-btn-ok', false);
+  if (error) { toast('Errore salvataggio'); console.error(error); return; }
+  closeModal();
+  toast('Transazione ricorrente salvata ✓');
+}
+
+
 function openModal(){
-  txType=null;
+  txType=null; planType=null; planDay=null;
   document.getElementById('btn-in').className='type-btn';
   document.getElementById('btn-out').className='type-btn';
+  document.getElementById('plan-btn-in').className='type-btn';
+  document.getElementById('plan-btn-out').className='type-btn';
   document.getElementById('inp-amt').value='';
   document.getElementById('inp-desc').value='';
+  document.getElementById('plan-amt').value='';
+  document.getElementById('plan-desc').value='';
+  document.getElementById('plan-end-date').value='';
+  document.getElementById('plan-freq-val').value='1';
+  document.getElementById('plan-day-label').textContent='Scegli giorno del mese';
+  document.getElementById('plan-day-btn').classList.remove('selected');
+  document.getElementById('plan-calendar').style.display='none';
+  switchModalTab('new');
   document.getElementById('modal').classList.add('open');
   const isIOS=/ipad|iphone|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   if(!isIOS) document.getElementById('inp-amt').focus();
