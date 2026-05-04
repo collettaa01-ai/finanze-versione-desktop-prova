@@ -1,4 +1,4 @@
-const CACHE = 'taf-v5';
+const CACHE = 'taf-v6';
 const BASE = '/finanze-versione-desktop-prova';
 const ASSETS = [
   BASE + '/index.html',
@@ -24,7 +24,6 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
-  // Non intercettare richieste esterne (Supabase, CDN)
   if (url.origin !== location.origin) return;
   e.respondWith(
     caches.match(e.request).then(cached => {
