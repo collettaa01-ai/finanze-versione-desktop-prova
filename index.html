@@ -1614,8 +1614,11 @@ async function init(){
 }
 
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+
+// Avvia subito senza aspettare DOMContentLoaded
+window.addEventListener('load', () => init());
+
 document.addEventListener('DOMContentLoaded',()=>{
-  init();
   let deferredPrompt=null;
   const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
   const isStandalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
