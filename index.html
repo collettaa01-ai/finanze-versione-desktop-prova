@@ -706,6 +706,7 @@ html, body {
   --teal-border: rgba(255,255,255,0.10);
 }
 #screen-home,
+#screen-bilancio,
 #screen-storico,
 #screen-stats {
   background: linear-gradient(160deg, var(--teal-2) 0%, var(--teal-1) 40%, #0a1a20 100%);
@@ -892,6 +893,75 @@ html, body {
   color: rgba(255,255,255,0.70);
   text-align: center; line-height: 1.3;
 }
+
+/* ── BILANCIO SCREEN ── */
+.bil-body {
+  flex: 1; overflow-y: auto;
+  padding: 8px 24px 100px;
+  -webkit-overflow-scrolling: touch;
+}
+.bil-section-label {
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.08em; color: var(--teal-sub);
+  margin-bottom: 10px;
+}
+.bil-divider { height: 0.5px; background: var(--teal-border); margin-bottom: 20px; }
+.bil-total-amt {
+  font-size: 44px; font-weight: 300;
+  font-family: var(--mono);
+  color: var(--teal-text);
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+}
+.bil-accounts {
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid var(--teal-border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.bil-account-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px;
+}
+.bil-account-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.bil-account-info { flex: 1; }
+.bil-account-lbl {
+  font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--teal-sub); margin-bottom: 4px;
+}
+.bil-account-inp {
+  width: 100%; background: transparent; border: none;
+  font-size: 20px; font-weight: 300;
+  font-family: var(--mono); color: var(--teal-text);
+  outline: none; -webkit-appearance: none;
+  padding: 0;
+}
+.bil-account-inp::placeholder { color: rgba(255,255,255,0.2); }
+.bil-account-divider { height: 0.5px; background: var(--teal-border); margin: 0 18px; }
+
+/* DONUT */
+.bil-donut-wrap {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 20px;
+}
+.bil-legend {
+  display: flex; flex-direction: column; gap: 10px;
+  align-self: stretch;
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid var(--teal-border);
+  border-radius: var(--r-md);
+  padding: 16px 18px;
+}
+.bil-leg-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 300;
+  font-family: var(--mono); color: var(--teal-text);
+}
+.bil-leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
 .toast {
   position: fixed; top: 60px;
@@ -1080,43 +1150,7 @@ html, body {
     </div>
     <div class="home-divider"></div>
 
-    <!-- SCROLL CONTENT -->
     <div class="home-scroll">
-
-      <!-- PATRIMONIO -->
-      <div class="home-section-label">PATRIMONIO</div>
-      <div class="home-divider-thin"></div>
-      <div class="home-wealth-row">
-        <div class="home-wealth-block">
-          <div class="home-wealth-lbl">Conto Corrente</div>
-          <input type="number" class="home-wealth-inp" id="in-cc" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
-        </div>
-        <div class="home-wealth-sep"></div>
-        <div class="home-wealth-block">
-          <div class="home-wealth-lbl">Contanti</div>
-          <input type="number" class="home-wealth-inp" id="in-cash" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
-        </div>
-      </div>
-      <div class="home-total-row">
-        <span class="home-total-lbl">Totale</span>
-        <span class="home-total-amt" id="total-disp">€ 0,00</span>
-      </div>
-
-      <!-- CIRC hidden (mantiene compatibilità JS) -->
-      <svg style="display:none" width="60" height="60" viewBox="0 0 60 60">
-        <circle id="arc-cc" cx="30" cy="30" r="24" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="0 150.8"/>
-        <circle id="arc-cash" cx="30" cy="30" r="24" fill="none" stroke="#888" stroke-width="5" stroke-dasharray="0 150.8"/>
-      </svg>
-      <span id="leg-cc" style="display:none"></span>
-      <span id="leg-cash" style="display:none"></span>
-
-      <!-- ULTIME TX -->
-      <div class="home-section-label" style="margin-top:28px">ULTIME TRANSAZIONI</div>
-      <div class="home-divider-thin"></div>
-      <div id="recent-list"></div>
-
-      <div class="home-see-all" onclick="switchTab('storico')">Vedi tutte →</div>
-
       <!-- LOGOUT -->
       <button class="home-logout-row" onclick="doLogout()">Esci dall'account</button>
     </div>
@@ -1149,14 +1183,94 @@ html, body {
     <div class="stats-body" id="stats-body"></div>
   </div>
 
+  <!-- BILANCIO -->
+  <div class="screen" id="screen-bilancio">
+    <div class="teal-hdr">
+      <h1>Bilancio</h1>
+    </div>
+    <div class="bil-body">
+
+      <!-- PATRIMONIO TOTALE -->
+      <div class="bil-section-label">PATRIMONIO</div>
+      <div class="bil-divider"></div>
+      <div class="bil-total-amt" id="total-disp">€ 0,00</div>
+
+      <!-- CC e CONTANTI -->
+      <div class="bil-accounts">
+        <div class="bil-account-row">
+          <div class="bil-account-dot" style="background: rgba(255,255,255,0.85)"></div>
+          <div class="bil-account-info">
+            <div class="bil-account-lbl">Conto Corrente</div>
+            <input type="number" class="bil-account-inp" id="in-cc" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
+          </div>
+        </div>
+        <div class="bil-account-divider"></div>
+        <div class="bil-account-row">
+          <div class="bil-account-dot" style="background: rgba(255,255,255,0.35)"></div>
+          <div class="bil-account-info">
+            <div class="bil-account-lbl">Contanti</div>
+            <input type="number" class="bil-account-inp" id="in-cash" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- DONUT CHART -->
+      <div class="bil-donut-wrap">
+        <svg id="bil-donut-svg" viewBox="0 0 200 200" width="200" height="200">
+          <!-- track -->
+          <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="20"/>
+          <!-- cc arc -->
+          <circle id="arc-cc" cx="100" cy="100" r="72" fill="none"
+            stroke="rgba(255,255,255,0.85)" stroke-width="20"
+            stroke-dasharray="0 452.4" stroke-linecap="round"
+            transform="rotate(-90 100 100)"/>
+          <!-- cash arc -->
+          <circle id="arc-cash" cx="100" cy="100" r="72" fill="none"
+            stroke="rgba(255,255,255,0.30)" stroke-width="20"
+            stroke-dasharray="0 452.4" stroke-linecap="round"
+            transform="rotate(-90 100 100)"/>
+          <!-- center label -->
+          <text id="bil-donut-pct" x="100" y="96" text-anchor="middle"
+            font-family="Figtree, sans-serif" font-size="28" font-weight="300"
+            fill="rgba(255,255,255,0.9)">—</text>
+          <text x="100" y="116" text-anchor="middle"
+            font-family="Geist, sans-serif" font-size="10" font-weight="400"
+            fill="rgba(255,255,255,0.4)" letter-spacing="1">C/C</text>
+        </svg>
+        <!-- legenda -->
+        <div class="bil-legend">
+          <div class="bil-leg-item">
+            <div class="bil-leg-dot" style="background:rgba(255,255,255,0.85)"></div>
+            <span id="leg-cc">C/C — € 0,00</span>
+          </div>
+          <div class="bil-leg-item">
+            <div class="bil-leg-dot" style="background:rgba(255,255,255,0.30)"></div>
+            <span id="leg-cash">Contanti — € 0,00</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- NAV icon-only -->
   <nav class="nav-bar" id="nav-bar" style="display:none">
+    <!-- Home / Calendario -->
     <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
       <svg viewBox="0 0 24 24" fill="none">
         <path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1v-9.5z" fill="currentColor"/>
         <rect x="9" y="14" width="6" height="7" rx="1" fill="currentColor" opacity="0.5"/>
       </svg>
     </div>
+    <!-- Bilancio / Torta -->
+    <div class="nav-item" id="nav-bilancio" onclick="switchTab('bilancio')">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2a10 10 0 100 20A10 10 0 0012 2z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 2a10 10 0 0110 10H12V2z" fill="currentColor"/>
+        <path d="M12 12l7.07 7.07A10 10 0 0112 22V12z" fill="currentColor" opacity="0.5"/>
+      </svg>
+    </div>
+    <!-- Storico -->
     <div class="nav-item" id="nav-storico" onclick="switchTab('storico')">
       <svg viewBox="0 0 24 24" fill="none">
         <rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor"/>
@@ -1165,6 +1279,7 @@ html, body {
         <rect x="7" y="15" width="5" height="1.5" rx="0.75" fill="white"/>
       </svg>
     </div>
+    <!-- Stats -->
     <div class="nav-item" id="nav-stats" onclick="switchTab('stats')">
       <svg viewBox="0 0 24 24" fill="none">
         <rect x="4" y="14" width="4" height="6" rx="1" fill="currentColor"/>
@@ -1358,7 +1473,7 @@ function setBtn(id,on){ const b=document.getElementById(id); if(b) b.classList.t
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('visible'));
   document.getElementById(id).classList.add('visible');
-  document.getElementById('nav-bar').style.display=['screen-home','screen-storico','screen-stats'].includes(id)?'flex':'none';
+  document.getElementById('nav-bar').style.display=['screen-home','screen-bilancio','screen-storico','screen-stats'].includes(id)?'flex':'none';
 }
 
 // ── AUTH ──
@@ -1532,13 +1647,16 @@ async function saveProfile(){
 let curTab='home';
 function switchTab(tab){
   curTab=tab;
-  ['home','storico','stats'].forEach(t=>{
-    document.getElementById('screen-'+t).classList.toggle('visible',t===tab);
-    document.getElementById('nav-'+t).classList.toggle('active',t===tab);
+  ['home','bilancio','storico','stats'].forEach(t=>{
+    const s=document.getElementById('screen-'+t);
+    const n=document.getElementById('nav-'+t);
+    if(s) s.classList.toggle('visible',t===tab);
+    if(n) n.classList.toggle('active',t===tab);
   });
   document.getElementById('nav-bar').style.display='flex';
   if(tab==='storico') renderStorico();
   if(tab==='stats') renderStats();
+  if(tab==='bilancio') renderCircle();
 }
 
 // ── BALANCES ──
@@ -1552,14 +1670,30 @@ function onBalInput(){
 
 function renderCircle(){
   const tot=S.cc+S.cash;
-  document.getElementById('total-disp').textContent=eur(tot);
-  document.getElementById('leg-cc').textContent='C/C — '+eur(S.cc);
-  document.getElementById('leg-cash').textContent='Contanti — '+eur(S.cash);
+  // totale
+  const tdEl=document.getElementById('total-disp');
+  if(tdEl) tdEl.textContent=eur(tot);
+  // legenda
+  const lcc=document.getElementById('leg-cc'), lcash=document.getElementById('leg-cash');
+  if(lcc) lcc.textContent='C/C — '+eur(S.cc);
+  if(lcash) lcash.textContent='Contanti — '+eur(S.cash);
+  // donut SVG — cerchio intero = 2*PI*72 = 452.4
+  const DONUT=452.4;
   const aCC=document.getElementById('arc-cc'), aCash=document.getElementById('arc-cash');
-  if(!tot){ aCC.setAttribute('stroke-dasharray','0 '+CIRC); aCash.setAttribute('stroke-dasharray','0 '+CIRC); return; }
-  const lCC=(S.cc/tot)*CIRC, lCash=(S.cash/tot)*CIRC;
-  aCC.setAttribute('stroke-dasharray',lCC.toFixed(1)+' '+CIRC); aCC.setAttribute('stroke-dashoffset','0');
-  aCash.setAttribute('stroke-dasharray',lCash.toFixed(1)+' '+CIRC); aCash.setAttribute('stroke-dashoffset',(-lCC).toFixed(1));
+  const pctEl=document.getElementById('bil-donut-pct');
+  if(!aCC||!aCash) return;
+  if(!tot){
+    aCC.setAttribute('stroke-dasharray','0 '+DONUT);
+    aCash.setAttribute('stroke-dasharray','0 '+DONUT);
+    if(pctEl) pctEl.textContent='—';
+    return;
+  }
+  const lCC=(S.cc/tot)*DONUT, lCash=(S.cash/tot)*DONUT;
+  aCC.setAttribute('stroke-dasharray',lCC.toFixed(1)+' '+DONUT);
+  aCC.setAttribute('stroke-dashoffset','0');
+  aCash.setAttribute('stroke-dasharray',lCash.toFixed(1)+' '+DONUT);
+  aCash.setAttribute('stroke-dashoffset',(-lCC).toFixed(1));
+  if(pctEl) pctEl.textContent=Math.round((S.cc/tot)*100)+'%';
 }
 
 // ── CATEGORY SCREEN ──
@@ -1754,7 +1888,7 @@ async function confirmTx(){
 }
 
 // ── RENDER ──
-function renderAll(){ renderCircle(); renderRecent(); if(curTab==='storico') renderStorico(); if(curTab==='stats') renderStats(); }
+function renderAll(){ renderCircle(); if(curTab==='storico') renderStorico(); if(curTab==='stats') renderStats(); }
 
 function txCard(tx){
   const sign=tx.type==='entrata'?'+':'−', icon=tx.type==='entrata'?'↑':'↓';
