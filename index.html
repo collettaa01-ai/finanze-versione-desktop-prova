@@ -1336,11 +1336,9 @@ function buildPad(id,handler){
 // ── ENTER APP ──
 async function enterApp(){
   showScreen('screen-loading');
-  await loadData();
-  document.getElementById('date-lbl').textContent=new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('stats-mo').textContent=new Date().toLocaleDateString('it-IT',{month:'long',year:'numeric'});
-  // Calendar home header
+  try { await loadData(); } catch(e){ console.error('loadData error:', e); }
   const now = new Date();
+  document.getElementById('stats-mo').textContent=now.toLocaleDateString('it-IT',{month:'long',year:'numeric'});
   document.getElementById('cal-day-num').textContent = now.getDate();
   document.getElementById('cal-weekday').textContent = now.toLocaleDateString('it-IT',{weekday:'long'}).replace(/^\w/,c=>c.toUpperCase());
   document.getElementById('cal-month').textContent = now.toLocaleDateString('it-IT',{month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
@@ -1596,14 +1594,21 @@ function renderStats(){
 
 // ── INIT ──
 async function init(){
-  const {data:{session}}=await sb.auth.getSession();
-  if(session){
-    S.user=session.user;
-    const {data:pd}=await sb.from('user_pins').select('pin_hash').eq('user_id',S.user.id).single();
-    if(!pd){ startCreatePin(); return; }
-    localStorage.setItem('pin_'+S.user.id,pd.pin_hash);
-    startPinEntry();
-  } else {
+  try {
+    const timeout = new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 8000));
+    const sessionCall = sb.auth.getSession();
+    const {data:{session}} = await Promise.race([sessionCall, timeout]);
+    if(session){
+      S.user=session.user;
+      const {data:pd}=await sb.from('user_pins').select('pin_hash').eq('user_id',S.user.id).single();
+      if(!pd){ startCreatePin(); return; }
+      localStorage.setItem('pin_'+S.user.id,pd.pin_hash);
+      startPinEntry();
+    } else {
+      showScreen('screen-register');
+    }
+  } catch(e) {
+    console.error('Init error:', e);
     showScreen('screen-register');
   }
 }
