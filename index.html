@@ -94,11 +94,12 @@ html, body {
   background: var(--bg);
   font-family: var(--font);
   color: var(--dark);
-  position: fixed;
-  overflow: auto;
+  /* iOS PWA fix: NO position:fixed qui — blocca la tastiera */
+  overflow: hidden;
 }
 
 #app {
+  height: 100%;
   height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -1054,9 +1055,9 @@ html, body {
     </div>
     <div class="auth-form">
       <div class="auth-err" id="reg-err"></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="reg-email" placeholder="nome@email.com" autocomplete="email"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="reg-pass" placeholder="Minimo 6 caratteri" autocomplete="new-password"></div>
-      <div class="auth-field"><label>Conferma password</label><input type="password" id="reg-pass2" placeholder="Ripeti la password" autocomplete="new-password"></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="reg-email" placeholder="nome@email.com" autocomplete="email" autocorrect="off" autocapitalize="none" spellcheck="false"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="reg-pass" placeholder="Minimo 6 caratteri" autocomplete="new-password" autocorrect="off" autocapitalize="none"></div>
+      <div class="auth-field"><label>Conferma password</label><input type="password" id="reg-pass2" placeholder="Ripeti la password" autocomplete="new-password" autocorrect="off" autocapitalize="none"></div>
       <button class="auth-btn" id="reg-btn" onclick="doRegister()">Crea account</button>
       <div class="auth-switch">Hai già un account? <span onclick="showScreen('screen-login')">Accedi</span></div>
     </div>
@@ -1076,8 +1077,8 @@ html, body {
     </div>
     <div class="auth-form">
       <div class="auth-err" id="login-err"></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="login-email" placeholder="nome@email.com" autocomplete="email"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="login-pass" placeholder="La tua password" autocomplete="current-password"></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="login-email" placeholder="nome@email.com" autocomplete="email" autocorrect="off" autocapitalize="none" spellcheck="false"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="login-pass" placeholder="La tua password" autocomplete="current-password" autocorrect="off" autocapitalize="none"></div>
       <button class="auth-btn" id="login-btn" onclick="doLogin()">Accedi</button>
       <div class="auth-switch">Non hai un account? <span onclick="showScreen('screen-register')">Registrati</span></div>
     </div>
