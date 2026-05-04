@@ -695,6 +695,119 @@ html, body {
 }
 
 
+/* ── TEAL THEME ── */
+:root {
+  --teal-1: #0d2027;
+  --teal-2: #0f2d38;
+  --teal-3: #133a46;
+  --teal-4: #1a4a55;
+  --teal-text: rgba(255,255,255,0.90);
+  --teal-sub: rgba(255,255,255,0.45);
+  --teal-border: rgba(255,255,255,0.10);
+}
+#screen-home,
+#screen-storico,
+#screen-stats {
+  background: linear-gradient(160deg, var(--teal-2) 0%, var(--teal-1) 40%, #0a1a20 100%);
+}
+.home-cal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 56px 24px 20px; flex-shrink: 0;
+}
+.home-cal-left { display: flex; align-items: center; gap: 16px; }
+.home-cal-day {
+  font-size: 72px; font-weight: 300; font-family: var(--font);
+  color: var(--teal-text); line-height: 1; letter-spacing: -0.03em;
+}
+.home-cal-info {
+  display: flex; flex-direction: column; gap: 2px;
+  padding-left: 14px; border-left: 1px solid var(--teal-border);
+}
+.home-cal-weekday { font-size: 18px; font-weight: 400; color: var(--teal-text); letter-spacing: -0.01em; }
+.home-cal-month { font-size: 14px; font-weight: 300; color: var(--teal-sub); }
+.home-plus-btn {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.15s, transform 0.1s; flex-shrink: 0;
+}
+.home-plus-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.94); }
+.home-divider { height: 0.5px; background: var(--teal-border); margin: 0 24px; flex-shrink: 0; }
+.home-scroll {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 24px 24px 110px; -webkit-overflow-scrolling: touch;
+}
+.home-section-label {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
+  color: var(--teal-sub); margin-bottom: 10px;
+}
+.home-divider-thin { height: 0.5px; background: var(--teal-border); margin-bottom: 16px; }
+.home-wealth-row { display: flex; margin-bottom: 12px; }
+.home-wealth-block { flex: 1; }
+.home-wealth-sep { width: 0.5px; background: var(--teal-border); margin: 0 20px; align-self: stretch; }
+.home-wealth-lbl {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--teal-sub); margin-bottom: 6px;
+}
+.home-wealth-inp {
+  width: 100%; background: transparent; border: none;
+  border-bottom: 0.5px solid var(--teal-border);
+  font-size: 22px; font-weight: 300; font-family: var(--mono);
+  color: var(--teal-text); padding: 2px 0 6px; outline: none; -webkit-appearance: none;
+}
+.home-wealth-inp::placeholder { color: rgba(255,255,255,0.2); }
+.home-total-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 12px 0; border-top: 0.5px solid var(--teal-border);
+}
+.home-total-lbl {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--teal-sub);
+}
+.home-total-amt {
+  font-size: 28px; font-weight: 300; font-family: var(--mono);
+  color: var(--teal-text); letter-spacing: -0.02em;
+}
+#screen-home .tx-card { background: rgba(255,255,255,0.05); border: 0.5px solid var(--teal-border); box-shadow: none; }
+#screen-home .tx-desc { color: var(--teal-text); }
+#screen-home .tx-meta { color: var(--teal-sub); }
+#screen-home .tx-dot.entrata { background: rgba(59,109,17,0.3); color: #a8d870; }
+#screen-home .tx-dot.uscita { background: rgba(163,45,45,0.3); color: #f09090; }
+#screen-home .tx-amt.entrata { color: #a8d870; }
+#screen-home .tx-amt.uscita { color: #f09090; }
+#screen-home .empty { background: rgba(255,255,255,0.04); border: 0.5px solid var(--teal-border); color: var(--teal-sub); }
+.home-see-all { font-size: 12px; font-weight: 300; color: var(--teal-sub); text-align: right; margin-top: 8px; cursor: pointer; padding: 4px 0; }
+.home-logout-row {
+  margin-top: 32px; background: none; border: 0.5px solid var(--teal-border);
+  border-radius: var(--r-xs); padding: 11px; width: 100%;
+  font-size: 12px; font-weight: 300; color: var(--teal-sub); font-family: var(--font); cursor: pointer;
+}
+.teal-hdr { background: transparent; padding: 56px 24px 18px; flex-shrink: 0; }
+.teal-hdr h1 { font-size: 26px; font-weight: 600; color: var(--teal-text); letter-spacing: -0.02em; }
+.teal-hdr p, .teal-hdr .mo { font-size: 13px; font-weight: 300; color: var(--teal-sub); margin-top: 2px; }
+.stor-body { flex: 1; overflow-y: auto; padding: 16px 24px 100px; -webkit-overflow-scrolling: touch; }
+#screen-storico .chip { background: rgba(255,255,255,0.07); border-color: var(--teal-border); color: var(--teal-sub); }
+#screen-storico .chip.active { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); color: var(--teal-text); }
+#screen-storico .tx-card { background: rgba(255,255,255,0.05); border: 0.5px solid var(--teal-border); box-shadow: none; }
+#screen-storico .tx-desc { color: var(--teal-text); }
+#screen-storico .tx-meta { color: var(--teal-sub); }
+#screen-storico .tx-dot.entrata { background: rgba(59,109,17,0.3); color: #a8d870; }
+#screen-storico .tx-dot.uscita { background: rgba(163,45,45,0.3); color: #f09090; }
+#screen-storico .tx-amt.entrata { color: #a8d870; }
+#screen-storico .tx-amt.uscita { color: #f09090; }
+#screen-storico .empty { background: rgba(255,255,255,0.04); border: 0.5px solid var(--teal-border); color: var(--teal-sub); }
+#screen-stats .s-card { background: rgba(255,255,255,0.06); border: 0.5px solid var(--teal-border); box-shadow: none; }
+#screen-stats .s-card .sl { color: var(--teal-sub); }
+#screen-stats .s-card .sa { color: var(--teal-text); }
+#screen-stats .chart-card { background: rgba(255,255,255,0.06); border: 0.5px solid var(--teal-border); box-shadow: none; }
+#screen-stats .chart-ttl { color: var(--teal-sub); }
+#screen-stats .bar-lbl { color: var(--teal-sub); }
+#screen-stats .chart-leg-item { color: var(--teal-sub); }
+.nav-bar { background: rgba(13,32,39,0.95) !important; border-top: 0.5px solid var(--teal-border) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+.nav-item { color: rgba(255,255,255,0.3); }
+.nav-item.active { color: rgba(255,255,255,0.9); }
+
 .toast {
   position: fixed; top: 60px;
   left: 50%; transform: translateX(-50%) translateY(-10px);
@@ -865,57 +978,68 @@ html, body {
 
   <!-- HOME -->
   <div class="screen" id="screen-home">
-    <div class="top-bar">
-      <div class="top-bar-inner">
-        <div><h1>Tracks All Finances</h1><div class="date" id="date-lbl"></div></div>
-        <button class="logout-btn" onclick="doLogout()">Esci</button>
-      </div>
-    </div>
-    <div class="main-content">
-      <div class="total-card">
-        <div class="total-lbl">Patrimonio totale</div>
-        <div class="total-amt" id="total-disp">€ 0,00</div>
-        <div class="circ-row">
-          <div class="circ-wrap">
-            <svg width="60" height="60" viewBox="0 0 60 60">
-              <circle cx="30" cy="30" r="24" fill="none" stroke="var(--border-mid)" stroke-width="5"/>
-              <circle id="arc-cc" cx="30" cy="30" r="24" fill="none" stroke="#1a1c1c" stroke-width="5" stroke-dasharray="0 150.8" stroke-linecap="round"/>
-              <circle id="arc-cash" cx="30" cy="30" r="24" fill="none" stroke="#747879" stroke-width="5" stroke-dasharray="0 150.8" stroke-linecap="round"/>
-            </svg>
-            <div class="circ-mid">%</div>
-          </div>
-          <div class="circ-legend">
-            <div class="leg-item"><div class="leg-dot" style="background:#1a1c1c"></div><span id="leg-cc">C/C — €0</span></div>
-            <div class="leg-item"><div class="leg-dot" style="background:#747879"></div><span id="leg-cash">Contanti — €0</span></div>
-          </div>
+    <!-- CALENDAR HEADER -->
+    <div class="home-cal-header">
+      <div class="home-cal-left">
+        <div class="home-cal-day" id="cal-day-num"></div>
+        <div class="home-cal-info">
+          <div class="home-cal-weekday" id="cal-weekday"></div>
+          <div class="home-cal-month" id="cal-month"></div>
         </div>
       </div>
-      <div class="bal-row">
-        <div class="bal-card">
-          <div class="bl">Conto Corrente</div>
-          <input type="number" id="in-cc" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
-          <div class="bc">€ EUR</div>
-        </div>
-        <div class="bal-card">
-          <div class="bl">Contanti</div>
-          <input type="number" id="in-cash" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
-          <div class="bc">€ EUR</div>
-        </div>
-      </div>
-      <button class="btn-new" onclick="openModal()">
-        <div class="plus-ic">+</div>Nuova transazione
+      <button class="home-plus-btn" onclick="openModal()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 5v14M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
       </button>
-      <div class="sec-hdr">
-        <div class="sec-ttl">Ultime transazioni</div>
-        <div class="sec-lnk" onclick="switchTab('storico')">Vedi tutte →</div>
+    </div>
+    <div class="home-divider"></div>
+
+    <!-- SCROLL CONTENT -->
+    <div class="home-scroll">
+
+      <!-- PATRIMONIO -->
+      <div class="home-section-label">PATRIMONIO</div>
+      <div class="home-divider-thin"></div>
+      <div class="home-wealth-row">
+        <div class="home-wealth-block">
+          <div class="home-wealth-lbl">Conto Corrente</div>
+          <input type="number" class="home-wealth-inp" id="in-cc" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
+        </div>
+        <div class="home-wealth-sep"></div>
+        <div class="home-wealth-block">
+          <div class="home-wealth-lbl">Contanti</div>
+          <input type="number" class="home-wealth-inp" id="in-cash" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
+        </div>
       </div>
+      <div class="home-total-row">
+        <span class="home-total-lbl">Totale</span>
+        <span class="home-total-amt" id="total-disp">€ 0,00</span>
+      </div>
+
+      <!-- CIRC hidden (mantiene compatibilità JS) -->
+      <svg style="display:none" width="60" height="60" viewBox="0 0 60 60">
+        <circle id="arc-cc" cx="30" cy="30" r="24" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="0 150.8"/>
+        <circle id="arc-cash" cx="30" cy="30" r="24" fill="none" stroke="#888" stroke-width="5" stroke-dasharray="0 150.8"/>
+      </svg>
+      <span id="leg-cc" style="display:none"></span>
+      <span id="leg-cash" style="display:none"></span>
+
+      <!-- ULTIME TX -->
+      <div class="home-section-label" style="margin-top:28px">ULTIME TRANSAZIONI</div>
+      <div class="home-divider-thin"></div>
       <div id="recent-list"></div>
+
+      <div class="home-see-all" onclick="switchTab('storico')">Vedi tutte →</div>
+
+      <!-- LOGOUT -->
+      <button class="home-logout-row" onclick="doLogout()">Esci dall'account</button>
     </div>
   </div>
 
   <!-- STORICO -->
   <div class="screen" id="screen-storico">
-    <div class="stor-hdr">
+    <div class="teal-hdr">
       <h1>Storico</h1>
       <p id="stor-count">0 transazioni</p>
     </div>
@@ -933,7 +1057,7 @@ html, body {
 
   <!-- STATS -->
   <div class="screen" id="screen-stats">
-    <div class="stats-hdr">
+    <div class="teal-hdr">
       <h1>Statistiche</h1>
       <div class="mo" id="stats-mo"></div>
     </div>
@@ -944,13 +1068,13 @@ html, body {
   <nav class="nav-bar" id="nav-bar" style="display:none">
     <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
       <svg viewBox="0 0 24 24" fill="none">
-        <path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1v-9.5z" fill="var(--dark)"/>
-        <rect x="9" y="14" width="6" height="7" rx="1" fill="var(--dark)" opacity="0.5"/>
+        <path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1v-9.5z" fill="currentColor"/>
+        <rect x="9" y="14" width="6" height="7" rx="1" fill="currentColor" opacity="0.5"/>
       </svg>
     </div>
     <div class="nav-item" id="nav-storico" onclick="switchTab('storico')">
       <svg viewBox="0 0 24 24" fill="none">
-        <rect x="4" y="4" width="16" height="16" rx="3" fill="var(--dark)"/>
+        <rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor"/>
         <rect x="7" y="8" width="10" height="1.5" rx="0.75" fill="white"/>
         <rect x="7" y="11.5" width="7" height="1.5" rx="0.75" fill="white"/>
         <rect x="7" y="15" width="5" height="1.5" rx="0.75" fill="white"/>
@@ -958,9 +1082,9 @@ html, body {
     </div>
     <div class="nav-item" id="nav-stats" onclick="switchTab('stats')">
       <svg viewBox="0 0 24 24" fill="none">
-        <rect x="4" y="14" width="4" height="6" rx="1" fill="var(--dark)"/>
-        <rect x="10" y="9" width="4" height="11" rx="1" fill="var(--dark)"/>
-        <rect x="16" y="4" width="4" height="16" rx="1" fill="var(--dark)"/>
+        <rect x="4" y="14" width="4" height="6" rx="1" fill="currentColor"/>
+        <rect x="10" y="9" width="4" height="11" rx="1" fill="currentColor"/>
+        <rect x="16" y="4" width="4" height="16" rx="1" fill="currentColor"/>
       </svg>
     </div>
   </nav>
@@ -1215,6 +1339,11 @@ async function enterApp(){
   await loadData();
   document.getElementById('date-lbl').textContent=new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('stats-mo').textContent=new Date().toLocaleDateString('it-IT',{month:'long',year:'numeric'});
+  // Calendar home header
+  const now = new Date();
+  document.getElementById('cal-day-num').textContent = now.getDate();
+  document.getElementById('cal-weekday').textContent = now.toLocaleDateString('it-IT',{weekday:'long'}).replace(/^\w/,c=>c.toUpperCase());
+  document.getElementById('cal-month').textContent = now.toLocaleDateString('it-IT',{month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
   document.getElementById('in-cc').value=S.cc||'';
   document.getElementById('in-cash').value=S.cash||'';
   renderAll();
