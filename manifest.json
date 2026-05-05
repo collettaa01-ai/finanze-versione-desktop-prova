@@ -1,10 +1,10 @@
 {
-  "id": "/finanze-versione-desktop-prova/",
+  "id": "./",
   "name": "Tracks All Finances",
   "short_name": "Tracks All Finances",
   "description": "Gestisci le tue finanze personali con facilità e stile.",
-  "start_url": "/finanze-versione-desktop-prova/index.html",
-  "scope": "/finanze-versione-desktop-prova/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0F172A",
   "theme_color": "#0F172A",
