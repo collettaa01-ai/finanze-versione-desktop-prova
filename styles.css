@@ -1,0 +1,145 @@
+/* iOS PWA keyboard stability layer.
+   Loaded by the service worker so the existing app can be fixed without
+   rewriting the current monolithic index.html in one risky edit. */
+
+:root {
+  --keyboard-inset: 0px;
+  --bottom-ui-height: calc(74px + env(safe-area-inset-bottom));
+}
+
+html {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior-y: none;
+}
+
+#app {
+  height: auto !important;
+  min-height: 100svh !important;
+  overflow: visible !important;
+  isolation: isolate;
+}
+
+.screen {
+  position: static !important;
+  inset: auto !important;
+  display: none !important;
+  min-height: 100svh;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: opacity 160ms ease !important;
+  pointer-events: auto !important;
+}
+
+.screen.visible {
+  display: flex !important;
+}
+
+.screen.visible.auth-screen,
+.screen.visible.pin-screen,
+.screen.visible .main-content,
+.screen.visible .stats-body,
+.screen.visible .stor-body {
+  -webkit-overflow-scrolling: touch;
+}
+
+.auth-screen,
+.pin-screen {
+  min-height: 100svh;
+  padding-bottom: calc(40px + var(--keyboard-inset)) !important;
+}
+
+.main-content,
+.stats-body,
+.stor-body {
+  padding-bottom: calc(var(--bottom-ui-height) + 28px + var(--keyboard-inset)) !important;
+}
+
+.modal-ov {
+  position: fixed !important;
+  inset: 0 !important;
+  display: none !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding-top: env(safe-area-inset-top);
+  -webkit-overflow-scrolling: touch;
+  transform: none !important;
+}
+
+.modal-ov.open {
+  display: flex !important;
+}
+
+.modal-sheet {
+  width: 100%;
+  max-height: calc(100svh - env(safe-area-inset-top) - 8px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transform: none !important;
+  transition: opacity 180ms ease !important;
+  padding-bottom: calc(28px + env(safe-area-inset-bottom) + var(--keyboard-inset)) !important;
+}
+
+body.keyboard-open .modal-ov.open {
+  align-items: flex-start !important;
+}
+
+body.keyboard-open .nav-bar {
+  display: none !important;
+}
+
+.nav-bar {
+  left: 0 !important;
+  right: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transform: none !important;
+}
+
+input,
+textarea,
+select,
+button {
+  font-size: max(16px, 1rem);
+}
+
+input,
+textarea {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  touch-action: auto !important;
+}
+
+.auth-btn:active,
+.btn-new:active,
+.btn-ok:active,
+.pin-key:active {
+  transform: none !important;
+}
+
+.pin-dot.filled,
+.circ-wrap svg {
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
