@@ -1,7 +1,8 @@
 {
+  "id": "/finanze-versione-desktop-prova/",
   "name": "Tracks All Finances",
-  "short_name": "Finances",
-  "description": "Gestisci le tue finanze personali",
+  "short_name": "Tracks All Finances",
+  "description": "Gestisci le tue finanze personali con facilità e stile.",
   "start_url": "/finanze-versione-desktop-prova/index.html",
   "scope": "/finanze-versione-desktop-prova/",
   "display": "standalone",
@@ -10,11 +11,41 @@
   "orientation": "portrait",
   "prefer_related_applications": false,
   "icons": [
-    {"src": "icons/icon-192.png","sizes": "192x192","type": "image/png","purpose": "any"},
-    {"src": "icons/icon-192.png","sizes": "192x192","type": "image/png","purpose": "maskable"},
-    {"src": "icons/icon-512.png","sizes": "512x512","type": "image/png","purpose": "any"},
-    {"src": "icons/icon-512.png","sizes": "512x512","type": "image/png","purpose": "maskable"}
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nuova Transazione",
+      "short_name": "Aggiungi",
+      "description": "Aggiungi rapidamente una nuova spesa",
+      "url": "/finanze-versione-desktop-prova/index.html#add",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
   ],
   "categories": ["finance", "productivity"],
-  "lang": "it"
+  "lang": "it",
+  "dir": "ltr"
 }
