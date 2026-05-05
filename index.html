@@ -89,13 +89,25 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
-  height: 100%; width: 100%;
+/* ── FIX TASTIERA iOS PWA ──
+   PROBLEMA: overflow:hidden su html/body blocca la tastiera virtuale
+   nelle PWA installate su iOS (bug webkit noto).
+   SOLUZIONE: position:fixed su body + overflow gestito solo da #app
+   Changelog v8: fix tastiera login/PIN su iOS PWA
+*/
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: var(--bg);
   font-family: var(--font);
   color: var(--dark);
-  /* iOS PWA fix: NO position:fixed qui — blocca la tastiera */
-  overflow: hidden;
 }
 
 #app {
@@ -146,11 +158,16 @@ html, body {
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
 
-/* ── AUTH ── */
+/* ── AUTH ──
+   justify-content:flex-start + overflow-y:auto
+   permette lo scroll quando la tastiera apre su iOS
+*/
 .auth-screen {
   background: var(--surface);
   padding: 52px 28px 40px;
-  justify-content: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .auth-logo { margin-bottom: 32px; }
 .auth-logo .logo-mark {
@@ -211,11 +228,15 @@ html, body {
 }
 .auth-err.show { display: block; }
 
-/* ── PIN ── */
+/* ── PIN ──
+   overflow-y:auto per scroll quando tastiera apre
+*/
 .pin-screen {
   background: var(--surface);
-  align-items: center; justify-content: center;
-  padding: 40px 28px;
+  align-items: center; justify-content: flex-start;
+  padding: 60px 28px 40px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .pin-header { text-align: center; margin-bottom: 28px; }
 .pin-icon {
@@ -1731,7 +1752,6 @@ function selectCategory(cat) {
   selectedCat = cat;
   document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('selected'));
   document.getElementById('cat-' + cat).classList.add('selected');
-  // placeholder — nessuna azione per ora
 }
 
 // Chiudi menu tipo se si clicca fuori
@@ -1770,7 +1790,6 @@ function toggleCalendar() {
 function buildCalendar() {
   const grid = document.getElementById('cal-grid');
   grid.innerHTML = '';
-  // header giorni settimana
   ['L','M','M','G','V','S','D'].forEach(d => {
     const h = document.createElement('div');
     h.className = 'cal-day empty';
@@ -1778,11 +1797,9 @@ function buildCalendar() {
     h.textContent = d;
     grid.appendChild(h);
   });
-  // 31 giorni — offset lunedì=0
-  // Usiamo giorno 1 del mese corrente per sapere offset
   const now = new Date();
   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-  const offset = (firstDay === 0 ? 6 : firstDay - 1); // converti dom=0 in lun=0
+  const offset = (firstDay === 0 ? 6 : firstDay - 1);
   for (let i = 0; i < offset; i++) {
     const e = document.createElement('div');
     e.className = 'cal-day empty';
@@ -1802,7 +1819,6 @@ function selectDay(d) {
   document.getElementById('plan-day-label').textContent = `Giorno ${d} del mese`;
   document.getElementById('plan-day-btn').classList.add('selected');
   document.getElementById('plan-calendar').style.display = 'none';
-  // aggiorna selezione visiva
   document.querySelectorAll('.cal-day').forEach(el => {
     el.classList.toggle('selected', parseInt(el.textContent) === d && el.textContent !== '');
   });
@@ -1962,7 +1978,6 @@ async function init(){
 
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 
-// Avvia subito senza aspettare DOMContentLoaded
 window.addEventListener('load', () => init());
 
 document.addEventListener('DOMContentLoaded',()=>{
