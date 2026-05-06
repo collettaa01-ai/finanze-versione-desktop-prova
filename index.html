@@ -1416,6 +1416,53 @@ body {
 .ripeti-opt-label { font-family: var(--font); font-size: 16px; color: rgba(255,255,255,0.85); }
 .ripeti-check { color: #fff; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
 .ripeti-opt.selected .ripeti-check { opacity: 1; }
+
+/* ── OVERRIDE BTN-OK → viola ── */
+.btn-ok { background: var(--ov-primary) !important; }
+
+/* ── MODAL TITLE ── */
+.modal-title-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px;
+}
+.modal-main-ttl {
+  font-family: var(--font); font-size: 19px; font-weight: 700;
+  color: var(--ov-text); letter-spacing: -0.02em;
+}
+
+/* ── DEBT CARD ── */
+.debt-bar-track {
+  height: 10px; border-radius: 5px;
+  background: rgba(239,68,68,0.12); overflow: hidden; margin-top: 12px;
+}
+.debt-bar-fill {
+  height: 100%; border-radius: 5px;
+  background: linear-gradient(90deg, #EF4444, #F97316);
+  width: 100%; transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.debt-remaining-amt {
+  font-family: var(--font); font-size: 18px; font-weight: 600; color: #EF4444;
+}
+.debt-pct-row {
+  display: flex; justify-content: space-between;
+  margin-top: 5px;
+}
+.debt-pct-lbl {
+  font-family: var(--font); font-size: 10px; font-weight: 500;
+  color: var(--ov-text3); text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+/* ── DEBT MODAL inputs ── */
+.goal-modal-inp-lbl {
+  font-family: var(--font); font-size: 10px; font-weight: 600;
+  color: var(--ov-text2); text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 6px; margin-top: 12px; display: block;
+}
+.goal-modal-btn.secondary {
+  background: transparent; color: var(--ov-primary);
+  border: 1.5px solid rgba(124,58,237,0.3);
+  margin-bottom: 8px;
+}
 </style>
 </head>
 <body>
@@ -1609,9 +1656,42 @@ body {
         </div>
       </div>
 
+      <!-- Card 3: Debito -->
+      <div class="ov-card" onclick="openDebtModal()">
+        <div class="ov-card-top">
+          <div class="ov-card-title-row">
+            <div class="ov-card-icon" style="background:rgba(239,68,68,0.10)">
+              <svg width="17" height="17" viewBox="0 0 64 64" fill="none" stroke="#EF4444" stroke-width="3" stroke-linecap="round">
+                <path d="M8 30v16"/><path d="M30 30v16"/>
+                <ellipse cx="19" cy="46" rx="11" ry="4"/>
+                <ellipse cx="19" cy="38" rx="11" ry="4" stroke-width="2.2"/>
+                <ellipse cx="19" cy="30" rx="11" ry="4"/>
+                <path d="M34 22v24"/><path d="M56 22v24"/>
+                <ellipse cx="45" cy="46" rx="11" ry="4"/>
+                <ellipse cx="45" cy="38" rx="11" ry="4" stroke-width="2.2"/>
+                <ellipse cx="45" cy="30" rx="11" ry="4" stroke-width="2.2"/>
+                <ellipse cx="45" cy="22" rx="11" ry="4"/>
+              </svg>
+            </div>
+            <div class="ov-card-title">Debito</div>
+          </div>
+        </div>
+        <div style="padding:0 18px 18px">
+          <span class="ov-goal-sub" id="debt-sub">Tocca per registrare un debito</span>
+          <div class="debt-remaining-amt" id="debt-val">—</div>
+          <div class="debt-bar-track">
+            <div class="debt-bar-fill" id="debt-bar-fill" style="width:0%"></div>
+          </div>
+          <div class="debt-pct-row">
+            <span class="debt-pct-lbl">Rimborso</span>
+            <span class="debt-pct-lbl" id="debt-pct-label">—</span>
+          </div>
+        </div>
+      </div>
+
       <!-- FAB aggiungi -->
       <div style="padding:0 16px 8px;display:flex;justify-content:flex-end;">
-        <button onclick="openCategoryScreen()" style="width:52px;height:52px;border-radius:50%;background:var(--ov-primary);border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(124,58,237,0.35);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <button onclick="openModal()" style="width:52px;height:52px;border-radius:50%;background:var(--ov-primary);border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(124,58,237,0.35);cursor:pointer;-webkit-tap-highlight-color:transparent;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -1957,6 +2037,20 @@ body {
   </div>
 </div>
 
+<!-- DEBT MODAL -->
+<div class="goal-modal-ov" id="debt-modal">
+  <div class="goal-modal-sheet">
+    <div class="goal-modal-handle"></div>
+    <div class="goal-modal-title">Gestisci debito</div>
+    <span class="goal-modal-inp-lbl">Debito totale</span>
+    <input type="number" class="goal-modal-inp" id="debt-total-inp" placeholder="0,00" step="0.01" min="0"/>
+    <span class="goal-modal-inp-lbl">Già rimborsato</span>
+    <input type="number" class="goal-modal-inp" id="debt-paid-inp" placeholder="0,00" step="0.01" min="0"/>
+    <button class="goal-modal-btn" onclick="saveDebt()">Salva</button>
+    <button class="goal-modal-btn secondary" onclick="closeDebtModal()">Annulla</button>
+  </div>
+</div>
+
 <!-- GOAL MODAL -->
 <div class="goal-modal-ov" id="goal-modal">
   <div class="goal-modal-sheet">
@@ -1971,76 +2065,20 @@ body {
 <div class="modal-ov" id="modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-
-    <!-- TAB BAR -->
-    <div class="modal-tabs">
-      <button class="modal-tab active" id="tab-new" onclick="switchModalTab('new')">Nuova</button>
-      <button class="modal-tab" id="tab-plan" onclick="switchModalTab('plan')">Pianifica</button>
+    <div class="modal-title-row">
+      <div class="modal-main-ttl">Nuova transazione</div>
     </div>
-
-    <!-- TAB: NUOVA TRANSAZIONE -->
-    <div id="modal-panel-new">
-      <div class="type-row">
-        <button class="type-btn" id="btn-in" onclick="setType('entrata')">+ Entrata</button>
-        <button class="type-btn" id="btn-out" onclick="setType('uscita')">− Uscita</button>
-      </div>
-      <div class="fg"><div class="fl">Conto</div>
-        <select id="sel-conto"><option value="cc">Conto Corrente</option><option value="cash">Contanti</option></select>
-      </div>
-      <div class="fg"><div class="fl">Importo (€)</div><input type="number" id="inp-amt" placeholder="0,00" step="0.01" min="0"/></div>
-      <div class="fg"><div class="fl">Descrizione</div><input type="text" id="inp-desc" placeholder="es. Stipendio, Spesa, Affitto..."/></div>
-      <button class="btn-ok" id="btn-ok" onclick="confirmTx()">Conferma</button>
-      <button class="btn-cancel" onclick="closeModal()">Annulla</button>
+    <div class="type-row">
+      <button class="type-btn" id="btn-in" onclick="setType('entrata')">+ Entrata</button>
+      <button class="type-btn" id="btn-out" onclick="setType('uscita')">− Uscita</button>
     </div>
-
-    <!-- TAB: PIANIFICA -->
-    <div id="modal-panel-plan" style="display:none">
-      <div class="type-row">
-        <button class="type-btn" id="plan-btn-in" onclick="setPlanType('entrata')">+ Entrata</button>
-        <button class="type-btn" id="plan-btn-out" onclick="setPlanType('uscita')">− Uscita</button>
-      </div>
-
-      <!-- Pianifica giorno -->
-      <div class="fg">
-        <div class="fl">Giorno di esecuzione</div>
-        <button class="plan-day-btn" id="plan-day-btn" onclick="toggleCalendar()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="var(--dark-mid)" stroke-width="1.5"/><path d="M3 9h18M8 2v4M16 2v4" stroke="var(--dark-mid)" stroke-width="1.5" stroke-linecap="round"/></svg>
-          <span id="plan-day-label">Scegli giorno del mese</span>
-        </button>
-        <!-- Calendario inline -->
-        <div id="plan-calendar" style="display:none">
-          <div class="cal-grid" id="cal-grid"></div>
-        </div>
-      </div>
-
-      <!-- Frequenza -->
-      <div class="fg">
-        <div class="fl">Ripeti ogni</div>
-        <div class="freq-row">
-          <input type="number" id="plan-freq-val" value="1" min="1" max="99" style="width:70px;text-align:center"/>
-          <select id="plan-freq-unit">
-            <option value="month">mese/i</option>
-            <option value="year">anno/i</option>
-            <option value="week">settimana/e</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Data fine (opzionale) -->
-      <div class="fg">
-        <div class="fl">Termina il <span style="font-size:9px;color:var(--dark-soft);text-transform:none;letter-spacing:0">(opzionale)</span></div>
-        <input type="date" id="plan-end-date" style="width:100%;padding:12px 13px;border-radius:var(--r-xs);border:0.5px solid var(--border-mid);background:var(--surface-low);font-size:14px;font-family:var(--font);color:var(--dark);outline:none;"/>
-      </div>
-
-      <div class="fg"><div class="fl">Importo (€)</div><input type="number" id="plan-amt" placeholder="0,00" step="0.01" min="0"/></div>
-      <div class="fg"><div class="fl">Conto</div>
-        <select id="plan-conto"><option value="cc">Conto Corrente</option><option value="cash">Contanti</option></select>
-      </div>
-      <div class="fg"><div class="fl">Descrizione</div><input type="text" id="plan-desc" placeholder="es. Netflix, Affitto, Stipendio..."/></div>
-      <button class="btn-ok" id="plan-btn-ok" onclick="confirmRecurring()">Salva transazione ricorrente</button>
-      <button class="btn-cancel" onclick="closeModal()">Annulla</button>
+    <div class="fg"><div class="fl">Conto</div>
+      <select id="sel-conto"><option value="cc">Conto Corrente</option><option value="cash">Contanti</option></select>
     </div>
-
+    <div class="fg"><div class="fl">Importo (€)</div><input type="number" id="inp-amt" placeholder="0,00" step="0.01" min="0"/></div>
+    <div class="fg"><div class="fl">Descrizione</div><input type="text" id="inp-desc" placeholder="es. Stipendio, Spesa, Affitto..."/></div>
+    <button class="btn-ok" id="btn-ok" onclick="confirmTx()">Conferma</button>
+    <button class="btn-cancel" onclick="closeModal()">Annulla</button>
   </div>
 </div>
 
@@ -2245,6 +2283,7 @@ async function saveProfile(){
 let curTab='home';
 function switchTab(tab){
   curTab=tab;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('visible'));
   ['home','insights'].forEach(t=>{
     const s=document.getElementById('screen-'+t);
     const n=document.getElementById('nav-'+t);
@@ -2436,21 +2475,11 @@ async function confirmRecurring() {
 
 
 function openModal(){
-  txType=null; planType=null; planDay=null;
+  txType=null;
   document.getElementById('btn-in').className='type-btn';
   document.getElementById('btn-out').className='type-btn';
-  document.getElementById('plan-btn-in').className='type-btn';
-  document.getElementById('plan-btn-out').className='type-btn';
   document.getElementById('inp-amt').value='';
   document.getElementById('inp-desc').value='';
-  document.getElementById('plan-amt').value='';
-  document.getElementById('plan-desc').value='';
-  document.getElementById('plan-end-date').value='';
-  document.getElementById('plan-freq-val').value='1';
-  document.getElementById('plan-day-label').textContent='Scegli giorno del mese';
-  document.getElementById('plan-day-btn').classList.remove('selected');
-  document.getElementById('plan-calendar').style.display='none';
-  switchModalTab('new');
   document.getElementById('modal').classList.add('open');
   const isIOS=/ipad|iphone|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   if(!isIOS) document.getElementById('inp-amt').focus();
@@ -2485,7 +2514,7 @@ async function confirmTx(){
 }
 
 // ── RENDER ──
-function renderAll(){ renderCircle(); renderInsights(); }
+function renderAll(){ renderCircle(); renderInsights(); renderDebt(); }
 
 function txCard(tx){
   const sign=tx.type==='entrata'?'+':'−', icon=tx.type==='entrata'?'↑':'↓';
@@ -2876,6 +2905,46 @@ async function saveIncomeTx() {
     toast('Errore durante il salvataggio');
   }
 }
+
+// ── DEBT ──
+let debtState = { total: 0, paid: 0 };
+function openDebtModal(){
+  document.getElementById('debt-total-inp').value = debtState.total || '';
+  document.getElementById('debt-paid-inp').value = debtState.paid || '';
+  document.getElementById('debt-modal').classList.add('open');
+}
+function closeDebtModal(){ document.getElementById('debt-modal').classList.remove('open'); }
+function saveDebt(){
+  debtState.total = parseFloat(document.getElementById('debt-total-inp').value) || 0;
+  debtState.paid  = parseFloat(document.getElementById('debt-paid-inp').value)  || 0;
+  if(debtState.paid > debtState.total) debtState.paid = debtState.total;
+  closeDebtModal();
+  renderDebt();
+}
+function renderDebt(){
+  const remaining = Math.max(0, debtState.total - debtState.paid);
+  const ratio = debtState.total > 0 ? remaining / debtState.total : 0;
+  const pct   = debtState.total > 0 ? Math.round((debtState.paid / debtState.total) * 100) : 0;
+  const subEl  = document.getElementById('debt-sub');
+  const valEl  = document.getElementById('debt-val');
+  const barEl  = document.getElementById('debt-bar-fill');
+  const pctEl  = document.getElementById('debt-pct-label');
+  if(!debtState.total){
+    if(subEl) subEl.textContent = 'Tocca per registrare un debito';
+    if(valEl) valEl.textContent = '—';
+    if(barEl) barEl.style.width = '0%';
+    if(pctEl) pctEl.textContent = '—';
+    return;
+  }
+  if(subEl) subEl.textContent = 'Totale: ' + eur(debtState.total);
+  if(valEl) valEl.textContent = eur(remaining) + ' rimanente';
+  if(barEl) barEl.style.width = (ratio * 100).toFixed(1) + '%';
+  if(pctEl) pctEl.textContent = pct + '%';
+}
+document.addEventListener('click', e => {
+  const m = document.getElementById('debt-modal');
+  if(m && e.target === m) closeDebtModal();
+});
 
 // ── INSIGHTS ──
 function renderInsights(){
