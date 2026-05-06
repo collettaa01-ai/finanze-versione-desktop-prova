@@ -717,119 +717,225 @@ body {
 }
 
 
-/* ── TEAL THEME ── */
+/* ── OVERVIEW THEME (purple / pink) ── */
 :root {
-  --teal-1: #0d2027;
-  --teal-2: #0f2d38;
-  --teal-3: #133a46;
-  --teal-4: #1a4a55;
-  --teal-text: rgba(255,255,255,0.90);
-  --teal-sub: rgba(255,255,255,0.45);
-  --teal-border: rgba(255,255,255,0.10);
+  --ov-bg: #f2f2f7;
+  --ov-card: #ffffff;
+  --ov-primary: #7C3AED;
+  --ov-pink: #EC4899;
+  --ov-cc: #7C3AED;
+  --ov-cash: #F472B6;
+  --ov-text: #1C1C1E;
+  --ov-text2: #6E6E73;
+  --ov-text3: #8E8E93;
+  --ov-shadow: 0 4px 20px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+  --ov-radius: 22px;
+  /* keep teal refs for overlays */
+  --teal-1: #0d2027; --teal-2: #0f2d38; --teal-border: rgba(255,255,255,0.10);
+  --teal-text: rgba(255,255,255,0.90); --teal-sub: rgba(255,255,255,0.45);
 }
-#screen-home,
-#screen-bilancio,
-#screen-storico,
-#screen-stats {
-  background: linear-gradient(160deg, var(--teal-2) 0%, var(--teal-1) 40%, #0a1a20 100%);
-}
-.home-cal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 56px 24px 20px; flex-shrink: 0;
-}
-.home-cal-left { display: flex; align-items: center; gap: 16px; }
-.home-cal-day {
-  font-size: 72px; font-weight: 300; font-family: var(--font);
-  color: var(--teal-text); line-height: 1; letter-spacing: -0.03em;
-}
-.home-cal-info {
-  display: flex; flex-direction: column; gap: 2px;
-  padding-left: 14px; border-left: 1px solid var(--teal-border);
-}
-.home-cal-weekday { font-size: 18px; font-weight: 400; color: var(--teal-text); letter-spacing: -0.01em; }
-.home-cal-month { font-size: 14px; font-weight: 300; color: var(--teal-sub); }
-.home-plus-btn {
-  width: 52px; height: 52px; border-radius: 50%;
-  border: 1.5px solid rgba(255,255,255,0.35);
-  background: transparent;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: background 0.15s, transform 0.1s; flex-shrink: 0;
-}
-.home-plus-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.94); }
-.home-divider { height: 0.5px; background: var(--teal-border); margin: 0 24px; flex-shrink: 0; }
-.home-scroll {
+#screen-home, #screen-insights { background: var(--ov-bg); }
+
+/* ── OV SCROLL & HEADER ── */
+.ov-scroll {
   flex: 1; overflow-y: auto; overflow-x: hidden;
-  padding: 24px 24px 110px; -webkit-overflow-scrolling: touch;
+  padding: 0 0 110px; -webkit-overflow-scrolling: touch;
 }
-.home-section-label {
-  font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
-  color: var(--teal-sub); margin-bottom: 10px;
+.ov-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 56px 20px 12px;
 }
-.home-divider-thin { height: 0.5px; background: var(--teal-border); margin-bottom: 16px; }
-.home-wealth-row { display: flex; margin-bottom: 12px; }
-.home-wealth-block { flex: 1; }
-.home-wealth-sep { width: 0.5px; background: var(--teal-border); margin: 0 20px; align-self: stretch; }
-.home-wealth-lbl {
-  font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--teal-sub); margin-bottom: 6px;
+.ov-header-title {
+  font-family: var(--font); font-size: 34px; font-weight: 700;
+  color: var(--ov-text); letter-spacing: -0.03em;
 }
-.home-wealth-inp {
-  width: 100%; background: transparent; border: none;
-  border-bottom: 0.5px solid var(--teal-border);
-  font-size: 22px; font-weight: 300; font-family: var(--mono);
-  color: var(--teal-text); padding: 2px 0 6px; outline: none; -webkit-appearance: none;
+.ov-logout-btn {
+  background: rgba(124,58,237,0.09); border: none; border-radius: 20px;
+  padding: 6px 14px; font-family: var(--font); font-size: 13px; font-weight: 500;
+  color: var(--ov-primary); cursor: pointer;
 }
-.home-wealth-inp::placeholder { color: rgba(255,255,255,0.2); }
-.home-total-row {
+
+/* ── OV CARDS ── */
+.ov-card {
+  margin: 0 16px 16px; background: var(--ov-card);
+  border-radius: var(--ov-radius); box-shadow: var(--ov-shadow);
+  overflow: hidden; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.ov-card:active { transform: scale(0.985); box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+.ov-card-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 18px 6px;
+}
+.ov-card-title-row { display: flex; align-items: center; gap: 8px; }
+.ov-card-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.ov-card-title {
+  font-family: var(--font); font-size: 14px; font-weight: 600;
+  color: var(--ov-text); letter-spacing: -0.01em;
+}
+.ov-card-date { font-family: var(--font); font-size: 12px; color: var(--ov-text3); }
+
+/* Saldo body */
+.ov-saldo-body {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px 6px;
+}
+.ov-saldo-amount {
+  font-family: var(--mono); font-size: 36px; font-weight: 700;
+  color: var(--ov-text); letter-spacing: -0.04em; line-height: 1;
+}
+/* Account inputs */
+.ov-accounts {
+  padding: 4px 18px 18px; display: flex; gap: 10px;
+}
+.ov-account-item {
+  flex: 1; padding: 10px 12px; background: var(--ov-bg);
+  border-radius: 14px; cursor: text;
+}
+.ov-account-item:active { opacity: 0.85; }
+.ov-acc-header { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+.ov-acc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.ov-acc-label {
+  font-family: var(--font); font-size: 10px; font-weight: 600;
+  color: var(--ov-text2); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.ov-acc-inp {
+  width: 100%; background: transparent; border: none; outline: none;
+  font-family: var(--mono); font-size: 18px; font-weight: 600;
+  color: var(--ov-text); -webkit-appearance: none; padding: 0;
+}
+.ov-acc-inp::placeholder { color: var(--ov-text3); font-weight: 400; }
+
+/* Obiettivo card */
+.ov-goal-body {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 18px 18px;
+}
+.ov-goal-sub { font-family: var(--font); font-size: 12px; color: var(--ov-text2); margin-bottom: 6px; display: block; }
+.ov-goal-val { font-family: var(--font); font-size: 18px; font-weight: 600; color: var(--ov-primary); }
+.ov-goal-circle-wrap {
+  width: 80px; height: 80px; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.ov-goal-ratio {
+  position: absolute; text-align: center;
+  font-family: var(--font); font-size: 11px; font-weight: 500; color: var(--ov-text2);
+}
+
+/* ── INSIGHTS ── */
+.ins-scroll {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 0 0 110px; -webkit-overflow-scrolling: touch;
+}
+.ins-header {
   display: flex; align-items: baseline; justify-content: space-between;
-  padding: 12px 0; border-top: 0.5px solid var(--teal-border);
+  padding: 56px 20px 12px;
 }
-.home-total-lbl {
-  font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--teal-sub);
+.ins-title {
+  font-family: var(--font); font-size: 34px; font-weight: 700;
+  color: var(--ov-text); letter-spacing: -0.03em;
 }
-.home-total-amt {
-  font-size: 28px; font-weight: 300; font-family: var(--mono);
-  color: var(--teal-text); letter-spacing: -0.02em;
+.ins-month-lbl { font-family: var(--font); font-size: 13px; color: var(--ov-text3); }
+.ins-card {
+  margin: 0 16px 16px; background: var(--ov-card);
+  border-radius: var(--ov-radius); box-shadow: var(--ov-shadow); padding: 18px;
 }
-#screen-home .tx-card { background: rgba(255,255,255,0.05); border: 0.5px solid var(--teal-border); box-shadow: none; }
-#screen-home .tx-desc { color: var(--teal-text); }
-#screen-home .tx-meta { color: var(--teal-sub); }
-#screen-home .tx-dot.entrata { background: rgba(59,109,17,0.3); color: #a8d870; }
-#screen-home .tx-dot.uscita { background: rgba(163,45,45,0.3); color: #f09090; }
-#screen-home .tx-amt.entrata { color: #a8d870; }
-#screen-home .tx-amt.uscita { color: #f09090; }
-#screen-home .empty { background: rgba(255,255,255,0.04); border: 0.5px solid var(--teal-border); color: var(--teal-sub); }
-.home-see-all { font-size: 12px; font-weight: 300; color: var(--teal-sub); text-align: right; margin-top: 8px; cursor: pointer; padding: 4px 0; }
-.home-logout-row {
-  margin-top: 32px; background: none; border: 0.5px solid var(--teal-border);
-  border-radius: var(--r-xs); padding: 11px; width: 100%;
-  font-size: 12px; font-weight: 300; color: var(--teal-sub); font-family: var(--font); cursor: pointer;
+.ins-card-ttl {
+  font-family: var(--font); font-size: 14px; font-weight: 600;
+  color: var(--ov-text); margin-bottom: 14px;
 }
-.teal-hdr { background: transparent; padding: 56px 24px 18px; flex-shrink: 0; }
-.teal-hdr h1 { font-size: 26px; font-weight: 600; color: var(--teal-text); letter-spacing: -0.02em; }
-.teal-hdr p, .teal-hdr .mo { font-size: 13px; font-weight: 300; color: var(--teal-sub); margin-top: 2px; }
-.stor-body { flex: 1; overflow-y: auto; padding: 16px 24px 100px; -webkit-overflow-scrolling: touch; }
-#screen-storico .chip { background: rgba(255,255,255,0.07); border-color: var(--teal-border); color: var(--teal-sub); }
-#screen-storico .chip.active { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); color: var(--teal-text); }
-#screen-storico .tx-card { background: rgba(255,255,255,0.05); border: 0.5px solid var(--teal-border); box-shadow: none; }
-#screen-storico .tx-desc { color: var(--teal-text); }
-#screen-storico .tx-meta { color: var(--teal-sub); }
-#screen-storico .tx-dot.entrata { background: rgba(59,109,17,0.3); color: #a8d870; }
-#screen-storico .tx-dot.uscita { background: rgba(163,45,45,0.3); color: #f09090; }
-#screen-storico .tx-amt.entrata { color: #a8d870; }
-#screen-storico .tx-amt.uscita { color: #f09090; }
-#screen-storico .empty { background: rgba(255,255,255,0.04); border: 0.5px solid var(--teal-border); color: var(--teal-sub); }
-#screen-stats .s-card { background: rgba(255,255,255,0.06); border: 0.5px solid var(--teal-border); box-shadow: none; }
-#screen-stats .s-card .sl { color: var(--teal-sub); }
-#screen-stats .s-card .sa { color: var(--teal-text); }
-#screen-stats .chart-card { background: rgba(255,255,255,0.06); border: 0.5px solid var(--teal-border); box-shadow: none; }
-#screen-stats .chart-ttl { color: var(--teal-sub); }
-#screen-stats .bar-lbl { color: var(--teal-sub); }
-#screen-stats .chart-leg-item { color: var(--teal-sub); }
-.nav-bar { background: rgba(13,32,39,0.95) !important; border-top: 0.5px solid var(--teal-border) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-.nav-item { color: rgba(255,255,255,0.3); }
-.nav-item.active { color: rgba(255,255,255,0.9); }
+.ins-summary-row { display: flex; gap: 10px; }
+.ins-sum-box { flex: 1; padding: 12px 14px; border-radius: 14px; }
+.ins-sum-box.inc { background: rgba(124,58,237,0.08); }
+.ins-sum-box.exp { background: rgba(236,72,153,0.08); }
+.ins-sum-lbl {
+  font-family: var(--font); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ov-text2); margin-bottom: 4px;
+}
+.ins-sum-amt { font-family: var(--mono); font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+.ins-sum-box.inc .ins-sum-amt { color: var(--ov-primary); }
+.ins-sum-box.exp .ins-sum-amt { color: var(--ov-pink); }
+.ins-tx-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 0.5px solid rgba(0,0,0,0.06);
+}
+.ins-tx-item:last-child { border-bottom: none; }
+.ins-tx-dot {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 15px; font-weight: 600;
+}
+.ins-tx-dot.entrata { background: rgba(124,58,237,0.10); color: var(--ov-primary); }
+.ins-tx-dot.uscita { background: rgba(236,72,153,0.10); color: var(--ov-pink); }
+.ins-tx-info { flex: 1; min-width: 0; }
+.ins-tx-desc {
+  font-family: var(--font); font-size: 14px; font-weight: 500;
+  color: var(--ov-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ins-tx-meta { font-family: var(--font); font-size: 11px; color: var(--ov-text2); margin-top: 2px; }
+.ins-tx-amt {
+  font-family: var(--mono); font-size: 14px; font-weight: 600; letter-spacing: -0.01em; flex-shrink: 0;
+}
+.ins-tx-amt.entrata { color: var(--ov-primary); }
+.ins-tx-amt.uscita { color: var(--ov-pink); }
+.ins-empty {
+  font-family: var(--font); font-size: 13px; color: var(--ov-text3);
+  text-align: center; padding: 20px 0;
+}
+
+/* ── GOAL MODAL ── */
+.goal-modal-ov {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.35); display: flex;
+  align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.goal-modal-ov.open { opacity: 1; pointer-events: all; }
+.goal-modal-sheet {
+  background: #fff; border-radius: 24px 24px 0 0;
+  padding: 16px 20px calc(20px + env(safe-area-inset-bottom,0px));
+  width: 100%; max-width: 430px;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+}
+.goal-modal-ov.open .goal-modal-sheet { transform: translateY(0); }
+.goal-modal-handle {
+  width: 36px; height: 4px; border-radius: 2px;
+  background: rgba(0,0,0,0.12); margin: 0 auto 18px;
+}
+.goal-modal-title {
+  font-family: var(--font); font-size: 18px; font-weight: 700;
+  color: var(--ov-text); margin-bottom: 16px;
+}
+.goal-modal-inp {
+  width: 100%; border: 1.5px solid rgba(124,58,237,0.25);
+  border-radius: 12px; padding: 14px 16px;
+  font-family: var(--mono); font-size: 22px; font-weight: 600;
+  color: var(--ov-text); outline: none; -webkit-appearance: none;
+  background: rgba(124,58,237,0.04); margin-bottom: 14px; display: block;
+}
+.goal-modal-inp:focus { border-color: var(--ov-primary); }
+.goal-modal-btn {
+  width: 100%; background: var(--ov-primary); border: none;
+  border-radius: 14px; padding: 16px; font-family: var(--font);
+  font-size: 16px; font-weight: 600; color: #fff; cursor: pointer;
+}
+.goal-modal-btn:active { opacity: 0.85; }
+
+/* ── NAV BAR ── */
+.nav-bar {
+  background: rgba(255,255,255,0.92) !important;
+  border-top: 0.5px solid rgba(0,0,0,0.10) !important;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+.nav-item { color: rgba(0,0,0,0.22); }
+.nav-item.active { color: var(--ov-primary); }
+.nav-label { font-family: var(--font); font-size: 10px; font-weight: 500; margin-top: 3px; letter-spacing: 0.01em; }
 
 /* ── CATEGORY SCREEN ── */
 .cat-screen {
@@ -1421,161 +1527,142 @@ body {
     </button>
   </div>
 
-  <!-- HOME -->
+  <!-- HOME / OVERVIEW -->
   <div class="screen" id="screen-home">
-    <!-- CALENDAR HEADER -->
-    <div class="home-cal-header">
-      <div class="home-cal-left">
-        <div class="home-cal-day" id="cal-day-num"></div>
-        <div class="home-cal-info">
-          <div class="home-cal-weekday" id="cal-weekday"></div>
-          <div class="home-cal-month" id="cal-month"></div>
-        </div>
+    <div class="ov-scroll">
+      <div class="ov-header">
+        <div class="ov-header-title">Overview</div>
+        <button class="ov-logout-btn" onclick="doLogout()">Esci</button>
       </div>
-      <button class="home-plus-btn" onclick="openCategoryScreen()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <path d="M12 5v14M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
-    </div>
-    <div class="home-divider"></div>
 
-    <div class="home-scroll">
-      <!-- LOGOUT -->
-      <button class="home-logout-row" onclick="doLogout()">Esci dall'account</button>
-    </div>
-  </div>
-
-  <!-- STORICO -->
-  <div class="screen" id="screen-storico">
-    <div class="teal-hdr">
-      <h1>Storico</h1>
-      <p id="stor-count">0 transazioni</p>
-    </div>
-    <div class="stor-body">
-      <div class="filters">
-        <div class="chip active" onclick="setFilter('all',this)">Tutte</div>
-        <div class="chip" onclick="setFilter('entrata',this)">Entrate</div>
-        <div class="chip" onclick="setFilter('uscita',this)">Uscite</div>
-        <div class="chip" onclick="setFilter('cc',this)">C/C</div>
-        <div class="chip" onclick="setFilter('cash',this)">Contanti</div>
-      </div>
-      <div id="stor-list"></div>
-    </div>
-  </div>
-
-  <!-- STATS -->
-  <div class="screen" id="screen-stats">
-    <div class="teal-hdr">
-      <h1>Statistiche</h1>
-      <div class="mo" id="stats-mo"></div>
-    </div>
-    <div class="stats-body" id="stats-body"></div>
-  </div>
-
-  <!-- BILANCIO -->
-  <div class="screen" id="screen-bilancio">
-    <div class="teal-hdr">
-      <h1>Bilancio</h1>
-    </div>
-    <div class="bil-body">
-
-      <!-- PATRIMONIO TOTALE -->
-      <div class="bil-section-label">PATRIMONIO</div>
-      <div class="bil-divider"></div>
-      <div class="bil-total-amt" id="total-disp">€ 0,00</div>
-
-      <!-- CC e CONTANTI -->
-      <div class="bil-accounts">
-        <div class="bil-account-row">
-          <div class="bil-account-dot" style="background: rgba(255,255,255,0.85)"></div>
-          <div class="bil-account-info">
-            <div class="bil-account-lbl">Conto Corrente</div>
-            <input type="number" class="bil-account-inp" id="in-cc" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
+      <!-- Card 1: Saldo totale -->
+      <div class="ov-card" id="ov-saldo-card">
+        <div class="ov-card-top">
+          <div class="ov-card-title-row">
+            <div class="ov-card-icon" style="background:rgba(124,58,237,0.10)">
+              <svg width="18" height="18" viewBox="0 0 20 20">
+                <circle cx="10" cy="10" r="7" fill="none" stroke="rgba(0,0,0,0.10)" stroke-width="3"/>
+                <circle id="ov-mini-cc" cx="10" cy="10" r="7" fill="none" stroke="var(--ov-cc)" stroke-width="3" stroke-dasharray="0 43.98" transform="rotate(-90 10 10)" stroke-linecap="round"/>
+                <circle id="ov-mini-cash" cx="10" cy="10" r="7" fill="none" stroke="var(--ov-cash)" stroke-width="3" stroke-dasharray="0 43.98" transform="rotate(-90 10 10)" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="ov-card-title">Saldo totale</div>
           </div>
+          <div class="ov-card-date" id="ov-today-date"></div>
         </div>
-        <div class="bil-account-divider"></div>
-        <div class="bil-account-row">
-          <div class="bil-account-dot" style="background: rgba(255,255,255,0.35)"></div>
-          <div class="bil-account-info">
-            <div class="bil-account-lbl">Contanti</div>
-            <input type="number" class="bil-account-inp" id="in-cash" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
+
+        <div class="ov-saldo-body">
+          <div class="ov-saldo-amount" id="ov-total">€ 0,00</div>
+          <svg width="110" height="110" viewBox="0 0 110 110">
+            <circle cx="55" cy="55" r="38" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="12"/>
+            <circle id="ov-big-cc" cx="55" cy="55" r="38" fill="none" stroke="var(--ov-cc)" stroke-width="12" stroke-dasharray="0 238.76" transform="rotate(-90 55 55)" stroke-linecap="round"/>
+            <circle id="ov-big-cash" cx="55" cy="55" r="38" fill="none" stroke="var(--ov-cash)" stroke-width="12" stroke-dasharray="0 238.76" transform="rotate(-90 55 55)" stroke-linecap="round"/>
+            <text id="ov-donut-pct" x="55" y="51" text-anchor="middle" font-family="Figtree,sans-serif" font-size="16" font-weight="600" fill="#1C1C1E">—</text>
+            <text x="55" y="66" text-anchor="middle" font-family="Geist,sans-serif" font-size="9" fill="#8E8E93" letter-spacing="0.5">C/C</text>
+          </svg>
+        </div>
+
+        <div class="ov-accounts">
+          <div class="ov-account-item">
+            <div class="ov-acc-header">
+              <div class="ov-acc-dot" style="background:var(--ov-cc)"></div>
+              <div class="ov-acc-label">Conto Corrente</div>
+            </div>
+            <input type="number" class="ov-acc-inp" id="ov-in-cc" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
+          </div>
+          <div class="ov-account-item">
+            <div class="ov-acc-header">
+              <div class="ov-acc-dot" style="background:var(--ov-cash)"></div>
+              <div class="ov-acc-label">Contanti</div>
+            </div>
+            <input type="number" class="ov-acc-inp" id="ov-in-cash" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
           </div>
         </div>
       </div>
 
-      <!-- DONUT CHART -->
-      <div class="bil-donut-wrap">
-        <svg id="bil-donut-svg" viewBox="0 0 200 200" width="200" height="200">
-          <!-- track -->
-          <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="20"/>
-          <!-- cc arc -->
-          <circle id="arc-cc" cx="100" cy="100" r="72" fill="none"
-            stroke="rgba(255,255,255,0.85)" stroke-width="20"
-            stroke-dasharray="0 452.4" stroke-linecap="round"
-            transform="rotate(-90 100 100)"/>
-          <!-- cash arc -->
-          <circle id="arc-cash" cx="100" cy="100" r="72" fill="none"
-            stroke="rgba(255,255,255,0.30)" stroke-width="20"
-            stroke-dasharray="0 452.4" stroke-linecap="round"
-            transform="rotate(-90 100 100)"/>
-          <!-- center label -->
-          <text id="bil-donut-pct" x="100" y="96" text-anchor="middle"
-            font-family="Figtree, sans-serif" font-size="28" font-weight="300"
-            fill="rgba(255,255,255,0.9)">—</text>
-          <text x="100" y="116" text-anchor="middle"
-            font-family="Geist, sans-serif" font-size="10" font-weight="400"
-            fill="rgba(255,255,255,0.4)" letter-spacing="1">C/C</text>
-        </svg>
-        <!-- legenda -->
-        <div class="bil-legend">
-          <div class="bil-leg-item">
-            <div class="bil-leg-dot" style="background:rgba(255,255,255,0.85)"></div>
-            <span id="leg-cc">C/C — € 0,00</span>
+      <!-- Card 2: Obiettivo -->
+      <div class="ov-card" onclick="openGoalModal()">
+        <div class="ov-card-top">
+          <div class="ov-card-title-row">
+            <div class="ov-card-icon" style="background:rgba(236,72,153,0.10)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="var(--ov-pink)" stroke-width="1.8"/>
+                <circle cx="12" cy="12" r="5" stroke="var(--ov-pink)" stroke-width="1.8"/>
+                <circle cx="12" cy="12" r="1.5" fill="var(--ov-pink)"/>
+              </svg>
+            </div>
+            <div class="ov-card-title">Obiettivo</div>
           </div>
-          <div class="bil-leg-item">
-            <div class="bil-leg-dot" style="background:rgba(255,255,255,0.30)"></div>
-            <span id="leg-cash">Contanti — € 0,00</span>
+        </div>
+        <div class="ov-goal-body">
+          <div>
+            <span class="ov-goal-sub" id="ov-goal-sub">Tocca per impostare un obiettivo</span>
+            <div class="ov-goal-val" id="ov-goal-val">—</div>
+          </div>
+          <div class="ov-goal-circle-wrap">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="8"/>
+              <circle id="ov-goal-arc" cx="40" cy="40" r="32" fill="none" stroke="var(--ov-pink)" stroke-width="8" stroke-dasharray="0 201.06" transform="rotate(-90 40 40)" stroke-linecap="round"/>
+            </svg>
+            <div class="ov-goal-ratio" id="ov-goal-ratio"></div>
           </div>
         </div>
       </div>
 
+      <!-- FAB aggiungi -->
+      <div style="padding:0 16px 8px;display:flex;justify-content:flex-end;">
+        <button onclick="openCategoryScreen()" style="width:52px;height:52px;border-radius:50%;background:var(--ov-primary);border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(124,58,237,0.35);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- NAV icon-only -->
+  <!-- INSIGHTS -->
+  <div class="screen" id="screen-insights">
+    <div class="ins-scroll">
+      <div class="ins-header">
+        <div class="ins-title">Insights</div>
+        <div class="ins-month-lbl" id="ins-month-lbl"></div>
+      </div>
+      <div class="ins-card">
+        <div class="ins-card-ttl">Questo mese</div>
+        <div class="ins-summary-row">
+          <div class="ins-sum-box inc">
+            <div class="ins-sum-lbl">Entrate</div>
+            <div class="ins-sum-amt" id="ins-inc-amt">€ 0,00</div>
+          </div>
+          <div class="ins-sum-box exp">
+            <div class="ins-sum-lbl">Uscite</div>
+            <div class="ins-sum-amt" id="ins-exp-amt">€ 0,00</div>
+          </div>
+        </div>
+      </div>
+      <div class="ins-card">
+        <div class="ins-card-ttl">Transazioni recenti</div>
+        <div id="ins-tx-list"><div class="ins-empty">Nessuna transazione ancora.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV BAR (2 tab) -->
   <nav class="nav-bar" id="nav-bar" style="display:none">
-    <!-- Home / Calendario -->
     <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
       <svg viewBox="0 0 24 24" fill="none">
-        <path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1v-9.5z" fill="currentColor"/>
-        <rect x="9" y="14" width="6" height="7" rx="1" fill="currentColor" opacity="0.5"/>
+        <rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor"/>
+        <rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" opacity="0.45"/>
+        <rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" opacity="0.45"/>
+        <rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor"/>
       </svg>
+      <span class="nav-label">Overview</span>
     </div>
-    <!-- Bilancio / Torta -->
-    <div class="nav-item" id="nav-bilancio" onclick="switchTab('bilancio')">
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M12 2a10 10 0 100 20A10 10 0 0012 2z" fill="none" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M12 2a10 10 0 0110 10H12V2z" fill="currentColor"/>
-        <path d="M12 12l7.07 7.07A10 10 0 0112 22V12z" fill="currentColor" opacity="0.5"/>
-      </svg>
-    </div>
-    <!-- Storico -->
-    <div class="nav-item" id="nav-storico" onclick="switchTab('storico')">
-      <svg viewBox="0 0 24 24" fill="none">
-        <rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor"/>
-        <rect x="7" y="8" width="10" height="1.5" rx="0.75" fill="white"/>
-        <rect x="7" y="11.5" width="7" height="1.5" rx="0.75" fill="white"/>
-        <rect x="7" y="15" width="5" height="1.5" rx="0.75" fill="white"/>
-      </svg>
-    </div>
-    <!-- Stats -->
-    <div class="nav-item" id="nav-stats" onclick="switchTab('stats')">
+    <div class="nav-item" id="nav-insights" onclick="switchTab('insights')">
       <svg viewBox="0 0 24 24" fill="none">
         <rect x="4" y="14" width="4" height="6" rx="1" fill="currentColor"/>
         <rect x="10" y="9" width="4" height="11" rx="1" fill="currentColor"/>
         <rect x="16" y="4" width="4" height="16" rx="1" fill="currentColor"/>
       </svg>
+      <span class="nav-label">Insights</span>
     </div>
   </nav>
 </div>
@@ -1870,6 +1957,16 @@ body {
   </div>
 </div>
 
+<!-- GOAL MODAL -->
+<div class="goal-modal-ov" id="goal-modal">
+  <div class="goal-modal-sheet">
+    <div class="goal-modal-handle"></div>
+    <div class="goal-modal-title">Imposta obiettivo</div>
+    <input type="number" class="goal-modal-inp" id="goal-modal-inp" placeholder="0,00" step="0.01" min="0"/>
+    <button class="goal-modal-btn" onclick="saveGoal()">Salva obiettivo</button>
+  </div>
+</div>
+
 <!-- MODAL -->
 <div class="modal-ov" id="modal">
   <div class="modal-sheet">
@@ -1972,7 +2069,7 @@ function setBtn(id,on){ const b=document.getElementById(id); if(b) b.classList.t
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('visible'));
   document.getElementById(id).classList.add('visible');
-  document.getElementById('nav-bar').style.display=['screen-home','screen-bilancio','screen-storico','screen-stats'].includes(id)?'flex':'none';
+  document.getElementById('nav-bar').style.display=['screen-home','screen-insights'].includes(id)?'flex':'none';
 }
 
 // ── AUTH ──
@@ -2118,12 +2215,14 @@ async function enterApp(){
   showScreen('screen-loading');
   try { await loadData(); } catch(e){ console.error('loadData error:', e); }
   const now = new Date();
-  document.getElementById('stats-mo').textContent=now.toLocaleDateString('it-IT',{month:'long',year:'numeric'});
-  document.getElementById('cal-day-num').textContent = now.getDate();
-  document.getElementById('cal-weekday').textContent = now.toLocaleDateString('it-IT',{weekday:'long'}).replace(/^\w/,c=>c.toUpperCase());
-  document.getElementById('cal-month').textContent = now.toLocaleDateString('it-IT',{month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
-  document.getElementById('in-cc').value=S.cc||'';
-  document.getElementById('in-cash').value=S.cash||'';
+  const todayEl = document.getElementById('ov-today-date');
+  if(todayEl) todayEl.textContent = now.toLocaleDateString('it-IT',{day:'numeric',month:'long'});
+  const insMonthEl = document.getElementById('ins-month-lbl');
+  if(insMonthEl) insMonthEl.textContent = now.toLocaleDateString('it-IT',{month:'long',year:'numeric'});
+  const ccEl = document.getElementById('ov-in-cc');
+  const cashEl = document.getElementById('ov-in-cash');
+  if(ccEl) ccEl.value = S.cc || '';
+  if(cashEl) cashEl.value = S.cash || '';
   renderAll();
   switchTab('home');
 }
@@ -2146,22 +2245,20 @@ async function saveProfile(){
 let curTab='home';
 function switchTab(tab){
   curTab=tab;
-  ['home','bilancio','storico','stats'].forEach(t=>{
+  ['home','insights'].forEach(t=>{
     const s=document.getElementById('screen-'+t);
     const n=document.getElementById('nav-'+t);
     if(s) s.classList.toggle('visible',t===tab);
     if(n) n.classList.toggle('active',t===tab);
   });
   document.getElementById('nav-bar').style.display='flex';
-  if(tab==='storico') renderStorico();
-  if(tab==='stats') renderStats();
-  if(tab==='bilancio') renderCircle();
+  if(tab==='insights') renderInsights();
 }
 
 // ── BALANCES ──
 function onBalInput(){
-  S.cc=parseFloat(document.getElementById('in-cc').value)||0;
-  S.cash=parseFloat(document.getElementById('in-cash').value)||0;
+  S.cc=parseFloat(document.getElementById('ov-in-cc').value)||0;
+  S.cash=parseFloat(document.getElementById('ov-in-cash').value)||0;
   renderCircle();
   clearTimeout(balTimer);
   balTimer=setTimeout(saveProfile,1200);
@@ -2169,30 +2266,32 @@ function onBalInput(){
 
 function renderCircle(){
   const tot=S.cc+S.cash;
-  // totale
-  const tdEl=document.getElementById('total-disp');
-  if(tdEl) tdEl.textContent=eur(tot);
-  // legenda
-  const lcc=document.getElementById('leg-cc'), lcash=document.getElementById('leg-cash');
-  if(lcc) lcc.textContent='C/C — '+eur(S.cc);
-  if(lcash) lcash.textContent='Contanti — '+eur(S.cash);
-  // donut SVG — cerchio intero = 2*PI*72 = 452.4
-  const DONUT=452.4;
-  const aCC=document.getElementById('arc-cc'), aCash=document.getElementById('arc-cash');
-  const pctEl=document.getElementById('bil-donut-pct');
-  if(!aCC||!aCash) return;
+  const totalEl=document.getElementById('ov-total');
+  if(totalEl) totalEl.textContent=eur(tot);
+  // mini donut (icon) — r=7, circonferenza=43.98
+  const MINI=43.98;
+  // big donut — r=38, circonferenza=238.76
+  const BIG=238.76;
+  const miniCC=document.getElementById('ov-mini-cc'), miniCash=document.getElementById('ov-mini-cash');
+  const bigCC=document.getElementById('ov-big-cc'), bigCash=document.getElementById('ov-big-cash');
+  const pctEl=document.getElementById('ov-donut-pct');
+  if(!bigCC||!bigCash){ renderGoal(); return; }
   if(!tot){
-    aCC.setAttribute('stroke-dasharray','0 '+DONUT);
-    aCash.setAttribute('stroke-dasharray','0 '+DONUT);
+    [miniCC,miniCash].forEach(el=>{ if(el) el.setAttribute('stroke-dasharray','0 '+MINI); });
+    bigCC.setAttribute('stroke-dasharray','0 '+BIG);
+    bigCash.setAttribute('stroke-dasharray','0 '+BIG);
     if(pctEl) pctEl.textContent='—';
-    return;
+    renderGoal(); return;
   }
-  const lCC=(S.cc/tot)*DONUT, lCash=(S.cash/tot)*DONUT;
-  aCC.setAttribute('stroke-dasharray',lCC.toFixed(1)+' '+DONUT);
-  aCC.setAttribute('stroke-dashoffset','0');
-  aCash.setAttribute('stroke-dasharray',lCash.toFixed(1)+' '+DONUT);
-  aCash.setAttribute('stroke-dashoffset',(-lCC).toFixed(1));
-  if(pctEl) pctEl.textContent=Math.round((S.cc/tot)*100)+'%';
+  const ccR=S.cc/tot, cashR=S.cash/tot;
+  const lMiniCC=ccR*MINI, lBigCC=ccR*BIG;
+  const lMiniCash=cashR*MINI, lBigCash=cashR*BIG;
+  if(miniCC){ miniCC.setAttribute('stroke-dasharray',lMiniCC.toFixed(1)+' '+MINI); miniCC.setAttribute('stroke-dashoffset','0'); }
+  if(miniCash){ miniCash.setAttribute('stroke-dasharray',lMiniCash.toFixed(1)+' '+MINI); miniCash.setAttribute('stroke-dashoffset',(-lMiniCC).toFixed(1)); }
+  bigCC.setAttribute('stroke-dasharray',lBigCC.toFixed(1)+' '+BIG); bigCC.setAttribute('stroke-dashoffset','0');
+  bigCash.setAttribute('stroke-dasharray',lBigCash.toFixed(1)+' '+BIG); bigCash.setAttribute('stroke-dashoffset',(-lBigCC).toFixed(1));
+  if(pctEl) pctEl.textContent=Math.round(ccR*100)+'%';
+  renderGoal();
 }
 
 // ── CATEGORY SCREEN ──
@@ -2373,8 +2472,8 @@ async function confirmTx(){
   const sign=txType==='entrata'?1:-1;
   if(conto==='cc') S.cc=Math.max(0,S.cc+sign*amt);
   else S.cash=Math.max(0,S.cash+sign*amt);
-  document.getElementById('in-cc').value=S.cc||'';
-  document.getElementById('in-cash').value=S.cash||'';
+  const ccInp=document.getElementById('ov-in-cc'); if(ccInp) ccInp.value=S.cc||'';
+  const cashInp=document.getElementById('ov-in-cash'); if(cashInp) cashInp.value=S.cash||'';
   const [{data:tx}]=await Promise.all([
     sb.from('transactions').insert({user_id:S.user.id,type:txType,conto,importo:amt,descrizione:desc}).select().single(),
     saveProfile()
@@ -2386,7 +2485,7 @@ async function confirmTx(){
 }
 
 // ── RENDER ──
-function renderAll(){ renderCircle(); if(curTab==='storico') renderStorico(); if(curTab==='stats') renderStats(); }
+function renderAll(){ renderCircle(); renderInsights(); }
 
 function txCard(tx){
   const sign=tx.type==='entrata'?'+':'−', icon=tx.type==='entrata'?'↑':'↓';
@@ -2768,7 +2867,7 @@ async function saveIncomeTx() {
     if (!error && tx) { S.txs.unshift(tx); S.cc += amt; total += amt; }
   }
   if (total > 0) {
-    document.getElementById('in-cc').value = S.cc || '';
+    const ccInp=document.getElementById('ov-in-cc'); if(ccInp) ccInp.value = S.cc || '';
     await saveProfile();
     renderAll();
     closeIncomeScreen();
@@ -2777,6 +2876,64 @@ async function saveIncomeTx() {
     toast('Errore durante il salvataggio');
   }
 }
+
+// ── INSIGHTS ──
+function renderInsights(){
+  const now=new Date();
+  const yr=now.getFullYear(), mo=now.getMonth();
+  const txs=S.txs.filter(tx=>{ const d=new Date(tx.created_at); return d.getFullYear()===yr&&d.getMonth()===mo; });
+  const inc=txs.filter(t=>t.type==='entrata').reduce((a,t)=>a+Number(t.importo),0);
+  const exp=txs.filter(t=>t.type==='uscita').reduce((a,t)=>a+Number(t.importo),0);
+  const incEl=document.getElementById('ins-inc-amt');
+  const expEl=document.getElementById('ins-exp-amt');
+  const listEl=document.getElementById('ins-tx-list');
+  if(incEl) incEl.textContent=eur(inc);
+  if(expEl) expEl.textContent=eur(exp);
+  if(!listEl) return;
+  const recent=S.txs.slice(0,10);
+  if(!recent.length){ listEl.innerHTML='<div class="ins-empty">Nessuna transazione ancora.</div>'; return; }
+  listEl.innerHTML=recent.map(tx=>{
+    const isInc=tx.type==='entrata', sign=isInc?'+':'−', cls=isInc?'entrata':'uscita', icon=isInc?'↑':'↓';
+    const cl=tx.conto==='cc'?'C/C':'Contanti';
+    return `<div class="ins-tx-item"><div class="ins-tx-dot ${cls}">${icon}</div><div class="ins-tx-info"><div class="ins-tx-desc">${tx.descrizione||'—'}</div><div class="ins-tx-meta">${fdate(tx.created_at)} · ${cl}</div></div><div class="ins-tx-amt ${cls}">${sign} ${eur(tx.importo)}</div></div>`;
+  }).join('');
+}
+
+// ── GOAL ──
+let goalTarget=0;
+function openGoalModal(){
+  const inp=document.getElementById('goal-modal-inp');
+  if(inp) inp.value=goalTarget||'';
+  document.getElementById('goal-modal').classList.add('open');
+}
+function closeGoalModal(){ document.getElementById('goal-modal').classList.remove('open'); }
+function saveGoal(){
+  goalTarget=parseFloat(document.getElementById('goal-modal-inp').value)||0;
+  closeGoalModal();
+  renderGoal();
+}
+function renderGoal(){
+  const CIRC=201.06;
+  const sub=document.getElementById('ov-goal-sub'), val=document.getElementById('ov-goal-val');
+  const ratio=document.getElementById('ov-goal-ratio'), arc=document.getElementById('ov-goal-arc');
+  const tot=S.cc+S.cash;
+  if(!goalTarget){
+    if(sub) sub.textContent='Tocca per impostare un obiettivo';
+    if(val) val.textContent='—';
+    if(ratio) ratio.textContent='';
+    if(arc) arc.setAttribute('stroke-dasharray','0 '+CIRC);
+    return;
+  }
+  const pct=Math.min(1,tot/goalTarget);
+  if(sub) sub.textContent='Obiettivo di risparmio';
+  if(val) val.textContent=eur(goalTarget);
+  if(ratio) ratio.textContent=Math.round(pct*100)+'%';
+  if(arc){ arc.setAttribute('stroke-dasharray',(pct*CIRC).toFixed(1)+' '+CIRC); arc.setAttribute('stroke-dashoffset','0'); }
+}
+document.addEventListener('click', e=>{
+  const modal=document.getElementById('goal-modal');
+  if(modal&&e.target===modal) closeGoalModal();
+});
 
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 
