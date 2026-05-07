@@ -19,7 +19,7 @@ icons/       — icon-192.png, icon-512.png
 
 ## Regole di sviluppo
 - Tutta la logica dell'app è in `index.html` — NON creare file JS separati senza discuterne
-- Il Service Worker usa `CACHE_NAME = "finanze-shell-v10"` — aggiornare il numero versione ad ogni modifica dei file in cache
+- Il Service Worker usa `CACHE_NAME = "finanze-shell-v13"` — aggiornare il numero versione ad ogni modifica dei file in cache
 - L'app è in **italiano** — tutti i testi UI restano in italiano
 - Nessun build step, nessun bundler — tutto gira direttamente nel browser
 - Usare CSS custom properties (design tokens in `:root`) per colori e spaziature

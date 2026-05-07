@@ -1452,16 +1452,129 @@ body {
   color: var(--ov-text3); text-transform: uppercase; letter-spacing: 0.05em;
 }
 
-/* ── DEBT MODAL inputs ── */
+/* ── MODAL INPUTS ── */
 .goal-modal-inp-lbl {
   font-family: var(--font); font-size: 10px; font-weight: 600;
   color: var(--ov-text2); text-transform: uppercase; letter-spacing: 0.06em;
-  margin-bottom: 6px; margin-top: 12px; display: block;
+  margin-bottom: 6px; margin-top: 14px; display: block;
 }
+.goal-modal-inp.text-inp { font-size: 16px; font-family: var(--font); }
 .goal-modal-btn.secondary {
-  background: transparent; color: var(--ov-primary);
-  border: 1.5px solid rgba(124,58,237,0.3);
-  margin-bottom: 8px;
+  width: 100%; background: rgba(0,0,0,0.07); border: none;
+  border-radius: 14px; padding: 15px; font-family: var(--font);
+  font-size: 16px; font-weight: 600; color: var(--ov-text2); cursor: pointer;
+  margin-top: 10px; display: block;
+}
+.goal-modal-btn.secondary:active { opacity: 0.7; }
+
+/* ── GOALS FULL SCREEN ── */
+.goals-screen {
+  position: fixed; inset: 0; z-index: 400;
+  background: var(--ov-bg); display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.32,0.72,0,1);
+  max-width: 430px; margin: 0 auto;
+}
+.goals-screen.open { transform: translateX(0); }
+.goals-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 56px 20px 16px;
+  background: rgba(255,255,255,0.95); border-bottom: 0.5px solid rgba(0,0,0,0.08);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); flex-shrink: 0;
+}
+.goals-back-btn {
+  width: 44px; height: 44px; background: none; border: none;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ov-primary); cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.goals-topbar-title {
+  font-family: var(--font); font-size: 18px; font-weight: 700;
+  color: var(--ov-text); letter-spacing: -0.02em;
+}
+.goals-scroll { flex: 1; overflow-y: auto; padding: 16px 16px calc(90px + env(safe-area-inset-bottom,0px)); -webkit-overflow-scrolling: touch; }
+.goals-empty { text-align: center; padding: 60px 20px; font-family: var(--font); font-size: 14px; color: var(--ov-text3); line-height: 1.6; }
+.goals-fab {
+  position: absolute; bottom: calc(24px + env(safe-area-inset-bottom,0px)); right: 20px;
+  width: 52px; height: 52px; border-radius: 50%; background: var(--ov-primary);
+  border: none; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.35); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── GOAL CARDS ── */
+.goal-card-wrap { position: relative; margin-bottom: 12px; border-radius: 18px; overflow: hidden; }
+.goal-card-content {
+  background: white; border-radius: 18px; padding: 16px;
+  display: flex; align-items: center; gap: 14px;
+  position: relative; z-index: 2;
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.goal-card-wrap.swiped .goal-card-content { transform: translateX(-120px); }
+.goal-card-wrap.selected .goal-card-content { background: rgba(124,58,237,0.05); }
+.goal-card-info { flex: 1; min-width: 0; }
+.goal-card-title { font-family: var(--font); font-size: 15px; font-weight: 600; color: var(--ov-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.goal-card-desc { font-family: var(--font); font-size: 12px; color: var(--ov-text2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.goal-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+.goal-card-prog { font-family: var(--mono); font-size: 11px; color: var(--ov-primary); font-weight: 500; }
+.goal-card-date { font-family: var(--font); font-size: 10px; color: var(--ov-text3); }
+.goal-card-swipe-actions {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 120px;
+  display: flex; z-index: 1; border-radius: 0 18px 18px 0; overflow: hidden;
+}
+.goal-action-btn {
+  flex: 1; border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; font-family: var(--font); font-size: 10px; font-weight: 600;
+  -webkit-tap-highlight-color: transparent; transition: opacity 0.1s;
+}
+.goal-action-btn:active { opacity: 0.7; }
+.goal-action-pin { background: var(--ov-primary); color: white; }
+.goal-action-del { background: #EF4444; color: white; }
+
+/* ── CONTRIB MODAL ── */
+.contrib-progress-row { display: flex; align-items: baseline; gap: 5px; margin: 4px 0 14px; }
+.contrib-saved-val { font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--ov-text); }
+.contrib-sep, .contrib-target-val { font-family: var(--mono); font-size: 15px; color: var(--ov-text3); }
+.contrib-btns-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.contrib-btn {
+  flex: 1; padding: 13px 6px; border-radius: 12px;
+  border: 1.5px solid rgba(0,0,0,0.10); background: rgba(0,0,0,0.03);
+  font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--ov-text2);
+  cursor: pointer; transition: all 0.18s; -webkit-tap-highlight-color: transparent;
+}
+.contrib-btn.active-versa { background: rgba(34,197,94,0.12); border-color: #22C55E; color: #16A34A; }
+.contrib-btn.active-detrai { background: rgba(239,68,68,0.12); border-color: #EF4444; color: #DC2626; }
+
+/* ── DELETE CONFIRM POPUP ── */
+.confirm-popup-ov {
+  position: fixed; inset: 0; z-index: 700; background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.confirm-popup-ov.open { opacity: 1; pointer-events: all; }
+.confirm-popup-box {
+  background: white; border-radius: 20px; padding: 26px 22px;
+  width: calc(100% - 60px); max-width: 320px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.22);
+  transform: scale(0.88); transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+.confirm-popup-ov.open .confirm-popup-box { transform: scale(1); }
+.confirm-popup-text { font-family: var(--font); font-size: 16px; font-weight: 600; color: var(--ov-text); text-align: center; margin-bottom: 22px; line-height: 1.45; }
+.confirm-popup-btns { display: flex; gap: 10px; }
+.confirm-btn-cancel, .confirm-btn-delete {
+  flex: 1; padding: 14px; border-radius: 12px; border: none;
+  font-family: var(--font); font-size: 15px; font-weight: 600; cursor: pointer;
+}
+.confirm-btn-cancel { background: rgba(0,0,0,0.07); color: var(--ov-text2); }
+.confirm-btn-delete { background: #EF4444; color: white; }
+.confirm-btn-cancel:active, .confirm-btn-delete:active { opacity: 0.8; }
+
+/* ── OV GOAL PROGRESS LINE ── */
+.ov-goal-prog-line {
+  padding: 0 18px 14px; display: flex; justify-content: flex-end;
+  font-family: var(--font); font-size: 11px; color: var(--ov-text3);
 }
 </style>
 </head>
@@ -1628,7 +1741,7 @@ body {
       </div>
 
       <!-- Card 2: Obiettivo -->
-      <div class="ov-card" onclick="openGoalModal()">
+      <div class="ov-card" onclick="openGoalsScreen()">
         <div class="ov-card-top">
           <div class="ov-card-title-row">
             <div class="ov-card-icon" style="background:rgba(236,72,153,0.10)">
@@ -1643,7 +1756,7 @@ body {
         </div>
         <div class="ov-goal-body">
           <div>
-            <span class="ov-goal-sub" id="ov-goal-sub">Tocca per impostare un obiettivo</span>
+            <span class="ov-goal-sub" id="ov-goal-sub">Tocca per creare un obiettivo</span>
             <div class="ov-goal-val" id="ov-goal-val">—</div>
           </div>
           <div class="ov-goal-circle-wrap">
@@ -1651,9 +1764,10 @@ body {
               <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="8"/>
               <circle id="ov-goal-arc" cx="40" cy="40" r="32" fill="none" stroke="var(--ov-pink)" stroke-width="8" stroke-dasharray="0 201.06" transform="rotate(-90 40 40)" stroke-linecap="round"/>
             </svg>
-            <div class="ov-goal-ratio" id="ov-goal-ratio"></div>
+            <div class="ov-goal-ratio" id="ov-goal-ratio">0%</div>
           </div>
         </div>
+        <div class="ov-goal-prog-line"><span id="ov-goal-saved-vs-target">0 / —</span></div>
       </div>
 
       <!-- Card 3: Debito -->
@@ -2044,6 +2158,8 @@ body {
     <div class="goal-modal-title">Gestisci debito</div>
     <span class="goal-modal-inp-lbl">Debito totale</span>
     <input type="number" class="goal-modal-inp" id="debt-total-inp" placeholder="0,00" step="0.01" min="0"/>
+    <span class="goal-modal-inp-lbl">Descrizione</span>
+    <input type="text" class="goal-modal-inp text-inp" id="debt-desc-inp" placeholder="es. Mutuo, Prestito auto..."/>
     <span class="goal-modal-inp-lbl">Già rimborsato</span>
     <input type="number" class="goal-modal-inp" id="debt-paid-inp" placeholder="0,00" step="0.01" min="0"/>
     <button class="goal-modal-btn" onclick="saveDebt()">Salva</button>
@@ -2051,13 +2167,68 @@ body {
   </div>
 </div>
 
-<!-- GOAL MODAL -->
-<div class="goal-modal-ov" id="goal-modal">
+<!-- GOALS FULL SCREEN -->
+<div class="goals-screen" id="goals-screen">
+  <div class="goals-topbar">
+    <button class="goals-back-btn" onclick="closeGoalsScreen()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="goals-topbar-title">Obiettivi</div>
+    <div style="width:44px"></div>
+  </div>
+  <div class="goals-scroll" id="goals-scroll">
+    <div class="goals-empty" id="goals-empty">Nessun obiettivo ancora.<br>Premi + per crearne uno.</div>
+  </div>
+  <button class="goals-fab" onclick="openNewGoalModal()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+</div>
+
+<!-- NEW GOAL MODAL -->
+<div class="goal-modal-ov" id="new-goal-modal">
   <div class="goal-modal-sheet">
     <div class="goal-modal-handle"></div>
-    <div class="goal-modal-title">Imposta obiettivo</div>
-    <input type="number" class="goal-modal-inp" id="goal-modal-inp" placeholder="0,00" step="0.01" min="0"/>
-    <button class="goal-modal-btn" onclick="saveGoal()">Salva obiettivo</button>
+    <div class="goal-modal-title">Nuovo obiettivo</div>
+    <span class="goal-modal-inp-lbl">Nome obiettivo</span>
+    <input type="text" class="goal-modal-inp text-inp" id="new-goal-title-inp" placeholder="es. Vacanza, Emergenza..."/>
+    <span class="goal-modal-inp-lbl">Importo target (€)</span>
+    <input type="number" class="goal-modal-inp" id="new-goal-amount-inp" placeholder="0,00" step="0.01" min="0"/>
+    <span class="goal-modal-inp-lbl">Descrizione (opzionale)</span>
+    <input type="text" class="goal-modal-inp text-inp" id="new-goal-desc-inp" placeholder="Note aggiuntive..."/>
+    <button class="goal-modal-btn" onclick="saveNewGoal()">Salva obiettivo</button>
+    <button class="goal-modal-btn secondary" onclick="closeNewGoalModal()">Annulla</button>
+  </div>
+</div>
+
+<!-- GOAL CONTRIB MODAL -->
+<div class="goal-modal-ov" id="goal-contrib-modal">
+  <div class="goal-modal-sheet">
+    <div class="goal-modal-handle"></div>
+    <div class="goal-modal-title" id="contrib-modal-title">Obiettivo</div>
+    <div class="contrib-progress-row">
+      <span class="contrib-saved-val" id="contrib-saved-val">€ 0,00</span>
+      <span class="contrib-sep">/</span>
+      <span class="contrib-target-val" id="contrib-target-val">€ 0,00</span>
+    </div>
+    <div class="contrib-btns-row">
+      <button class="contrib-btn" id="contrib-btn-versa" onclick="toggleContribMode('versa')">Versa contributo</button>
+      <button class="contrib-btn" id="contrib-btn-detrai" onclick="toggleContribMode('detrai')">Detrai dall'obiettivo</button>
+    </div>
+    <span class="goal-modal-inp-lbl" id="contrib-inp-lbl">Importo (€)</span>
+    <input type="number" class="goal-modal-inp" id="contrib-amount-inp" placeholder="0,00" step="0.01" min="0"/>
+    <button class="goal-modal-btn" onclick="applyContrib()">Conferma</button>
+    <button class="goal-modal-btn secondary" onclick="closeGoalContribModal()">Annulla</button>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM POPUP -->
+<div class="confirm-popup-ov" id="delete-confirm-popup">
+  <div class="confirm-popup-box">
+    <div class="confirm-popup-text">Sicuro di voler eliminare l'obiettivo?</div>
+    <div class="confirm-popup-btns">
+      <button class="confirm-btn-cancel" onclick="closeDeleteConfirm()">Annulla</button>
+      <button class="confirm-btn-delete" onclick="executeDeleteGoal()">Elimina</button>
+    </div>
   </div>
 </div>
 
@@ -2907,15 +3078,17 @@ async function saveIncomeTx() {
 }
 
 // ── DEBT ──
-let debtState = { total: 0, paid: 0 };
+let debtState = { total: 0, paid: 0, description: '' };
 function openDebtModal(){
   document.getElementById('debt-total-inp').value = debtState.total || '';
+  document.getElementById('debt-desc-inp').value = debtState.description || '';
   document.getElementById('debt-paid-inp').value = debtState.paid || '';
   document.getElementById('debt-modal').classList.add('open');
 }
 function closeDebtModal(){ document.getElementById('debt-modal').classList.remove('open'); }
 function saveDebt(){
   debtState.total = parseFloat(document.getElementById('debt-total-inp').value) || 0;
+  debtState.description = document.getElementById('debt-desc-inp').value.trim();
   debtState.paid  = parseFloat(document.getElementById('debt-paid-inp').value)  || 0;
   if(debtState.paid > debtState.total) debtState.paid = debtState.total;
   closeDebtModal();
@@ -2968,41 +3141,231 @@ function renderInsights(){
   }).join('');
 }
 
-// ── GOAL ──
-let goalTarget=0;
-function openGoalModal(){
-  const inp=document.getElementById('goal-modal-inp');
-  if(inp) inp.value=goalTarget||'';
-  document.getElementById('goal-modal').classList.add('open');
+// ── GOALS SYSTEM ──
+let goals = JSON.parse(localStorage.getItem('goals_data') || '[]');
+let pinnedGoalId = localStorage.getItem('pinned_goal_id') || null;
+let _deleteTargetId = null;
+let _contribGoalId = null;
+let _contribMode = null;
+
+function saveGoalsData(){
+  localStorage.setItem('goals_data', JSON.stringify(goals));
 }
-function closeGoalModal(){ document.getElementById('goal-modal').classList.remove('open'); }
-function saveGoal(){
-  goalTarget=parseFloat(document.getElementById('goal-modal-inp').value)||0;
-  closeGoalModal();
-  renderGoal();
+
+// ── Goals Screen ──
+function openGoalsScreen(){
+  document.getElementById('goals-screen').classList.add('open');
+  renderGoalsList();
 }
-function renderGoal(){
-  const CIRC=201.06;
-  const sub=document.getElementById('ov-goal-sub'), val=document.getElementById('ov-goal-val');
-  const ratio=document.getElementById('ov-goal-ratio'), arc=document.getElementById('ov-goal-arc');
-  const tot=S.cc+S.cash;
-  if(!goalTarget){
-    if(sub) sub.textContent='Tocca per impostare un obiettivo';
-    if(val) val.textContent='—';
-    if(ratio) ratio.textContent='';
-    if(arc) arc.setAttribute('stroke-dasharray','0 '+CIRC);
+function closeGoalsScreen(){
+  document.getElementById('goals-screen').classList.remove('open');
+}
+
+function renderGoalsList(){
+  const scroll = document.getElementById('goals-scroll');
+  const empty = document.getElementById('goals-empty');
+  if(!goals.length){
+    empty.style.display = '';
+    const existing = scroll.querySelectorAll('.goal-card-wrap');
+    existing.forEach(el => el.remove());
     return;
   }
-  const pct=Math.min(1,tot/goalTarget);
-  if(sub) sub.textContent='Obiettivo di risparmio';
-  if(val) val.textContent=eur(goalTarget);
-  if(ratio) ratio.textContent=Math.round(pct*100)+'%';
-  if(arc){ arc.setAttribute('stroke-dasharray',(pct*CIRC).toFixed(1)+' '+CIRC); arc.setAttribute('stroke-dashoffset','0'); }
+  empty.style.display = 'none';
+  scroll.querySelectorAll('.goal-card-wrap').forEach(el => el.remove());
+  goals.forEach(g => {
+    const wrap = document.createElement('div');
+    wrap.className = 'goal-card-wrap' + (g.id === pinnedGoalId ? ' pinned' : '');
+    wrap.dataset.id = g.id;
+    const pct = g.target > 0 ? Math.min(1, g.saved / g.target) : 0;
+    const pctTxt = Math.round(pct * 100) + '%';
+    const dateStr = new Date(g.created).toLocaleDateString('it-IT', {day:'2-digit', month:'short', year:'numeric'});
+    const pinColor = g.id === pinnedGoalId ? '#22C55E' : 'white';
+    wrap.innerHTML = `
+      <div class="goal-card-swipe-actions">
+        <button class="goal-action-btn goal-action-pin" onclick="pinGoal('${g.id}')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="${pinColor}" stroke="${pinColor}" stroke-width="1.5"><path d="M12 2l2.4 6.4H21l-5.3 3.9 2 6.5L12 15l-5.7 3.8 2-6.5L3 8.4h6.6z"/></svg>
+          <span>Fissa</span>
+        </button>
+        <button class="goal-action-btn goal-action-del" onclick="askDeleteGoal('${g.id}')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          <span>Elimina</span>
+        </button>
+      </div>
+      <div class="goal-card-content" onclick="openGoalContrib('${g.id}')">
+        <div class="goal-card-info">
+          <div class="goal-card-title">${g.title}</div>
+          ${g.desc ? `<div class="goal-card-desc">${g.desc}</div>` : ''}
+          <div class="goal-card-footer">
+            <span class="goal-card-prog">${eur(g.saved)} / ${eur(g.target)} · ${pctTxt}</span>
+            <span class="goal-card-date">${dateStr}</span>
+          </div>
+        </div>
+      </div>`;
+    setupGoalGestures(wrap);
+    scroll.insertBefore(wrap, empty);
+  });
 }
-document.addEventListener('click', e=>{
-  const modal=document.getElementById('goal-modal');
-  if(modal&&e.target===modal) closeGoalModal();
+
+function setupGoalGestures(wrap){
+  let startX = 0, startY = 0, moved = false, longPressTimer = null;
+  wrap.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    moved = false;
+    longPressTimer = setTimeout(() => {
+      if(!moved){
+        document.querySelectorAll('.goal-card-wrap').forEach(w => w.classList.remove('swiped'));
+        wrap.classList.toggle('selected');
+      }
+    }, 600);
+  }, {passive: true});
+  wrap.addEventListener('touchmove', e => {
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    if(Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
+    if(longPressTimer && moved){ clearTimeout(longPressTimer); longPressTimer = null; }
+  }, {passive: true});
+  wrap.addEventListener('touchend', e => {
+    if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
+    const dx = e.changedTouches[0].clientX - startX;
+    if(!moved) return;
+    if(dx < -50){
+      document.querySelectorAll('.goal-card-wrap').forEach(w => { if(w !== wrap) w.classList.remove('swiped'); });
+      wrap.classList.add('swiped');
+    } else if(dx > 30){
+      wrap.classList.remove('swiped');
+    }
+  }, {passive: true});
+}
+
+// close swipe/select when tapping elsewhere
+document.addEventListener('click', e => {
+  if(!e.target.closest('.goal-card-wrap') && !e.target.closest('.goal-action-btn')){
+    document.querySelectorAll('.goal-card-wrap').forEach(w => w.classList.remove('swiped','selected'));
+  }
 });
+
+// ── New Goal Modal ──
+function openNewGoalModal(){
+  document.getElementById('new-goal-title-inp').value = '';
+  document.getElementById('new-goal-amount-inp').value = '';
+  document.getElementById('new-goal-desc-inp').value = '';
+  document.getElementById('new-goal-modal').classList.add('open');
+}
+function closeNewGoalModal(){ document.getElementById('new-goal-modal').classList.remove('open'); }
+function saveNewGoal(){
+  const title = document.getElementById('new-goal-title-inp').value.trim();
+  const amount = parseFloat(document.getElementById('new-goal-amount-inp').value) || 0;
+  const desc = document.getElementById('new-goal-desc-inp').value.trim();
+  if(!title || !amount) return;
+  const g = { id: Date.now().toString(), title, target: amount, desc, saved: 0, created: new Date().toISOString() };
+  goals.push(g);
+  if(!pinnedGoalId){ pinnedGoalId = g.id; localStorage.setItem('pinned_goal_id', pinnedGoalId); }
+  saveGoalsData();
+  closeNewGoalModal();
+  renderGoalsList();
+  renderGoal();
+}
+document.addEventListener('click', e => {
+  const m = document.getElementById('new-goal-modal');
+  if(m && e.target === m) closeNewGoalModal();
+});
+
+// ── Goal Contrib Modal ──
+function openGoalContrib(id){
+  const g = goals.find(x => x.id === id);
+  if(!g) return;
+  _contribGoalId = id;
+  _contribMode = null;
+  document.getElementById('contrib-modal-title').textContent = g.title;
+  document.getElementById('contrib-saved-val').textContent = eur(g.saved);
+  document.getElementById('contrib-target-val').textContent = eur(g.target);
+  document.getElementById('contrib-amount-inp').value = '';
+  document.getElementById('contrib-btn-versa').className = 'contrib-btn';
+  document.getElementById('contrib-btn-detrai').className = 'contrib-btn';
+  document.getElementById('contrib-inp-lbl').textContent = 'Importo (€)';
+  document.getElementById('goal-contrib-modal').classList.add('open');
+}
+function closeGoalContribModal(){
+  document.getElementById('goal-contrib-modal').classList.remove('open');
+  _contribGoalId = null; _contribMode = null;
+}
+function toggleContribMode(mode){
+  _contribMode = _contribMode === mode ? null : mode;
+  document.getElementById('contrib-btn-versa').className = 'contrib-btn' + (_contribMode === 'versa' ? ' active-versa' : '');
+  document.getElementById('contrib-btn-detrai').className = 'contrib-btn' + (_contribMode === 'detrai' ? ' active-detrai' : '');
+  document.getElementById('contrib-inp-lbl').textContent = _contribMode === 'versa' ? 'Importo da versare (€)' : _contribMode === 'detrai' ? 'Importo da detrarre (€)' : 'Importo (€)';
+}
+function applyContrib(){
+  if(!_contribGoalId || !_contribMode) return;
+  const amt = parseFloat(document.getElementById('contrib-amount-inp').value) || 0;
+  if(!amt) return;
+  const g = goals.find(x => x.id === _contribGoalId);
+  if(!g) return;
+  if(_contribMode === 'versa') g.saved = Math.min(g.target, g.saved + amt);
+  else g.saved = Math.max(0, g.saved - amt);
+  saveGoalsData();
+  closeGoalContribModal();
+  renderGoalsList();
+  renderGoal();
+}
+document.addEventListener('click', e => {
+  const m = document.getElementById('goal-contrib-modal');
+  if(m && e.target === m) closeGoalContribModal();
+});
+
+// ── Pin / Delete ──
+function pinGoal(id){
+  pinnedGoalId = id;
+  localStorage.setItem('pinned_goal_id', id);
+  renderGoalsList();
+  renderGoal();
+}
+function askDeleteGoal(id){
+  _deleteTargetId = id;
+  document.getElementById('delete-confirm-popup').classList.add('open');
+}
+function closeDeleteConfirm(){
+  document.getElementById('delete-confirm-popup').classList.remove('open');
+  _deleteTargetId = null;
+}
+function executeDeleteGoal(){
+  if(!_deleteTargetId) return;
+  goals = goals.filter(g => g.id !== _deleteTargetId);
+  if(pinnedGoalId === _deleteTargetId){
+    pinnedGoalId = goals.length ? goals[0].id : null;
+    localStorage.setItem('pinned_goal_id', pinnedGoalId || '');
+  }
+  saveGoalsData();
+  closeDeleteConfirm();
+  renderGoalsList();
+  renderGoal();
+}
+
+// ── Overview Goal Card ──
+function renderGoal(){
+  const CIRC = 201.06;
+  const sub = document.getElementById('ov-goal-sub');
+  const val = document.getElementById('ov-goal-val');
+  const ratio = document.getElementById('ov-goal-ratio');
+  const arc = document.getElementById('ov-goal-arc');
+  const svt = document.getElementById('ov-goal-saved-vs-target');
+  const g = pinnedGoalId ? goals.find(x => x.id === pinnedGoalId) : null;
+  if(!g){
+    if(sub) sub.textContent = 'Tocca per creare un obiettivo';
+    if(val) val.textContent = '—';
+    if(ratio) ratio.textContent = '0%';
+    if(arc) arc.setAttribute('stroke-dasharray', '0 ' + CIRC);
+    if(svt) svt.textContent = '0 / —';
+    return;
+  }
+  const pct = g.target > 0 ? Math.min(1, g.saved / g.target) : 0;
+  if(sub) sub.textContent = g.title;
+  if(val) val.textContent = eur(g.target);
+  if(ratio) ratio.textContent = Math.round(pct * 100) + '%';
+  if(arc) arc.setAttribute('stroke-dasharray', (pct * CIRC).toFixed(1) + ' ' + CIRC);
+  if(svt) svt.textContent = eur(g.saved) + ' / ' + eur(g.target);
+}
 
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 
