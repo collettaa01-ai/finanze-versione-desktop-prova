@@ -1879,6 +1879,58 @@ body {
 
 /* ── GOAL MODAL SHEET — taller scrollable for wizard ── */
 .goal-modal-sheet.tall { max-height: 86vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+/* ── iOS ZOOM PREVENT — inputs >= 16px ── */
+input:not([type=checkbox]):not([type=radio]), textarea, select {
+  font-size: max(16px, 1em);
+}
+
+/* ── BODY SCROLL LOCK WHEN MODAL OPEN ── */
+body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
+  overflow: hidden !important;
+  touch-action: none !important;
+  -webkit-overflow-scrolling: auto !important;
+}
+
+/* ── TX MODAL TYPE BUTTONS (verde/rosso uniformi) ── */
+.modal-sheet .type-btn.act-in {
+  background: rgba(34,197,94,0.12) !important;
+  border-color: #22C55E !important;
+  color: #16A34A !important;
+}
+.modal-sheet .type-btn.act-out {
+  background: rgba(239,68,68,0.12) !important;
+  border-color: #EF4444 !important;
+  color: #DC2626 !important;
+}
+
+/* ── HANDLE — visual hint clickable ── */
+.goal-modal-handle, .ripmenu-handle, .entry-menu-handle {
+  cursor: grab; touch-action: none;
+}
+
+/* ── PORTAFOGLIO ── */
+.ov-port-balance { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--ov-text); margin: 4px 0 4px; }
+.ov-port-sub { font-family: var(--font); font-size: 11px; color: var(--ov-text3); }
+.port-tx-card-content {
+  background: white; border-radius: 14px; padding: 14px;
+  display: flex; align-items: center; gap: 12px;
+  position: relative; z-index: 2;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.port-tx-dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-weight: 700; font-size: 16px;
+}
+.port-tx-dot.entrata { background: rgba(34,197,94,0.12); color: #16A34A; }
+.port-tx-dot.uscita { background: rgba(239,68,68,0.12); color: #DC2626; }
+.port-tx-info { flex: 1; min-width: 0; }
+.port-tx-desc { font-family: var(--font); font-size: 14px; font-weight: 600; color: var(--ov-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.port-tx-meta { font-family: var(--font); font-size: 11px; color: var(--ov-text3); margin-top: 2px; }
+.port-tx-amt { font-family: var(--mono); font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.port-tx-amt.entrata { color: #16A34A; }
+.port-tx-amt.uscita { color: #DC2626; }
 </style>
 </head>
 <body>
@@ -2040,6 +2092,26 @@ body {
             </div>
             <input type="number" class="ov-acc-inp" id="ov-in-cash" placeholder="0,00" step="0.01" min="0" oninput="onBalInput()"/>
           </div>
+        </div>
+      </div>
+
+      <!-- Card Portafoglio -->
+      <div class="ov-card" onclick="openPortScreen()">
+        <div class="ov-card-top">
+          <div class="ov-card-title-row">
+            <div class="ov-card-icon" style="background:rgba(124,58,237,0.10)">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ov-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/>
+                <path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/>
+                <path d="M18 12a2 2 0 0 0 0 4h4v-4z"/>
+              </svg>
+            </div>
+            <div class="ov-card-title">Portafoglio</div>
+          </div>
+        </div>
+        <div style="padding:0 18px 16px">
+          <div class="ov-port-balance" id="ov-port-balance">€ 0,00</div>
+          <span class="ov-port-sub" id="ov-port-sub">0 transazioni</span>
         </div>
       </div>
 
@@ -2676,9 +2748,55 @@ body {
     </div>
     <div class="fg"><div class="fl">Importo (€)</div><input type="number" id="inp-amt" placeholder="0,00" step="0.01" min="0"/></div>
     <div class="fg"><div class="fl">Descrizione</div><input type="text" id="inp-desc" placeholder="es. Stipendio, Spesa, Affitto..."/></div>
+    <div class="sched-box" id="tx-sched-box" style="margin: 4px 0 12px;">
+      <div class="sched-toggle">
+        <button class="sched-toggle-btn" data-status="registrato" onclick="setSchedStatus('registrato')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg>
+          <span>Registra</span>
+        </button>
+        <button class="sched-toggle-btn" data-status="previsto" onclick="setSchedStatus('previsto')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><polyline points="12 9 12 13 15 15"/><path d="M9 2h6"/></svg>
+          <span>Prevista</span>
+        </button>
+      </div>
+      <div class="sched-date" onclick="trySchedDate()">
+        <span class="sched-date-day" id="tx-sched-date-day">Oggi</span>
+        <span class="sched-date-time" id="tx-sched-date-time">12:00</span>
+      </div>
+    </div>
+    <div class="sched-extras" id="tx-sched-extras">
+      <div class="sched-row">
+        <span class="sched-row-lbl">Automatico</span>
+        <div class="iswitch" id="tx-sched-auto" onclick="toggleSchedAuto()"></div>
+      </div>
+      <div class="sched-row clickable" onclick="openRipetiMenu()">
+        <span class="sched-row-lbl">Ripeti</span>
+        <div class="sched-row-right">
+          <span id="tx-sched-repeat-lbl">Mai</span>
+          <svg width="8" height="14" class="sched-row-arrow" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
     <button class="btn-ok" id="btn-ok" onclick="confirmTx()">Conferma</button>
     <button class="btn-cancel" onclick="closeModal()">Annulla</button>
   </div>
+</div>
+
+<!-- PORTAFOGLIO FULL SCREEN -->
+<div class="goals-screen" id="port-screen">
+  <div class="goals-topbar">
+    <button class="goals-back-btn" onclick="closePortScreen()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="goals-topbar-title">Portafoglio</div>
+    <div style="width:44px"></div>
+  </div>
+  <div class="goals-scroll" id="port-scroll">
+    <div class="goals-empty" id="port-empty">Nessuna transazione ancora.<br>Premi + per aggiungerne una.</div>
+  </div>
+  <button class="goals-fab" onclick="openModal()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
 </div>
 
 <!-- SCHED DATE WHEEL PICKER -->
@@ -3256,9 +3374,8 @@ function openModal(){
   document.getElementById('btn-out').className='type-btn';
   document.getElementById('inp-amt').value='';
   document.getElementById('inp-desc').value='';
+  if(typeof resetSchedState === 'function') resetSchedState('tx');
   document.getElementById('modal').classList.add('open');
-  const isIOS=/ipad|iphone|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-  if(!isIOS) document.getElementById('inp-amt').focus();
 }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
 function setType(t){
@@ -3273,6 +3390,21 @@ async function confirmTx(){
   if(!amt||amt<=0){ toast('Importo non valido'); return; }
   const conto=document.getElementById('sel-conto').value;
   const desc=document.getElementById('inp-desc').value||'—';
+  // Prevista: save to localStorage pending_txs
+  if(typeof _schedState !== 'undefined' && _schedState.status === 'previsto'){
+    const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+    pending.push({
+      id: 'p'+Date.now()+Math.random().toString(36).slice(2,7),
+      type: txType, conto, importo: amt, descrizione: desc,
+      date: _schedState.when.toISOString(),
+      auto: !!_schedState.auto, repeat: _schedState.repeat,
+    });
+    localStorage.setItem('pending_txs', JSON.stringify(pending));
+    closeModal();
+    renderPortOverview(); renderPortList();
+    toast('Transazione prevista salvata');
+    return;
+  }
   setBtn('btn-ok',true);
   const sign=txType==='entrata'?1:-1;
   if(conto==='cc') S.cc=Math.max(0,S.cc+sign*amt);
@@ -3290,7 +3422,7 @@ async function confirmTx(){
 }
 
 // ── RENDER ──
-function renderAll(){ renderCircle(); renderInsights(); renderDebtOverview(); }
+function renderAll(){ renderCircle(); renderInsights(); renderDebtOverview(); renderPortOverview(); }
 
 function txCard(tx){
   const sign=tx.type==='entrata'?'+':'−', icon=tx.type==='entrata'?'↑':'↓';
@@ -4777,9 +4909,302 @@ document.addEventListener('click', e => {
   if(m && e.target === m) closeWizard();
 });
 
+// ── PORTAFOGLIO ──
+function openPortScreen(){
+  document.getElementById('port-screen').classList.add('open');
+  renderPortList();
+}
+function closePortScreen(){ document.getElementById('port-screen').classList.remove('open'); }
+
+function renderPortOverview(){
+  const balEl = document.getElementById('ov-port-balance');
+  const subEl = document.getElementById('ov-port-sub');
+  if(!balEl) return;
+  const total = (S.cc || 0) + (S.cash || 0);
+  balEl.textContent = eur(total);
+  const txCount = (S.txs || []).length;
+  const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]').length;
+  subEl.textContent = txCount + ' transazion' + (txCount===1?'e':'i') + (pending ? ' · ' + pending + ' previst' + (pending===1?'a':'e') : '');
+}
+
+function renderPortList(){
+  const scroll = document.getElementById('port-scroll');
+  const empty = document.getElementById('port-empty');
+  if(!scroll) return;
+  scroll.querySelectorAll('.port-tx-card').forEach(el => el.remove());
+  const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+  const all = [
+    ...((S.txs || []).map(t => ({...t, _kind:'tx'}))),
+    ...(pending.map(t => ({...t, _kind:'pending', created_at: t.date}))),
+  ].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+  if(!all.length){ empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  all.forEach(tx => {
+    const wrap = document.createElement('div');
+    wrap.className = 'goal-card-wrap port-tx-card';
+    wrap.style.marginBottom = '10px';
+    const isInc = tx.type === 'entrata';
+    const sign = isInc ? '+' : '−';
+    const dt = new Date(tx.created_at);
+    const ds = dt.toLocaleDateString('it-IT',{day:'2-digit',month:'short'}) + ' · ' + (tx.conto === 'cc' ? 'C/C' : 'Contanti');
+    const isPending = tx._kind === 'pending';
+    const tag = isPending ? '<span style="color:#6B7280;font-size:10px;font-weight:500;margin-left:6px">Prevista</span>' : '';
+    const opacityStyle = isPending ? ' style="opacity:0.6"' : '';
+    wrap.innerHTML = `<div class="port-tx-card-content"${opacityStyle}>
+      <div class="port-tx-dot ${tx.type}">${sign}</div>
+      <div class="port-tx-info">
+        <div class="port-tx-desc">${tx.descrizione || '—'}${tag}</div>
+        <div class="port-tx-meta">${ds}</div>
+      </div>
+      <div class="port-tx-amt ${tx.type}">${sign} ${eur(tx.importo)}</div>
+      <button class="hist-menu-btn" onclick="event.stopPropagation();openEntryMenu('tx','${isPending?'pending':'live'}','${tx.id}','tx')">${MENU_ICON}</button>
+    </div>`;
+    scroll.insertBefore(wrap, empty);
+  });
+}
+
+// Process due pending txs
+async function processDuePendingTxs(){
+  const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+  if(!pending.length) return;
+  const now = new Date();
+  const remaining = [];
+  let applied = 0;
+  for(const p of pending){
+    if(new Date(p.date) <= now){
+      const sign = p.type === 'entrata' ? 1 : -1;
+      if(p.conto === 'cc') S.cc = Math.max(0, S.cc + sign * p.importo);
+      else S.cash = Math.max(0, S.cash + sign * p.importo);
+      try {
+        const {data:tx} = await sb.from('transactions').insert({user_id:S.user.id,type:p.type,conto:p.conto,importo:p.importo,descrizione:p.descrizione}).select().single();
+        if(tx) S.txs.unshift(tx);
+        await saveProfile();
+        applied++;
+      } catch(e){}
+      if(p.auto && p.repeat && p.repeat !== 'mai'){
+        const next = computeNextDate(new Date(p.date), p.repeat);
+        if(next) remaining.push({...p, date: next.toISOString()});
+      }
+    } else remaining.push(p);
+  }
+  localStorage.setItem('pending_txs', JSON.stringify(remaining));
+  if(applied){ renderAll(); renderPortList(); }
+}
+
+// ── EXTEND ENTRY MENU FOR TX ──
+const _orig_getEditEntry = _getEditEntry;
+_getEditEntry = function(){
+  if(_editTarget && _editTarget.kind === 'tx'){
+    if(_editTarget.itemId === 'pending'){
+      const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+      const tx = pending.find(x => x.id === _editTarget.entryId);
+      return tx ? { tx, isPending: true } : null;
+    }
+    const tx = (S.txs || []).find(x => String(x.id) === String(_editTarget.entryId));
+    return tx ? { tx, isPending: false } : null;
+  }
+  return _orig_getEditEntry();
+};
+
+// Override entry-menu actions to handle tx kind
+const _orig_editEntryAmount = editEntryAmount;
+editEntryAmount = function(){
+  if(_editTarget && _editTarget.kind === 'tx'){
+    const r = _getEditEntry(); if(!r) return;
+    closeEntryMenu();
+    _editEntryMode = 'amount';
+    document.getElementById('edit-entry-title').textContent = 'Modifica importo';
+    document.getElementById('edit-entry-amount-row').style.display = 'block';
+    document.getElementById('edit-entry-date-row').style.display = 'none';
+    document.getElementById('edit-entry-amount-inp').value = r.tx.importo;
+    document.getElementById('edit-entry-modal').classList.add('open');
+    return;
+  }
+  _orig_editEntryAmount();
+};
+
+const _orig_editEntryDate = editEntryDate;
+editEntryDate = function(){
+  if(_editTarget && _editTarget.kind === 'tx'){
+    const r = _getEditEntry(); if(!r) return;
+    closeEntryMenu();
+    _editEntryMode = 'date';
+    _editEntryDate = new Date(r.tx.created_at || r.tx.date);
+    document.getElementById('edit-entry-title').textContent = 'Modifica data';
+    document.getElementById('edit-entry-amount-row').style.display = 'none';
+    document.getElementById('edit-entry-date-row').style.display = 'block';
+    updateEditEntryDateDisplay();
+    document.getElementById('edit-entry-modal').classList.add('open');
+    return;
+  }
+  _orig_editEntryDate();
+};
+
+const _orig_saveEditEntry = saveEditEntry;
+saveEditEntry = async function(){
+  if(_editTarget && _editTarget.kind === 'tx'){
+    const r = _getEditEntry(); if(!r){ closeEditEntryModal(); return; }
+    if(_editEntryMode === 'amount'){
+      const newAmt = parseFloat(document.getElementById('edit-entry-amount-inp').value) || 0;
+      if(newAmt <= 0){ closeEditEntryModal(); return; }
+      const oldAmt = Number(r.tx.importo);
+      const delta = newAmt - oldAmt;
+      if(r.isPending){
+        const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+        const idx = pending.findIndex(x => x.id === r.tx.id);
+        if(idx >= 0){ pending[idx].importo = newAmt; localStorage.setItem('pending_txs', JSON.stringify(pending)); }
+      } else {
+        const sign = r.tx.type === 'entrata' ? 1 : -1;
+        if(r.tx.conto === 'cc') S.cc = Math.max(0, S.cc + sign * delta);
+        else S.cash = Math.max(0, S.cash + sign * delta);
+        r.tx.importo = newAmt;
+        try {
+          await sb.from('transactions').update({importo: newAmt}).eq('id', r.tx.id);
+          await saveProfile();
+        } catch(e){}
+      }
+    } else if(_editEntryMode === 'date'){
+      if(_editEntryDate){
+        if(r.isPending){
+          const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+          const idx = pending.findIndex(x => x.id === r.tx.id);
+          if(idx >= 0){ pending[idx].date = _editEntryDate.toISOString(); localStorage.setItem('pending_txs', JSON.stringify(pending)); }
+        } else {
+          r.tx.created_at = _editEntryDate.toISOString();
+          try { await sb.from('transactions').update({created_at: _editEntryDate.toISOString()}).eq('id', r.tx.id); } catch(e){}
+        }
+      }
+    }
+    closeEditEntryModal();
+    renderAll(); renderPortList();
+    return;
+  }
+  _orig_saveEditEntry();
+};
+
+const _orig_duplicateEntry = duplicateEntry;
+duplicateEntry = async function(){
+  if(_editTarget && _editTarget.kind === 'tx'){
+    const r = _getEditEntry(); if(!r){ closeEntryMenu(); return; }
+    closeEntryMenu();
+    if(r.isPending){
+      const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+      pending.push({...r.tx, id: 'p'+Date.now()+Math.random().toString(36).slice(2,7), date: new Date().toISOString()});
+      localStorage.setItem('pending_txs', JSON.stringify(pending));
+    } else {
+      const sign = r.tx.type === 'entrata' ? 1 : -1;
+      if(r.tx.conto === 'cc') S.cc = Math.max(0, S.cc + sign * Number(r.tx.importo));
+      else S.cash = Math.max(0, S.cash + sign * Number(r.tx.importo));
+      try {
+        const {data:tx} = await sb.from('transactions').insert({user_id:S.user.id,type:r.tx.type,conto:r.tx.conto,importo:r.tx.importo,descrizione:r.tx.descrizione}).select().single();
+        if(tx) S.txs.unshift(tx);
+        await saveProfile();
+      } catch(e){}
+    }
+    renderAll(); renderPortList();
+    toast('Transazione duplicata');
+    return;
+  }
+  _orig_duplicateEntry();
+};
+
+const _orig_deleteEntry = deleteEntry;
+deleteEntry = async function(){
+  if(_editTarget && _editTarget.kind === 'tx'){
+    const r = _getEditEntry(); if(!r){ closeEntryMenu(); return; }
+    closeEntryMenu();
+    if(r.isPending){
+      const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+      const filtered = pending.filter(x => x.id !== r.tx.id);
+      localStorage.setItem('pending_txs', JSON.stringify(filtered));
+    } else {
+      const sign = r.tx.type === 'entrata' ? -1 : 1; // reverse the effect
+      if(r.tx.conto === 'cc') S.cc = Math.max(0, S.cc + sign * Number(r.tx.importo));
+      else S.cash = Math.max(0, S.cash + sign * Number(r.tx.importo));
+      S.txs = S.txs.filter(x => x.id !== r.tx.id);
+      try {
+        await sb.from('transactions').delete().eq('id', r.tx.id);
+        await saveProfile();
+      } catch(e){}
+    }
+    renderAll(); renderPortList();
+    toast('Transazione eliminata');
+    return;
+  }
+  _orig_deleteEntry();
+};
+
+// ── BUG FIXES: scroll lock + drag-to-close ──
+function watchModalsForScrollLock(){
+  const modals = document.querySelectorAll('.goal-modal-ov, .modal-ov, .lwheel-ov, .entry-menu-ov, .ripmenu-ov, .confirm-popup-ov, .goals-screen, .drum-picker-sheet');
+  const obs = new MutationObserver(() => {
+    const anyOpen = Array.from(modals).some(m => m.classList.contains('open'));
+    document.body.classList.toggle('modal-open', anyOpen);
+  });
+  modals.forEach(m => obs.observe(m, { attributes: true, attributeFilter: ['class'] }));
+}
+
+function makeAllSheetsDraggable(){
+  const configs = [
+    { sheetSel: '.goal-modal-sheet', handleSel: '.goal-modal-handle' },
+    { sheetSel: '.modal-sheet', handleSel: '.modal-handle' },
+    { sheetSel: '.ripmenu-sheet', handleSel: '.ripmenu-handle' },
+    { sheetSel: '.entry-menu-sheet', handleSel: '.entry-menu-handle' },
+    { sheetSel: '.lwheel-sheet', handleSel: null },
+  ];
+  configs.forEach(cfg => {
+    document.querySelectorAll(cfg.sheetSel).forEach(sheet => {
+      const handle = cfg.handleSel ? sheet.querySelector(cfg.handleSel) : null;
+      const target = handle || sheet;
+      if(target.dataset.drag) return;
+      target.dataset.drag = '1';
+      let startY = 0, dy = 0, dragging = false;
+      const onStart = (e) => {
+        const t = e.touches ? e.touches[0] : e;
+        startY = t.clientY; dy = 0; dragging = true;
+        sheet.style.transition = 'none';
+      };
+      const onMove = (e) => {
+        if(!dragging) return;
+        const t = e.touches ? e.touches[0] : e;
+        const d = t.clientY - startY;
+        if(d < 0) return;
+        dy = d;
+        sheet.style.transform = `translateY(${d}px)`;
+      };
+      const onEnd = () => {
+        if(!dragging) return;
+        dragging = false;
+        sheet.style.transition = '';
+        if(dy > 90){
+          const ov = sheet.closest('.goal-modal-ov,.modal-ov,.lwheel-ov,.entry-menu-ov,.ripmenu-ov,.confirm-popup-ov');
+          if(ov) ov.classList.remove('open');
+          setTimeout(() => { sheet.style.transform = ''; }, 350);
+        } else {
+          sheet.style.transform = '';
+        }
+      };
+      target.addEventListener('touchstart', onStart, {passive:true});
+      target.addEventListener('touchmove', onMove, {passive:true});
+      target.addEventListener('touchend', onEnd, {passive:true});
+      target.addEventListener('touchcancel', onEnd, {passive:true});
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  watchModalsForScrollLock();
+  makeAllSheetsDraggable();
+});
+
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 
-window.addEventListener('load', () => { migrateEntryIds(); processDueScheduled(); init(); });
+window.addEventListener('load', async () => {
+  migrateEntryIds();
+  processDueScheduled();
+  await init();
+  try { await processDuePendingTxs(); } catch(e){}
+});
 
   // ── KEYBOARD / VIEWPORT FIX (PWA standalone mobile) ──
 function applyViewportHeight(){
