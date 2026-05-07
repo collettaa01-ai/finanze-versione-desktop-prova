@@ -542,7 +542,7 @@ body {
 .modal-ov {
   position: fixed; inset: 0;
   background: rgba(26,28,28,0.45);
-  z-index: 200;
+  z-index: 600;
   display: flex; align-items: flex-end; justify-content: center;
   opacity: 0; pointer-events: none; visibility: hidden;
   transition: opacity 0.25s, visibility 0.25s;
@@ -2870,6 +2870,17 @@ body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
   </div>
 </div>
 
+<!-- DELETE ENTRY CONFIRM POPUP -->
+<div class="confirm-popup-ov" id="delete-entry-confirm">
+  <div class="confirm-popup-box">
+    <div class="confirm-popup-text" id="delete-entry-confirm-text">Sicuro di voler eliminare la transazione?</div>
+    <div class="confirm-popup-btns">
+      <button class="confirm-btn-cancel" onclick="closeDeleteEntryConfirm()">Annulla</button>
+      <button class="confirm-btn-delete" onclick="doDeleteEntry()">Elimina</button>
+    </div>
+  </div>
+</div>
+
 <!-- ENTRY MENU (action sheet) -->
 <div class="entry-menu-ov" id="entry-menu">
   <div class="entry-menu-sheet">
@@ -2886,7 +2897,7 @@ body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       Duplica
     </button>
-    <button class="entry-menu-btn destructive" onclick="deleteEntry()">
+    <button class="entry-menu-btn destructive" onclick="askDeleteEntry()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
       Elimina
     </button>
@@ -2904,10 +2915,35 @@ body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
       <input type="number" class="goal-modal-inp" id="edit-entry-amount-inp" placeholder="0,00" step="0.01" min="0"/>
     </div>
     <div id="edit-entry-date-row" style="display:none">
-      <span class="goal-modal-inp-lbl">Data e ora</span>
-      <div class="edit-entry-date-disp" onclick="openEditEntryDatePicker()">
-        <span id="edit-entry-date-display">—</span>
-        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" style="color:var(--ov-text3)"><path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="goal-modal-inp-lbl">Data e cadenza</span>
+      <div class="sched-box" id="edit-sched-box" style="margin-top:6px">
+        <div class="sched-toggle">
+          <button class="sched-toggle-btn" data-status="registrato" onclick="setSchedStatus('registrato')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg>
+            <span>Registra</span>
+          </button>
+          <button class="sched-toggle-btn" data-status="previsto" onclick="setSchedStatus('previsto')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><polyline points="12 9 12 13 15 15"/><path d="M9 2h6"/></svg>
+            <span>Prevista</span>
+          </button>
+        </div>
+        <div class="sched-date" onclick="trySchedDate()">
+          <span class="sched-date-day" id="edit-sched-date-day">Oggi</span>
+          <span class="sched-date-time" id="edit-sched-date-time">12:00</span>
+        </div>
+      </div>
+      <div class="sched-extras" id="edit-sched-extras">
+        <div class="sched-row">
+          <span class="sched-row-lbl">Automatico</span>
+          <div class="iswitch" id="edit-sched-auto" onclick="toggleSchedAuto()"></div>
+        </div>
+        <div class="sched-row clickable" onclick="openRipetiMenu()">
+          <span class="sched-row-lbl">Ripeti</span>
+          <div class="sched-row-right">
+            <span id="edit-sched-repeat-lbl">Mai</span>
+            <svg width="8" height="14" class="sched-row-arrow" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
       </div>
     </div>
     <button class="goal-modal-btn" onclick="saveEditEntry()" style="margin-top:14px">Salva</button>
@@ -4698,73 +4734,22 @@ function editEntryDate(){
   const r = _getEditEntry(); if(!r) return;
   closeEntryMenu();
   _editEntryMode = 'date';
-  _editEntryDate = new Date(r.entry.date);
+  let entryDate, isPrevista = false, entryAuto = false, entryRepeat = 'mai';
+  if(_editTarget.kind === 'tx'){
+    entryDate = new Date(r.tx.created_at || r.tx.date);
+    if(r.isPending){ isPrevista = true; entryAuto = !!r.tx.auto; entryRepeat = r.tx.repeat || 'mai'; }
+  } else {
+    entryDate = new Date(r.entry.date);
+    if(_editTarget.source === 'sched'){ isPrevista = true; entryAuto = !!r.entry.auto; entryRepeat = r.entry.repeat || 'mai'; }
+  }
+  _activeSchedTarget = 'edit';
+  _schedState = { status: isPrevista ? 'previsto' : 'registrato', when: entryDate, auto: entryAuto, repeat: entryRepeat };
+  updateSchedUI();
   document.getElementById('edit-entry-title').textContent = 'Modifica data';
   document.getElementById('edit-entry-amount-row').style.display = 'none';
   document.getElementById('edit-entry-date-row').style.display = 'block';
-  updateEditEntryDateDisplay();
   document.getElementById('edit-entry-modal').classList.add('open');
 }
-
-function updateEditEntryDateDisplay(){
-  const d = _editEntryDate;
-  const today = new Date(); today.setHours(0,0,0,0);
-  const dDate = new Date(d); dDate.setHours(0,0,0,0);
-  const diff = Math.round((dDate - today) / 86400000);
-  let label;
-  if(diff === 0) label = 'Oggi';
-  else if(diff === -1) label = 'Ieri';
-  else if(diff === 1) label = 'Domani';
-  else label = d.toLocaleDateString('it-IT',{weekday:'short', day:'2-digit', month:'short', year:'numeric'});
-  const time = d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('edit-entry-date-display').textContent = label + ' · ' + time;
-}
-
-let _datePickerMode = 'sched'; // 'sched' or 'edit'
-function openEditEntryDatePicker(){
-  _datePickerMode = 'edit';
-  buildSchedDateContent();
-  setupLWheelListeners(['sched-col-day','sched-col-hour','sched-col-min']);
-  document.getElementById('sched-date-picker').classList.add('open');
-  setTimeout(() => {
-    const dt = _editEntryDate || new Date();
-    const today = new Date(); today.setHours(0,0,0,0);
-    const dDate = new Date(dt); dDate.setHours(0,0,0,0);
-    const dayIdx = Math.max(0, Math.min(_schedDays.length-1, Math.round((dDate - today) / 86400000) + 60));
-    const hourIdx = dt.getHours();
-    const minIdx = Math.min(11, Math.round(dt.getMinutes() / 5));
-    document.getElementById('sched-col-day').scrollTop = dayIdx * LWHEEL_H;
-    document.getElementById('sched-col-hour').scrollTop = hourIdx * LWHEEL_H;
-    document.getElementById('sched-col-min').scrollTop = minIdx * LWHEEL_H;
-    lwheelHighlight('sched-col-day', dayIdx);
-    lwheelHighlight('sched-col-hour', hourIdx);
-    lwheelHighlight('sched-col-min', minIdx);
-  }, 60);
-}
-
-// Override confirmSchedDatePicker to handle both modes
-const _origConfirmSchedDatePicker = confirmSchedDatePicker;
-confirmSchedDatePicker = function(){
-  const dayIdx = Math.round(document.getElementById('sched-col-day').scrollTop / LWHEEL_H);
-  const hourIdx = Math.round(document.getElementById('sched-col-hour').scrollTop / LWHEEL_H);
-  const minIdx = Math.round(document.getElementById('sched-col-min').scrollTop / LWHEEL_H);
-  if(dayIdx >= 0 && dayIdx < _schedDays.length){
-    const d = new Date(_schedDays[dayIdx]);
-    d.setHours(hourIdx, minIdx * 5, 0, 0);
-    if(_datePickerMode === 'edit'){
-      _editEntryDate = d;
-      updateEditEntryDateDisplay();
-    } else {
-      _schedState.when = d;
-      updateSchedUI();
-    }
-  }
-  closeSchedDatePicker();
-  _datePickerMode = 'sched';
-};
-// Also reset mode when sched date picker opens normally
-const _origOpenSchedDatePicker = openSchedDatePicker;
-openSchedDatePicker = function(){ _datePickerMode = 'sched'; _origOpenSchedDatePicker(); };
 
 function closeEditEntryModal(){ document.getElementById('edit-entry-modal').classList.remove('open'); }
 
@@ -4776,7 +4761,6 @@ function saveEditEntry(){
     const oldAmt = r.entry.amount;
     const delta = newAmt - oldAmt;
     if(_editTarget.source === 'hist'){
-      // adjust the running total
       if(_editTarget.kind === 'goal'){
         if(r.entry.type === 'versa') r.item.saved = Math.max(0, Math.min(r.item.target, r.item.saved + delta));
         else r.item.saved = Math.max(0, Math.min(r.item.target, r.item.saved - delta));
@@ -4787,7 +4771,41 @@ function saveEditEntry(){
     }
     r.entry.amount = newAmt;
   } else if(_editEntryMode === 'date'){
-    if(_editEntryDate) r.entry.date = _editEntryDate.toISOString();
+    const newDate = _schedState.when;
+    const newAuto = !!_schedState.auto;
+    const newRepeat = _schedState.repeat;
+    const willBeInScheduled = _schedState.status === 'previsto';
+    const wasInScheduled = _editTarget.source === 'sched';
+    if(wasInScheduled === willBeInScheduled){
+      r.entry.date = newDate.toISOString();
+      if(willBeInScheduled){ r.entry.auto = newAuto; r.entry.repeat = newRepeat; }
+    } else if(wasInScheduled && !willBeInScheduled){
+      r.arr.splice(r.idx, 1);
+      const newEntry = {id: r.entry.id, type: r.entry.type, amount: r.entry.amount, date: newDate.toISOString()};
+      if(_editTarget.kind === 'goal'){
+        if(newEntry.type === 'versa') r.item.saved = Math.min(r.item.target, r.item.saved + newEntry.amount);
+        else r.item.saved = Math.max(0, r.item.saved - newEntry.amount);
+      } else {
+        if(newEntry.type === 'rimborso') r.item.paid = Math.min(r.item.total, r.item.paid + newEntry.amount);
+        else r.item.total += newEntry.amount;
+      }
+      if(!r.item.history) r.item.history = [];
+      r.item.history.push(newEntry);
+      _editTarget.source = 'hist';
+    } else {
+      r.arr.splice(r.idx, 1);
+      const newEntry = {id: r.entry.id, type: r.entry.type, amount: r.entry.amount, date: newDate.toISOString(), auto: newAuto, repeat: newRepeat};
+      if(_editTarget.kind === 'goal'){
+        if(newEntry.type === 'versa') r.item.saved = Math.max(0, r.item.saved - newEntry.amount);
+        else r.item.saved = Math.min(r.item.target, r.item.saved + newEntry.amount);
+      } else {
+        if(newEntry.type === 'rimborso') r.item.paid = Math.max(0, r.item.paid - newEntry.amount);
+        else r.item.total = Math.max(0, r.item.total - newEntry.amount);
+      }
+      if(!r.item.scheduled) r.item.scheduled = [];
+      r.item.scheduled.push(newEntry);
+      _editTarget.source = 'sched';
+    }
   }
   closeEditEntryModal();
   _saveAndRefresh(_editTarget.kind);
@@ -5023,22 +5041,7 @@ editEntryAmount = function(){
   _orig_editEntryAmount();
 };
 
-const _orig_editEntryDate = editEntryDate;
-editEntryDate = function(){
-  if(_editTarget && _editTarget.kind === 'tx'){
-    const r = _getEditEntry(); if(!r) return;
-    closeEntryMenu();
-    _editEntryMode = 'date';
-    _editEntryDate = new Date(r.tx.created_at || r.tx.date);
-    document.getElementById('edit-entry-title').textContent = 'Modifica data';
-    document.getElementById('edit-entry-amount-row').style.display = 'none';
-    document.getElementById('edit-entry-date-row').style.display = 'block';
-    updateEditEntryDateDisplay();
-    document.getElementById('edit-entry-modal').classList.add('open');
-    return;
-  }
-  _orig_editEntryDate();
-};
+// editEntryDate is now unified — no tx-specific override needed.
 
 const _orig_saveEditEntry = saveEditEntry;
 saveEditEntry = async function(){
@@ -5058,21 +5061,50 @@ saveEditEntry = async function(){
         if(r.tx.conto === 'cc') S.cc = Math.max(0, S.cc + sign * delta);
         else S.cash = Math.max(0, S.cash + sign * delta);
         r.tx.importo = newAmt;
-        try {
-          await sb.from('transactions').update({importo: newAmt}).eq('id', r.tx.id);
-          await saveProfile();
-        } catch(e){}
+        try { await sb.from('transactions').update({importo: newAmt}).eq('id', r.tx.id); await saveProfile(); } catch(e){}
       }
     } else if(_editEntryMode === 'date'){
-      if(_editEntryDate){
-        if(r.isPending){
+      const newDate = _schedState.when;
+      const willBePending = _schedState.status === 'previsto';
+      const wasPending = r.isPending;
+      if(wasPending === willBePending){
+        if(wasPending){
           const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
           const idx = pending.findIndex(x => x.id === r.tx.id);
-          if(idx >= 0){ pending[idx].date = _editEntryDate.toISOString(); localStorage.setItem('pending_txs', JSON.stringify(pending)); }
+          if(idx >= 0){
+            pending[idx].date = newDate.toISOString();
+            pending[idx].auto = !!_schedState.auto;
+            pending[idx].repeat = _schedState.repeat;
+            localStorage.setItem('pending_txs', JSON.stringify(pending));
+          }
         } else {
-          r.tx.created_at = _editEntryDate.toISOString();
-          try { await sb.from('transactions').update({created_at: _editEntryDate.toISOString()}).eq('id', r.tx.id); } catch(e){}
+          r.tx.created_at = newDate.toISOString();
+          try { await sb.from('transactions').update({created_at: newDate.toISOString()}).eq('id', r.tx.id); } catch(e){}
         }
+      } else if(wasPending && !willBePending){
+        const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+        localStorage.setItem('pending_txs', JSON.stringify(pending.filter(x => x.id !== r.tx.id)));
+        const sign = r.tx.type === 'entrata' ? 1 : -1;
+        if(r.tx.conto === 'cc') S.cc = Math.max(0, S.cc + sign * Number(r.tx.importo));
+        else S.cash = Math.max(0, S.cash + sign * Number(r.tx.importo));
+        try {
+          const {data:tx} = await sb.from('transactions').insert({user_id:S.user.id,type:r.tx.type,conto:r.tx.conto,importo:r.tx.importo,descrizione:r.tx.descrizione}).select().single();
+          if(tx) S.txs.unshift(tx);
+          await saveProfile();
+        } catch(e){}
+      } else {
+        const sign = r.tx.type === 'entrata' ? -1 : 1;
+        if(r.tx.conto === 'cc') S.cc = Math.max(0, S.cc + sign * Number(r.tx.importo));
+        else S.cash = Math.max(0, S.cash + sign * Number(r.tx.importo));
+        S.txs = S.txs.filter(x => x.id !== r.tx.id);
+        try { await sb.from('transactions').delete().eq('id', r.tx.id); await saveProfile(); } catch(e){}
+        const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+        pending.push({
+          id: 'p'+Date.now()+Math.random().toString(36).slice(2,7),
+          type: r.tx.type, conto: r.tx.conto, importo: r.tx.importo, descrizione: r.tx.descrizione,
+          date: newDate.toISOString(), auto: !!_schedState.auto, repeat: _schedState.repeat,
+        });
+        localStorage.setItem('pending_txs', JSON.stringify(pending));
       }
     }
     closeEditEntryModal();
@@ -5081,6 +5113,53 @@ saveEditEntry = async function(){
   }
   _orig_saveEditEntry();
 };
+
+// ── DELETE WITH CONFIRMATION ──
+function askDeleteEntry(){
+  closeEntryMenu();
+  if(!_editTarget) return;
+  const txt = _editTarget.kind === 'tx' ? 'Sicuro di voler eliminare la transazione?' : 'Sicuro di voler eliminare il movimento?';
+  document.getElementById('delete-entry-confirm-text').textContent = txt;
+  document.getElementById('delete-entry-confirm').classList.add('open');
+}
+function closeDeleteEntryConfirm(){ document.getElementById('delete-entry-confirm').classList.remove('open'); }
+async function doDeleteEntry(){
+  closeDeleteEntryConfirm();
+  if(!_editTarget) return;
+  if(_editTarget.kind === 'tx'){
+    const r = _getEditEntry(); if(!r) return;
+    if(r.isPending){
+      const pending = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+      localStorage.setItem('pending_txs', JSON.stringify(pending.filter(x => x.id !== r.tx.id)));
+    } else {
+      const sign = r.tx.type === 'entrata' ? -1 : 1;
+      if(r.tx.conto === 'cc') S.cc = Math.max(0, S.cc + sign * Number(r.tx.importo));
+      else S.cash = Math.max(0, S.cash + sign * Number(r.tx.importo));
+      S.txs = S.txs.filter(x => x.id !== r.tx.id);
+      try { await sb.from('transactions').delete().eq('id', r.tx.id); await saveProfile(); } catch(e){}
+    }
+    renderAll(); renderPortList();
+    toast('Transazione eliminata');
+    return;
+  }
+  const r = _getEditEntry(); if(!r) return;
+  if(_editTarget.source === 'hist'){
+    if(_editTarget.kind === 'goal'){
+      if(r.entry.type === 'versa') r.item.saved = Math.max(0, r.item.saved - r.entry.amount);
+      else r.item.saved = Math.min(r.item.target, r.item.saved + r.entry.amount);
+    } else {
+      if(r.entry.type === 'rimborso') r.item.paid = Math.max(0, r.item.paid - r.entry.amount);
+      else r.item.total = Math.max(0, r.item.total - r.entry.amount);
+    }
+  }
+  r.arr.splice(r.idx, 1);
+  _saveAndRefresh(_editTarget.kind);
+  toast('Movimento eliminato');
+}
+document.addEventListener('click', e => {
+  const m = document.getElementById('delete-entry-confirm');
+  if(m && e.target === m) closeDeleteEntryConfirm();
+});
 
 const _orig_duplicateEntry = duplicateEntry;
 duplicateEntry = async function(){
