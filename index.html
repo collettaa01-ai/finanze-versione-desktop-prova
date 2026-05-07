@@ -133,27 +133,68 @@ body {
 
 /* ── LOADING ── */
 .loading-screen {
-  background: var(--dark);
+  background: #ffffff;
   align-items: center; justify-content: center;
+  flex-direction: column;
 }
-.load-logo { text-align: center; }
-.load-mark {
-  width: 56px; height: 56px;
-  background: var(--surface);
-  border-radius: var(--r-lg);
+.load-anim-wrap {
+  width: 84px; height: 84px;
+  position: relative;
+  margin-bottom: 28px;
+}
+.load-svg {
+  width: 100%; height: 100%;
+  animation: load-rotate 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.load-arc {
+  animation: load-dash 1.6s ease-in-out infinite;
+}
+@keyframes load-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes load-dash {
+  0%   { stroke-dasharray: 8 201; stroke-dashoffset: 0; }
+  50%  { stroke-dasharray: 130 201; stroke-dashoffset: -40; }
+  100% { stroke-dasharray: 8 201; stroke-dashoffset: -200; }
+}
+.load-coin {
+  position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 16px;
-  box-shadow: var(--shadow-md);
+  pointer-events: none;
 }
-.load-logo h1 { font-size: 18px; font-weight: 600; color: #fff; letter-spacing: -0.02em; }
-.load-logo p { font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.35); margin-top: 5px; }
-.spinner {
-  width: 20px; height: 20px;
-  border: 1.5px solid rgba(255,255,255,0.15);
-  border-top-color: rgba(255,255,255,0.6);
+.load-euro {
+  font-family: 'Geist', sans-serif;
+  font-size: 30px; font-weight: 700;
+  color: #7C3AED;
+  animation: load-pulse 1.6s ease-in-out infinite;
+  letter-spacing: -0.02em;
+}
+@keyframes load-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.10); opacity: 0.85; }
+}
+.load-title {
+  font-family: 'Geist', sans-serif;
+  font-size: 22px; font-weight: 700;
+  color: #1a1c1c;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.load-dots {
+  display: flex; gap: 6px;
+}
+.load-dots span {
+  width: 7px; height: 7px;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 24px auto 0;
+  background: rgba(124,58,237,0.30);
+  animation: load-dotpulse 1.4s ease-in-out infinite;
+}
+.load-dots span:nth-child(2) { animation-delay: 0.18s; }
+.load-dots span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes load-dotpulse {
+  0%, 80%, 100% { background: rgba(124,58,237,0.30); transform: scale(0.85); }
+  40% { background: rgba(124,58,237,1); transform: scale(1.1); }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
@@ -232,50 +273,67 @@ body {
    overflow-y:auto per scroll quando tastiera apre
 */
 .pin-screen {
-  background: var(--surface);
+  background: #ffffff;
   align-items: center; justify-content: flex-start;
-  padding: 60px 28px 40px;
+  padding: 64px 28px 40px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
-.pin-header { text-align: center; margin-bottom: 28px; }
+.pin-header { text-align: center; margin-bottom: 36px; }
 .pin-icon {
-  width: 52px; height: 52px;
-  background: var(--surface-low);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-md);
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);
+  border: none;
+  border-radius: 18px;
   display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 14px;
+  margin: 0 auto 18px;
+  box-shadow: 0 10px 28px rgba(124,58,237,0.32);
+  color: white;
 }
-.pin-header h2 { font-size: 20px; font-weight: 600; color: var(--dark); letter-spacing: -0.02em; }
-.pin-header p { font-size: 13px; font-weight: 300; color: var(--dark-soft); margin-top: 3px; }
-.pin-dots { display: flex; gap: 12px; margin-bottom: 28px; }
+.pin-icon svg { width: 28px; height: 28px; }
+.pin-header h2 { font-size: 24px; font-weight: 700; color: #1a1c1c; letter-spacing: -0.02em; }
+.pin-header p { font-size: 14px; font-weight: 400; color: #747879; margin-top: 6px; }
+.pin-dots { display: flex; gap: 16px; margin-bottom: 40px; }
 .pin-dot {
-  width: 12px; height: 12px; border-radius: 50%;
-  border: 1px solid var(--border-mid);
-  transition: all 0.15s;
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.18);
+  transition: all 0.18s cubic-bezier(0.34,1.56,0.64,1);
 }
-.pin-dot.filled { background: var(--dark); border-color: var(--dark); transform: scale(1.1); }
-.pin-dot.error { background: var(--red); border-color: var(--red); }
+.pin-dot.filled {
+  background: #7C3AED;
+  border-color: #7C3AED;
+  transform: scale(1.18);
+  box-shadow: 0 0 0 4px rgba(124,58,237,0.12);
+}
+.pin-dot.error { background: #EF4444; border-color: #EF4444; }
 .pin-keypad {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 8px; width: 100%; max-width: 270px;
+  gap: 14px; width: 100%; max-width: 290px;
 }
 .pin-key {
-  background: var(--surface-low);
-  border: 0.5px solid var(--border);
-  border-radius: var(--r-sm);
-  padding: 15px;
+  background: #ffffff;
+  border: none;
+  border-radius: 18px;
+  padding: 20px 0;
   text-align: center; cursor: pointer;
-  font-size: 18px; color: var(--dark);
-  font-family: var(--font); font-weight: 500;
-  transition: background 0.1s, transform 0.1s;
+  font-size: 24px; color: #1a1c1c;
+  font-family: 'Geist', sans-serif; font-weight: 500;
+  transition: background 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
   user-select: none;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  letter-spacing: -0.01em;
 }
-.pin-key:active { background: var(--surface-high); transform: scale(0.95); }
-.pin-key.del { font-size: 13px; color: var(--dark-soft); }
+.pin-key:active {
+  background: rgba(124,58,237,0.08);
+  color: #7C3AED;
+  transform: scale(0.94);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.pin-key.del { font-size: 14px; color: #747879; font-weight: 600; letter-spacing: 0.02em; }
+.pin-key.del:active { color: #EF4444; background: rgba(239,68,68,0.06); }
 .pin-key.empty { background: none; border: none; cursor: default; box-shadow: none; }
+.pin-err { color: #EF4444; font-size: 13px; margin-top: 18px; min-height: 18px; font-weight: 500; }
+.bio-btn { display: none !important; }
 .bio-btn {
   margin-top: 16px; display: flex; align-items: center; gap: 8px;
   color: var(--dark-mid); font-size: 12px; cursor: pointer;
@@ -1980,16 +2038,24 @@ body.modal-open {
 
   <!-- LOADING -->
   <div class="screen loading-screen visible" id="screen-loading">
-    <div class="load-logo">
-      <div class="load-mark">
-        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-          <path d="M4 13h6M13 4v6M13 16v6M16 13h6" stroke="#1a1c1c" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="13" cy="13" r="3" fill="#1a1c1c"/>
-        </svg>
+    <div class="load-anim-wrap">
+      <svg class="load-svg" viewBox="0 0 80 80">
+        <defs>
+          <linearGradient id="lgRing" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#A78BFA"/>
+          </linearGradient>
+        </defs>
+        <circle class="load-track" cx="40" cy="40" r="32" fill="none" stroke="rgba(124,58,237,0.10)" stroke-width="5"/>
+        <circle class="load-arc" cx="40" cy="40" r="32" fill="none" stroke="url(#lgRing)" stroke-width="5" stroke-linecap="round" stroke-dasharray="60 201" transform="rotate(-90 40 40)"/>
+      </svg>
+      <div class="load-coin">
+        <span class="load-euro">€</span>
       </div>
-      <h1>Tracks All Finances</h1>
-      <p>Caricamento...</p>
-      <div class="spinner"></div>
+    </div>
+    <h1 class="load-title">Tracks All Finances</h1>
+    <div class="load-dots">
+      <span></span><span></span><span></span>
     </div>
   </div>
 
@@ -2040,9 +2106,9 @@ body.modal-open {
   <div class="screen pin-screen" id="screen-createpin">
     <div class="pin-header">
       <div class="pin-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <rect x="5" y="11" width="14" height="10" rx="2" fill="#444749"/>
-          <path d="M8 11V7a4 4 0 018 0v4" stroke="#444749" stroke-width="2" stroke-linecap="round"/>
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect x="5" y="11" width="14" height="10" rx="2.5" fill="currentColor"/>
+          <path d="M8 11V7a4 4 0 018 0v4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
         </svg>
       </div>
       <h2>Crea il tuo PIN</h2>
@@ -2060,9 +2126,9 @@ body.modal-open {
   <div class="screen pin-screen" id="screen-pin">
     <div class="pin-header">
       <div class="pin-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <rect x="5" y="11" width="14" height="10" rx="2" fill="#444749"/>
-          <path d="M8 11V7a4 4 0 018 0v4" stroke="#444749" stroke-width="2" stroke-linecap="round"/>
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect x="5" y="11" width="14" height="10" rx="2.5" fill="currentColor"/>
+          <path d="M8 11V7a4 4 0 018 0v4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
         </svg>
       </div>
       <h2>Bentornato</h2>
@@ -2074,14 +2140,6 @@ body.modal-open {
     </div>
     <div class="pin-keypad" id="ep-pad"></div>
     <div class="pin-err" id="ep-err"></div>
-    <button class="bio-btn" id="bio-btn" onclick="tryBio()" style="display:none">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2C8.5 2 5.5 4.5 5.5 8v1M12 2c3.5 0 6.5 2.5 6.5 6v1" stroke="#444749" stroke-width="1.8" stroke-linecap="round"/>
-        <circle cx="12" cy="12" r="4" fill="#444749" opacity="0.2"/>
-        <circle cx="12" cy="12" r="1.5" fill="#444749"/>
-      </svg>
-      Usa biometria
-    </button>
   </div>
 
   <!-- HOME / OVERVIEW -->
@@ -5256,11 +5314,42 @@ deleteEntry = async function(){
 };
 
 // ── BUG FIXES: scroll lock + drag-to-close ──
+// Body scroll lock JS (necessario su iOS Safari per evitare lo scroll del body
+// quando un input dentro un popup riceve il focus e fa apparire la tastiera)
+let _bodyLockY = 0;
+let _bodyLocked = false;
+function _lockBodyScroll(){
+  if(_bodyLocked) return;
+  _bodyLockY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+  const b = document.body;
+  b.style.position = 'fixed';
+  b.style.top = `-${_bodyLockY}px`;
+  b.style.left = '0';
+  b.style.right = '0';
+  b.style.width = '100%';
+  b.style.overflow = 'hidden';
+  _bodyLocked = true;
+}
+function _unlockBodyScroll(){
+  if(!_bodyLocked) return;
+  const b = document.body;
+  b.style.position = '';
+  b.style.top = '';
+  b.style.left = '';
+  b.style.right = '';
+  b.style.width = '';
+  b.style.overflow = '';
+  window.scrollTo(0, _bodyLockY);
+  _bodyLocked = false;
+}
+
 function watchModalsForScrollLock(){
   const modals = document.querySelectorAll('.goal-modal-ov, .modal-ov, .lwheel-ov, .entry-menu-ov, .ripmenu-ov, .confirm-popup-ov, .goals-screen, .drum-picker-sheet');
   const obs = new MutationObserver(() => {
     const anyOpen = Array.from(modals).some(m => m.classList.contains('open'));
     document.body.classList.toggle('modal-open', anyOpen);
+    if(anyOpen) _lockBodyScroll();
+    else _unlockBodyScroll();
   });
   modals.forEach(m => obs.observe(m, { attributes: true, attributeFilter: ['class'] }));
 }
