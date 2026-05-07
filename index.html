@@ -1910,10 +1910,16 @@ body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
 }
 .lwheel-header { cursor: grab; touch-action: none; }
 
-/* ── MODAL OVERLAYS ADAPT TO VISUAL VIEWPORT (mobile keyboard) ── */
+/* ── MODAL OVERLAYS COPRONO SEMPRE TUTTO LO SCHERMO ──
+   (no app visibile sotto quando la tastiera apre) */
 .goal-modal-ov, .modal-ov, .lwheel-ov, .ripmenu-ov, .entry-menu-ov, .confirm-popup-ov {
-  height: var(--app-vh, 100dvh) !important;
-  bottom: auto !important;
+  inset: 0 !important;
+  height: 100% !important;
+}
+/* I fogli salgono sopra la tastiera tramite margin-bottom = altezza tastiera */
+.goal-modal-sheet, .modal-sheet, .lwheel-sheet, .ripmenu-sheet, .entry-menu-sheet, .confirm-popup-box {
+  margin-bottom: var(--keyboard-offset, 0px);
+  transition: margin-bottom 0.18s ease-out, transform 0.30s cubic-bezier(0.32,0.72,0,1);
 }
 
 /* ── BODY LOCK WHEN MODAL OPEN (anti-scroll-chaining) ── */
@@ -5324,8 +5330,11 @@ window.addEventListener('load', async () => {
   // ── KEYBOARD / VIEWPORT FIX (PWA standalone mobile) ──
 function applyViewportHeight(){
   const vv = window.visualViewport;
-  const h = vv ? vv.height : window.innerHeight;
-  document.documentElement.style.setProperty('--app-vh', `${h}px`);
+  const visualH = vv ? vv.height : window.innerHeight;
+  const layoutH = window.innerHeight;
+  const offset = Math.max(0, layoutH - visualH);
+  document.documentElement.style.setProperty('--app-vh', `${visualH}px`);
+  document.documentElement.style.setProperty('--keyboard-offset', `${offset}px`);
 }
 
 function ensureFocusedInputVisible(){
