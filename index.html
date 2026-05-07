@@ -1782,6 +1782,103 @@ body {
 .ripmenu-item.selected .check { display: block; }
 .ripmenu-item.has-arrow { border-top: 0.5px solid rgba(0,0,0,0.06); margin-top: 6px; padding-top: 16px; }
 .ripmenu-arrow { color: var(--ov-text3); }
+
+/* ── SPACING FIXES (modal sched section) ── */
+.sched-extras.show { margin-top: 8px; }
+.sched-box + .goal-modal-btn,
+.sched-extras.show + .goal-modal-btn { margin-top: 14px; }
+.sched-extras + .goal-modal-btn { margin-top: 14px; }
+
+/* ── NUOVA TRANSAZIONE BUTTON ── */
+.nuova-tx-btn {
+  width: calc(100% - 32px);
+  margin: -4px 16px 16px;
+  padding: 14px;
+  background: var(--ov-primary); border: none; border-radius: 14px;
+  color: white; font-family: var(--font); font-size: 15px; font-weight: 600;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 14px rgba(124,58,237,0.28);
+}
+.nuova-tx-btn:active { opacity: 0.92; }
+
+/* ── CRONOLOGIA EDIT BUTTON ── */
+.hist-menu-btn {
+  background: none; border: none; cursor: pointer;
+  width: 28px; height: 28px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ov-text3); border-radius: 50%; margin-left: 4px;
+  -webkit-tap-highlight-color: transparent;
+}
+.hist-menu-btn:active { background: rgba(0,0,0,0.06); }
+
+/* ── ENTRY MENU (action sheet) ── */
+.entry-menu-ov {
+  position: fixed; inset: 0; z-index: 850;
+  background: rgba(0,0,0,0.4);
+  opacity: 0; pointer-events: none; transition: opacity 0.22s;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.entry-menu-ov.open { opacity: 1; pointer-events: all; }
+.entry-menu-sheet {
+  background: white; border-radius: 24px 24px 0 0;
+  width: 100%; max-width: 430px;
+  padding: 14px 14px calc(18px + env(safe-area-inset-bottom,0px));
+  transform: translateY(100%);
+  transition: transform 0.28s cubic-bezier(0.32,0.72,0,1);
+}
+.entry-menu-ov.open .entry-menu-sheet { transform: translateY(0); }
+.entry-menu-handle {
+  width: 36px; height: 4px; background: rgba(0,0,0,0.18);
+  border-radius: 99px; margin: 0 auto 12px;
+}
+.entry-menu-btn {
+  width: 100%; display: flex; align-items: center; gap: 12px;
+  padding: 14px 12px; background: none; border: none;
+  font-family: var(--font); font-size: 15px; color: var(--ov-text);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  border-radius: 10px; text-align: left;
+}
+.entry-menu-btn:active { background: rgba(0,0,0,0.04); }
+.entry-menu-btn.destructive { color: #EF4444; }
+.entry-menu-btn.cancel {
+  margin-top: 8px; background: rgba(0,0,0,0.05);
+  font-weight: 600; justify-content: center;
+}
+
+/* ── EDIT ENTRY DATE DISPLAY ── */
+.edit-entry-date-disp {
+  background: rgba(0,0,0,0.04); padding: 14px;
+  border-radius: 12px; cursor: pointer; color: var(--ov-text);
+  font-family: var(--font); font-size: 14px; font-weight: 500;
+  display: flex; align-items: center; justify-content: space-between;
+  -webkit-tap-highlight-color: transparent;
+}
+.edit-entry-date-disp:active { background: rgba(0,0,0,0.06); }
+
+/* ── WIZARD GRID ── */
+.wiz-cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px; }
+.wiz-cat {
+  padding: 13px 8px; border-radius: 12px;
+  border: 1.5px solid rgba(0,0,0,0.10); background: rgba(0,0,0,0.02);
+  font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--ov-text);
+  cursor: pointer; transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+.wiz-cat.selected { background: rgba(124,58,237,0.10); border-color: var(--ov-primary); color: var(--ov-primary); }
+.wiz-icon-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 6px; }
+.wiz-icon {
+  aspect-ratio: 1; border-radius: 10px;
+  border: 1.5px solid transparent; background: rgba(0,0,0,0.04);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.wiz-icon.selected { background: rgba(124,58,237,0.10); border-color: var(--ov-primary); }
+
+/* ── GOAL MODAL SHEET — taller scrollable for wizard ── */
+.goal-modal-sheet.tall { max-height: 86vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 </style>
 </head>
 <body>
@@ -1946,6 +2043,12 @@ body {
         </div>
       </div>
 
+      <!-- Nuova transazione -->
+      <button class="nuova-tx-btn" onclick="openModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        Nuova transazione
+      </button>
+
       <!-- Card 2: Obiettivo -->
       <div class="ov-card" onclick="openGoalsScreen()">
         <div class="ov-card-top">
@@ -2011,7 +2114,7 @@ body {
 
       <!-- FAB aggiungi -->
       <div style="padding:0 16px 8px;display:flex;justify-content:flex-end;">
-        <button onclick="openModal()" style="width:52px;height:52px;border-radius:50%;background:var(--ov-primary);border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(124,58,237,0.35);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <button onclick="openWizard()" style="width:52px;height:52px;border-radius:50%;background:var(--ov-primary);border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(124,58,237,0.35);cursor:pointer;-webkit-tap-highlight-color:transparent;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -2646,6 +2749,112 @@ body {
       <div class="lwheel-col" id="rep-col-num"></div>
       <div class="lwheel-col" id="rep-col-unit"></div>
     </div>
+  </div>
+</div>
+
+<!-- ENTRY MENU (action sheet) -->
+<div class="entry-menu-ov" id="entry-menu">
+  <div class="entry-menu-sheet">
+    <div class="entry-menu-handle"></div>
+    <button class="entry-menu-btn" onclick="editEntryAmount()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Modifica importo
+    </button>
+    <button class="entry-menu-btn" onclick="editEntryDate()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Modifica data
+    </button>
+    <button class="entry-menu-btn" onclick="duplicateEntry()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Duplica
+    </button>
+    <button class="entry-menu-btn destructive" onclick="deleteEntry()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      Elimina
+    </button>
+    <button class="entry-menu-btn cancel" onclick="closeEntryMenu()">Annulla</button>
+  </div>
+</div>
+
+<!-- EDIT ENTRY MODAL -->
+<div class="goal-modal-ov" id="edit-entry-modal">
+  <div class="goal-modal-sheet">
+    <div class="goal-modal-handle"></div>
+    <div class="goal-modal-title" id="edit-entry-title">Modifica</div>
+    <div id="edit-entry-amount-row">
+      <span class="goal-modal-inp-lbl">Importo (€)</span>
+      <input type="number" class="goal-modal-inp" id="edit-entry-amount-inp" placeholder="0,00" step="0.01" min="0"/>
+    </div>
+    <div id="edit-entry-date-row" style="display:none">
+      <span class="goal-modal-inp-lbl">Data e ora</span>
+      <div class="edit-entry-date-disp" onclick="openEditEntryDatePicker()">
+        <span id="edit-entry-date-display">—</span>
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" style="color:var(--ov-text3)"><path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <button class="goal-modal-btn" onclick="saveEditEntry()" style="margin-top:14px">Salva</button>
+    <button class="goal-modal-btn secondary" onclick="closeEditEntryModal()">Annulla</button>
+  </div>
+</div>
+
+<!-- NEW BOX WIZARD -->
+<div class="goal-modal-ov" id="wizard-modal">
+  <div class="goal-modal-sheet tall">
+    <div class="goal-modal-handle"></div>
+    <div class="goal-modal-title">Nuovo box</div>
+
+    <span class="goal-modal-inp-lbl">Categoria</span>
+    <div class="wiz-cat-grid">
+      <button class="wiz-cat" data-cat="obiettivo" onclick="pickWizCat('obiettivo')">🎯 Obiettivo</button>
+      <button class="wiz-cat" data-cat="debito" onclick="pickWizCat('debito')">💸 Debito</button>
+      <button class="wiz-cat" data-cat="regalo" onclick="pickWizCat('regalo')">🎁 Regalo</button>
+      <button class="wiz-cat" data-cat="investimento" onclick="pickWizCat('investimento')">📈 Investimento</button>
+    </div>
+
+    <span class="goal-modal-inp-lbl">Nome</span>
+    <input type="text" class="goal-modal-inp text-inp" id="wiz-name-inp" placeholder="es. Vacanza, Auto, Mutuo..."/>
+
+    <span class="goal-modal-inp-lbl">Icona</span>
+    <div class="wiz-icon-grid" id="wiz-icon-grid"></div>
+
+    <span class="goal-modal-inp-lbl">Importo (€)</span>
+    <input type="number" class="goal-modal-inp" id="wiz-amount-inp" placeholder="0,00" step="0.01" min="0"/>
+
+    <span class="goal-modal-inp-lbl">Descrizione (opzionale)</span>
+    <input type="text" class="goal-modal-inp text-inp" id="wiz-desc-inp" placeholder="Note aggiuntive..."/>
+
+    <div class="sched-box" id="wiz-sched-box">
+      <div class="sched-toggle">
+        <button class="sched-toggle-btn" data-status="registrato" onclick="setSchedStatus('registrato')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg>
+          <span>Adesso</span>
+        </button>
+        <button class="sched-toggle-btn" data-status="previsto" onclick="setSchedStatus('previsto')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><polyline points="12 9 12 13 15 15"/><path d="M9 2h6"/></svg>
+          <span>Prevista</span>
+        </button>
+      </div>
+      <div class="sched-date" onclick="trySchedDate()">
+        <span class="sched-date-day" id="wiz-sched-date-day">Oggi</span>
+        <span class="sched-date-time" id="wiz-sched-date-time">12:00</span>
+      </div>
+    </div>
+    <div class="sched-extras" id="wiz-sched-extras">
+      <div class="sched-row">
+        <span class="sched-row-lbl">Automatico</span>
+        <div class="iswitch" id="wiz-sched-auto" onclick="toggleSchedAuto()"></div>
+      </div>
+      <div class="sched-row clickable" onclick="openRipetiMenu()">
+        <span class="sched-row-lbl">Ripeti</span>
+        <div class="sched-row-right">
+          <span id="wiz-sched-repeat-lbl">Mai</span>
+          <svg width="8" height="14" class="sched-row-arrow" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <button class="goal-modal-btn" onclick="saveNewBox()" style="margin-top:14px">Crea box</button>
+    <button class="goal-modal-btn secondary" onclick="closeWizard()">Annulla</button>
   </div>
 </div>
 
@@ -3612,24 +3821,7 @@ function openDebtContrib(id){
   document.getElementById('debt-contrib-btn-aumento').className = 'contrib-btn';
   document.getElementById('debt-contrib-inp-lbl').textContent = 'Importo (€)';
   resetSchedState('debt');
-  const histList = document.getElementById('debt-contrib-hist-list');
-  if(histList){
-    const all = [
-      ...((d.history || []).map(h => ({...h, _kind:'hist'}))),
-      ...((d.scheduled || []).map(h => ({...h, _kind:'sched'}))),
-    ].sort((a,b) => new Date(b.date) - new Date(a.date));
-    histList.innerHTML = all.length ? all.map(h => {
-      const isRimborso = h.type === 'rimborso';
-      const sign = isRimborso ? '−' : '+';
-      const label = isRimborso ? 'Rimborso' : 'Aumento';
-      const isSched = h._kind === 'sched';
-      const dt = new Date(h.date);
-      const ds = dt.toLocaleDateString('it-IT',{day:'2-digit',month:'short'}) + ' ' + dt.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
-      const tag = isSched ? '<span style="color:#6B7280;font-size:10px;font-weight:500;margin-left:6px">Prevista</span>' : '';
-      const dotStyle = isSched ? ' style="opacity:0.5"' : '';
-      return `<div class="contrib-hist-item"><div class="contrib-hist-dot ${isRimborso?'pos':'neg'}"${dotStyle}></div><div class="contrib-hist-info"><span class="contrib-hist-amt">${sign} ${eur(h.amount)} <span style="font-weight:400;font-size:11px;color:var(--ov-text3)">${label}${tag}</span></span><span class="contrib-hist-date">${ds}</span></div></div>`;
-    }).join('') : '<div class="contrib-hist-empty">Nessun movimento</div>';
-  }
+  renderDebtContribHistory(d);
   document.getElementById('debt-contrib-modal').classList.add('open');
 }
 function closeDebtContribModal(){
@@ -3651,6 +3843,7 @@ function applyDebtContrib(){
   if(_schedState.status === 'previsto'){
     if(!d.scheduled) d.scheduled = [];
     d.scheduled.push({
+      id: 's'+Date.now()+Math.random().toString(36).slice(2,7),
       type: _debtContribMode, amount: amt,
       date: _schedState.when.toISOString(),
       auto: !!_schedState.auto,
@@ -3660,7 +3853,7 @@ function applyDebtContrib(){
     if(_debtContribMode === 'rimborso') d.paid = Math.min(d.total, d.paid + amt);
     else d.total += amt;
     if(!d.history) d.history = [];
-    d.history.push({type: _debtContribMode, amount: amt, date: new Date().toISOString()});
+    d.history.push({id: 'h'+Date.now()+Math.random().toString(36).slice(2,7), type: _debtContribMode, amount: amt, date: new Date().toISOString()});
   }
   saveDebtsData();
   closeDebtContribModal();
@@ -3896,23 +4089,7 @@ function openGoalContrib(id){
   document.getElementById('contrib-btn-detrai').className = 'contrib-btn';
   document.getElementById('contrib-inp-lbl').textContent = 'Importo (€)';
   resetSchedState('goal');
-  const histList = document.getElementById('contrib-hist-list');
-  if(histList){
-    const all = [
-      ...((g.history || []).map(h => ({...h, _kind:'hist'}))),
-      ...((g.scheduled || []).map(h => ({...h, _kind:'sched'}))),
-    ].sort((a,b) => new Date(b.date) - new Date(a.date));
-    histList.innerHTML = all.length ? all.map(h => {
-      const isPos = h.type === 'versa';
-      const sign = isPos ? '+' : '−';
-      const isSched = h._kind === 'sched';
-      const d = new Date(h.date);
-      const ds = d.toLocaleDateString('it-IT',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
-      const tag = isSched ? '<span style="color:#6B7280;font-size:10px;font-weight:500;margin-left:6px">Prevista</span>' : '';
-      const dotStyle = isSched ? ' style="opacity:0.5"' : '';
-      return `<div class="contrib-hist-item"><div class="contrib-hist-dot ${isPos?'pos':'neg'}"${dotStyle}></div><div class="contrib-hist-info"><span class="contrib-hist-amt">${sign} ${eur(h.amount)}${tag}</span><span class="contrib-hist-date">${ds}</span></div></div>`;
-    }).join('') : '<div class="contrib-hist-empty">Nessun movimento</div>';
-  }
+  renderGoalContribHistory(g);
   document.getElementById('goal-contrib-modal').classList.add('open');
 }
 function closeGoalContribModal(){
@@ -3934,6 +4111,7 @@ function applyContrib(){
   if(_schedState.status === 'previsto'){
     if(!g.scheduled) g.scheduled = [];
     g.scheduled.push({
+      id: 's'+Date.now()+Math.random().toString(36).slice(2,7),
       type: _contribMode, amount: amt,
       date: _schedState.when.toISOString(),
       auto: !!_schedState.auto,
@@ -3943,7 +4121,7 @@ function applyContrib(){
     if(_contribMode === 'versa') g.saved = Math.min(g.target, g.saved + amt);
     else g.saved = Math.max(0, g.saved - amt);
     if(!g.history) g.history = [];
-    g.history.push({type: _contribMode, amount: amt, date: new Date().toISOString()});
+    g.history.push({id: 'h'+Date.now()+Math.random().toString(36).slice(2,7), type: _contribMode, amount: amt, date: new Date().toISOString()});
   }
   saveGoalsData();
   closeGoalContribModal();
@@ -4263,9 +4441,345 @@ function processDueScheduled(){
   if(changedD){ saveDebtsData(); renderDebtsList(); renderDebtOverview(); }
 }
 
+// ── ENTRY ID MIGRATION ──
+function migrateEntryIds(){
+  let changedG = false, changedD = false;
+  goals.forEach(g => {
+    (g.history || []).forEach(h => { if(!h.id){ h.id = 'h'+Date.now()+Math.random().toString(36).slice(2,7); changedG = true; }});
+    (g.scheduled || []).forEach(s => { if(!s.id){ s.id = 's'+Date.now()+Math.random().toString(36).slice(2,7); changedG = true; }});
+  });
+  debts.forEach(d => {
+    (d.history || []).forEach(h => { if(!h.id){ h.id = 'h'+Date.now()+Math.random().toString(36).slice(2,7); changedD = true; }});
+    (d.scheduled || []).forEach(s => { if(!s.id){ s.id = 's'+Date.now()+Math.random().toString(36).slice(2,7); changedD = true; }});
+  });
+  if(changedG) saveGoalsData();
+  if(changedD) saveDebtsData();
+}
+
+// ── HISTORY RENDER (extracted) ──
+const MENU_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>`;
+
+function renderGoalContribHistory(g){
+  const histList = document.getElementById('contrib-hist-list');
+  if(!histList) return;
+  const all = [
+    ...((g.history || []).map(h => ({...h, _kind:'hist'}))),
+    ...((g.scheduled || []).map(h => ({...h, _kind:'sched'}))),
+  ].sort((a,b) => new Date(b.date) - new Date(a.date));
+  histList.innerHTML = all.length ? all.map(h => {
+    const isPos = h.type === 'versa';
+    const sign = isPos ? '+' : '−';
+    const isSched = h._kind === 'sched';
+    const d = new Date(h.date);
+    const ds = d.toLocaleDateString('it-IT',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+    const tag = isSched ? '<span style="color:#6B7280;font-size:10px;font-weight:500;margin-left:6px">Prevista</span>' : '';
+    const dotStyle = isSched ? ' style="opacity:0.5"' : '';
+    return `<div class="contrib-hist-item">
+      <div class="contrib-hist-dot ${isPos?'pos':'neg'}"${dotStyle}></div>
+      <div class="contrib-hist-info">
+        <span class="contrib-hist-amt">${sign} ${eur(h.amount)}${tag}</span>
+        <span class="contrib-hist-date">${ds}</span>
+      </div>
+      <button class="hist-menu-btn" onclick="openEntryMenu('goal','${g.id}','${h.id}','${h._kind}')">${MENU_ICON}</button>
+    </div>`;
+  }).join('') : '<div class="contrib-hist-empty">Nessun movimento</div>';
+}
+
+function renderDebtContribHistory(d){
+  const histList = document.getElementById('debt-contrib-hist-list');
+  if(!histList) return;
+  const all = [
+    ...((d.history || []).map(h => ({...h, _kind:'hist'}))),
+    ...((d.scheduled || []).map(h => ({...h, _kind:'sched'}))),
+  ].sort((a,b) => new Date(b.date) - new Date(a.date));
+  histList.innerHTML = all.length ? all.map(h => {
+    const isRimborso = h.type === 'rimborso';
+    const sign = isRimborso ? '−' : '+';
+    const label = isRimborso ? 'Rimborso' : 'Aumento';
+    const isSched = h._kind === 'sched';
+    const dt = new Date(h.date);
+    const ds = dt.toLocaleDateString('it-IT',{day:'2-digit',month:'short'}) + ' ' + dt.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+    const tag = isSched ? '<span style="color:#6B7280;font-size:10px;font-weight:500;margin-left:6px">Prevista</span>' : '';
+    const dotStyle = isSched ? ' style="opacity:0.5"' : '';
+    return `<div class="contrib-hist-item">
+      <div class="contrib-hist-dot ${isRimborso?'pos':'neg'}"${dotStyle}></div>
+      <div class="contrib-hist-info">
+        <span class="contrib-hist-amt">${sign} ${eur(h.amount)} <span style="font-weight:400;font-size:11px;color:var(--ov-text3)">${label}${tag}</span></span>
+        <span class="contrib-hist-date">${ds}</span>
+      </div>
+      <button class="hist-menu-btn" onclick="openEntryMenu('debt','${d.id}','${h.id}','${h._kind}')">${MENU_ICON}</button>
+    </div>`;
+  }).join('') : '<div class="contrib-hist-empty">Nessun movimento</div>';
+}
+
+function rerenderActiveContribHistory(){
+  if(_contribGoalId){
+    const g = goals.find(x => x.id === _contribGoalId);
+    if(g) renderGoalContribHistory(g);
+  }
+  if(_contribDebtId){
+    const d = debts.find(x => x.id === _contribDebtId);
+    if(d) renderDebtContribHistory(d);
+  }
+}
+
+// ── ENTRY MENU / EDIT ──
+let _editTarget = null; // {kind:'goal'|'debt', itemId, entryId, source:'hist'|'sched'}
+let _editEntryDate = null;
+let _editEntryMode = null; // 'amount' or 'date'
+
+function openEntryMenu(kind, itemId, entryId, source){
+  _editTarget = { kind, itemId, entryId, source };
+  document.getElementById('entry-menu').classList.add('open');
+}
+function closeEntryMenu(){ document.getElementById('entry-menu').classList.remove('open'); }
+
+function _getEditEntry(){
+  if(!_editTarget) return null;
+  const list = _editTarget.kind === 'goal' ? goals : debts;
+  const item = list.find(x => x.id === _editTarget.itemId);
+  if(!item) return null;
+  const arr = _editTarget.source === 'hist' ? (item.history || []) : (item.scheduled || []);
+  const idx = arr.findIndex(e => e.id === _editTarget.entryId);
+  if(idx < 0) return null;
+  return { item, arr, entry: arr[idx], idx };
+}
+
+function _saveAndRefresh(kind){
+  if(kind === 'goal'){ saveGoalsData(); renderGoalsList(); renderGoal(); }
+  else { saveDebtsData(); renderDebtsList(); renderDebtOverview(); }
+  rerenderActiveContribHistory();
+}
+
+function editEntryAmount(){
+  const r = _getEditEntry(); if(!r) return;
+  closeEntryMenu();
+  _editEntryMode = 'amount';
+  document.getElementById('edit-entry-title').textContent = 'Modifica importo';
+  document.getElementById('edit-entry-amount-row').style.display = 'block';
+  document.getElementById('edit-entry-date-row').style.display = 'none';
+  document.getElementById('edit-entry-amount-inp').value = r.entry.amount;
+  document.getElementById('edit-entry-modal').classList.add('open');
+}
+
+function editEntryDate(){
+  const r = _getEditEntry(); if(!r) return;
+  closeEntryMenu();
+  _editEntryMode = 'date';
+  _editEntryDate = new Date(r.entry.date);
+  document.getElementById('edit-entry-title').textContent = 'Modifica data';
+  document.getElementById('edit-entry-amount-row').style.display = 'none';
+  document.getElementById('edit-entry-date-row').style.display = 'block';
+  updateEditEntryDateDisplay();
+  document.getElementById('edit-entry-modal').classList.add('open');
+}
+
+function updateEditEntryDateDisplay(){
+  const d = _editEntryDate;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dDate = new Date(d); dDate.setHours(0,0,0,0);
+  const diff = Math.round((dDate - today) / 86400000);
+  let label;
+  if(diff === 0) label = 'Oggi';
+  else if(diff === -1) label = 'Ieri';
+  else if(diff === 1) label = 'Domani';
+  else label = d.toLocaleDateString('it-IT',{weekday:'short', day:'2-digit', month:'short', year:'numeric'});
+  const time = d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('edit-entry-date-display').textContent = label + ' · ' + time;
+}
+
+let _datePickerMode = 'sched'; // 'sched' or 'edit'
+function openEditEntryDatePicker(){
+  _datePickerMode = 'edit';
+  buildSchedDateContent();
+  setupLWheelListeners(['sched-col-day','sched-col-hour','sched-col-min']);
+  document.getElementById('sched-date-picker').classList.add('open');
+  setTimeout(() => {
+    const dt = _editEntryDate || new Date();
+    const today = new Date(); today.setHours(0,0,0,0);
+    const dDate = new Date(dt); dDate.setHours(0,0,0,0);
+    const dayIdx = Math.max(0, Math.min(_schedDays.length-1, Math.round((dDate - today) / 86400000) + 60));
+    const hourIdx = dt.getHours();
+    const minIdx = Math.min(11, Math.round(dt.getMinutes() / 5));
+    document.getElementById('sched-col-day').scrollTop = dayIdx * LWHEEL_H;
+    document.getElementById('sched-col-hour').scrollTop = hourIdx * LWHEEL_H;
+    document.getElementById('sched-col-min').scrollTop = minIdx * LWHEEL_H;
+    lwheelHighlight('sched-col-day', dayIdx);
+    lwheelHighlight('sched-col-hour', hourIdx);
+    lwheelHighlight('sched-col-min', minIdx);
+  }, 60);
+}
+
+// Override confirmSchedDatePicker to handle both modes
+const _origConfirmSchedDatePicker = confirmSchedDatePicker;
+confirmSchedDatePicker = function(){
+  const dayIdx = Math.round(document.getElementById('sched-col-day').scrollTop / LWHEEL_H);
+  const hourIdx = Math.round(document.getElementById('sched-col-hour').scrollTop / LWHEEL_H);
+  const minIdx = Math.round(document.getElementById('sched-col-min').scrollTop / LWHEEL_H);
+  if(dayIdx >= 0 && dayIdx < _schedDays.length){
+    const d = new Date(_schedDays[dayIdx]);
+    d.setHours(hourIdx, minIdx * 5, 0, 0);
+    if(_datePickerMode === 'edit'){
+      _editEntryDate = d;
+      updateEditEntryDateDisplay();
+    } else {
+      _schedState.when = d;
+      updateSchedUI();
+    }
+  }
+  closeSchedDatePicker();
+  _datePickerMode = 'sched';
+};
+// Also reset mode when sched date picker opens normally
+const _origOpenSchedDatePicker = openSchedDatePicker;
+openSchedDatePicker = function(){ _datePickerMode = 'sched'; _origOpenSchedDatePicker(); };
+
+function closeEditEntryModal(){ document.getElementById('edit-entry-modal').classList.remove('open'); }
+
+function saveEditEntry(){
+  const r = _getEditEntry(); if(!r){ closeEditEntryModal(); return; }
+  if(_editEntryMode === 'amount'){
+    const newAmt = parseFloat(document.getElementById('edit-entry-amount-inp').value) || 0;
+    if(newAmt <= 0){ closeEditEntryModal(); return; }
+    const oldAmt = r.entry.amount;
+    const delta = newAmt - oldAmt;
+    if(_editTarget.source === 'hist'){
+      // adjust the running total
+      if(_editTarget.kind === 'goal'){
+        if(r.entry.type === 'versa') r.item.saved = Math.max(0, Math.min(r.item.target, r.item.saved + delta));
+        else r.item.saved = Math.max(0, Math.min(r.item.target, r.item.saved - delta));
+      } else {
+        if(r.entry.type === 'rimborso') r.item.paid = Math.max(0, Math.min(r.item.total, r.item.paid + delta));
+        else r.item.total = Math.max(0, r.item.total + delta);
+      }
+    }
+    r.entry.amount = newAmt;
+  } else if(_editEntryMode === 'date'){
+    if(_editEntryDate) r.entry.date = _editEntryDate.toISOString();
+  }
+  closeEditEntryModal();
+  _saveAndRefresh(_editTarget.kind);
+}
+
+function duplicateEntry(){
+  const r = _getEditEntry(); if(!r){ closeEntryMenu(); return; }
+  const copy = { ...r.entry, id: 'h'+Date.now()+Math.random().toString(36).slice(2,7), date: new Date().toISOString() };
+  if(_editTarget.source === 'sched'){
+    if(!r.item.scheduled) r.item.scheduled = [];
+    copy.id = 's'+Date.now()+Math.random().toString(36).slice(2,7);
+    r.item.scheduled.push(copy);
+  } else {
+    if(!r.item.history) r.item.history = [];
+    r.item.history.push(copy);
+    if(_editTarget.kind === 'goal'){
+      if(copy.type === 'versa') r.item.saved = Math.min(r.item.target, r.item.saved + copy.amount);
+      else r.item.saved = Math.max(0, r.item.saved - copy.amount);
+    } else {
+      if(copy.type === 'rimborso') r.item.paid = Math.min(r.item.total, r.item.paid + copy.amount);
+      else r.item.total += copy.amount;
+    }
+  }
+  closeEntryMenu();
+  _saveAndRefresh(_editTarget.kind);
+  toast('Movimento duplicato');
+}
+
+function deleteEntry(){
+  const r = _getEditEntry(); if(!r){ closeEntryMenu(); return; }
+  if(_editTarget.source === 'hist'){
+    // reverse the effect
+    if(_editTarget.kind === 'goal'){
+      if(r.entry.type === 'versa') r.item.saved = Math.max(0, r.item.saved - r.entry.amount);
+      else r.item.saved = Math.min(r.item.target, r.item.saved + r.entry.amount);
+    } else {
+      if(r.entry.type === 'rimborso') r.item.paid = Math.max(0, r.item.paid - r.entry.amount);
+      else r.item.total = Math.max(0, r.item.total - r.entry.amount);
+    }
+  }
+  r.arr.splice(r.idx, 1);
+  closeEntryMenu();
+  _saveAndRefresh(_editTarget.kind);
+  toast('Movimento eliminato');
+}
+
+document.addEventListener('click', e => {
+  const m = document.getElementById('entry-menu');
+  if(m && e.target === m) closeEntryMenu();
+});
+document.addEventListener('click', e => {
+  const m = document.getElementById('edit-entry-modal');
+  if(m && e.target === m) closeEditEntryModal();
+});
+
+// ── WIZARD ──
+const WIZ_ICONS = ['🎯','💰','🏠','🚗','✈️','🎁','📚','🎉','💍','💻','🏥','⭐','💼','📈','🎓','🧸','🍕','⛵'];
+let _wizState = { category: null, icon: WIZ_ICONS[0] };
+
+function openWizard(){
+  _wizState = { category: null, icon: WIZ_ICONS[0] };
+  document.getElementById('wiz-name-inp').value = '';
+  document.getElementById('wiz-amount-inp').value = '';
+  document.getElementById('wiz-desc-inp').value = '';
+  document.querySelectorAll('.wiz-cat').forEach(b => b.classList.remove('selected'));
+  // build icon grid
+  const grid = document.getElementById('wiz-icon-grid');
+  grid.innerHTML = WIZ_ICONS.map(ic => `<button class="wiz-icon${ic===_wizState.icon?' selected':''}" onclick="pickWizIcon('${ic}')">${ic}</button>`).join('');
+  resetSchedState('wiz');
+  document.getElementById('wizard-modal').classList.add('open');
+}
+function closeWizard(){ document.getElementById('wizard-modal').classList.remove('open'); }
+function pickWizCat(cat){
+  _wizState.category = cat;
+  document.querySelectorAll('.wiz-cat').forEach(b => b.classList.toggle('selected', b.dataset.cat === cat));
+}
+function pickWizIcon(ic){
+  _wizState.icon = ic;
+  document.querySelectorAll('.wiz-icon').forEach(b => b.classList.toggle('selected', b.textContent === ic));
+}
+
+function saveNewBox(){
+  const cat = _wizState.category;
+  const name = document.getElementById('wiz-name-inp').value.trim();
+  const icon = _wizState.icon;
+  const amount = parseFloat(document.getElementById('wiz-amount-inp').value) || 0;
+  const desc = document.getElementById('wiz-desc-inp').value.trim();
+  if(!cat){ toast('Seleziona una categoria'); return; }
+  if(!name){ toast('Inserisci un nome'); return; }
+  if(!amount){ toast('Inserisci un importo'); return; }
+  const isPrevista = _schedState.status === 'previsto';
+  const scheduledFor = isPrevista ? _schedState.when.toISOString() : null;
+  if(cat === 'obiettivo'){
+    const g = { id: Date.now().toString(), title: name, icon, target: amount, desc, saved: 0, history: [], scheduled: [], created: new Date().toISOString(), boxScheduled: scheduledFor };
+    goals.push(g);
+    if(!pinnedGoalId){ pinnedGoalId = g.id; localStorage.setItem('pinned_goal_id', g.id); }
+    saveGoalsData();
+    renderGoalsList(); renderGoal();
+    toast('Obiettivo creato');
+  } else if(cat === 'debito'){
+    const d = { id: Date.now().toString(), title: name, icon, total: amount, paid: 0, desc, history: [], scheduled: [], created: new Date().toISOString(), boxScheduled: scheduledFor };
+    debts.push(d);
+    if(!pinnedDebtId){ pinnedDebtId = d.id; localStorage.setItem('pinned_debt_id', d.id); }
+    saveDebtsData();
+    renderDebtsList(); renderDebtOverview();
+    toast('Debito creato');
+  } else {
+    // regalo / investimento — save in dedicated array (logic TBD, just persist)
+    const key = cat === 'regalo' ? 'gifts_data' : 'investments_data';
+    const arr = JSON.parse(localStorage.getItem(key) || '[]');
+    arr.push({ id: Date.now().toString(), title: name, icon, amount, desc, created: new Date().toISOString(), boxScheduled: scheduledFor });
+    localStorage.setItem(key, JSON.stringify(arr));
+    toast(cat === 'regalo' ? 'Regalo salvato' : 'Investimento salvato');
+  }
+  closeWizard();
+}
+document.addEventListener('click', e => {
+  const m = document.getElementById('wizard-modal');
+  if(m && e.target === m) closeWizard();
+});
+
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 
-window.addEventListener('load', () => { processDueScheduled(); init(); });
+window.addEventListener('load', () => { migrateEntryIds(); processDueScheduled(); init(); });
 
   // ── KEYBOARD / VIEWPORT FIX (PWA standalone mobile) ──
 function applyViewportHeight(){
