@@ -2010,44 +2010,84 @@ body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
 }
 .lwheel-header { cursor: grab; touch-action: none; }
 
-/* ── MODAL OVERLAYS COPRONO SEMPRE TUTTO LO SCHERMO ──
-   Backdrop opaco + blur per nascondere completamente l'app sotto.
-   100dvh per supportare il keyboard inset di iOS 17+ */
+/* ── MODAL OVERLAYS — backdrop opaco con animazione fluida ──
+   Generata da magic-mcp (21st.dev): drop-in spring + stagger interno */
 .goal-modal-ov, .modal-ov, .lwheel-ov, .ripmenu-ov, .entry-menu-ov, .confirm-popup-ov {
   inset: 0 !important;
   height: 100dvh !important;
-  background: rgba(0,0,0,0.42) !important;
-  backdrop-filter: blur(10px) saturate(0.9);
-  -webkit-backdrop-filter: blur(10px) saturate(0.9);
-  transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  background: rgba(0,0,0,0.55) !important;
+  backdrop-filter: blur(14px) saturate(0.85);
+  -webkit-backdrop-filter: blur(14px) saturate(0.85);
+  transition: opacity 0.34s cubic-bezier(0.4, 0, 0.2, 1) !important;
   will-change: opacity;
 }
-/* Sheets posizionati ASSOLUTI al fondo del visual viewport.
-   Cosi' aderiscono alla tastiera senza buchi sotto, indipendentemente
-   dal flex layout dell'overlay. */
+
+/* Keyframes spring drop-in (stiffness 400, damping 32 di framer-motion
+   tradotti in CSS via cubic-bezier con leggero overshoot a -6px) */
+@keyframes sheetDropIn {
+  0%   { transform: translate3d(0, 100%, 0); opacity: 0; }
+  60%  { transform: translate3d(0, -6px, 0); opacity: 1; }
+  100% { transform: translate3d(0, 0, 0);    opacity: 1; }
+}
+/* Animazione di uscita simmetrica e veloce */
+@keyframes sheetDropOut {
+  0%   { transform: translate3d(0, 0, 0); opacity: 1; }
+  100% { transform: translate3d(0, 18%, 0); opacity: 0; }
+}
+/* Stagger: il contenuto del sheet appare con leggero ritardo */
+@keyframes sheetContentFadeIn {
+  0%   { opacity: 0; transform: translate3d(0, 8px, 0); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Sheets ANCORATI al fondo, animazione drop-in spring */
 .goal-modal-sheet, .modal-sheet, .lwheel-sheet, .ripmenu-sheet, .entry-menu-sheet {
   position: absolute !important;
   left: 0; right: 0; margin: 0 auto !important;
-  bottom: var(--keyboard-offset, 0px) !important;
+  bottom: 0 !important;
   width: 100% !important; max-width: 430px !important;
-  transition: bottom 0.20s ease-out, transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.32s ease-out;
+  padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px) + var(--keyboard-offset, 0px)) !important;
+  transition: padding-bottom 0.22s ease-out;
   will-change: transform, opacity;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translate3d(0, 100%, 0);
+  opacity: 0;
 }
 .goal-modal-ov.open .goal-modal-sheet,
 .modal-ov.open .modal-sheet,
 .lwheel-ov.open .lwheel-sheet,
 .ripmenu-ov.open .ripmenu-sheet,
-.entry-menu-ov.open .entry-menu-sheet { transform: translate3d(0, 0, 0); }
-/* Confirm popup: scale + fade, centrato */
+.entry-menu-ov.open .entry-menu-sheet {
+  animation: sheetDropIn 0.52s cubic-bezier(0.34, 1.32, 0.50, 1) forwards;
+}
+
+/* Stagger sui figli diretti del sheet: appaiono 120ms dopo */
+.goal-modal-ov.open .goal-modal-sheet > *:not(.goal-modal-handle):not(script),
+.modal-ov.open .modal-sheet > *:not(.modal-handle):not(script),
+.lwheel-ov.open .lwheel-sheet > *,
+.ripmenu-ov.open .ripmenu-sheet > *:not(.ripmenu-handle),
+.entry-menu-ov.open .entry-menu-sheet > *:not(.entry-menu-handle) {
+  animation: sheetContentFadeIn 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.12s;
+}
+/* I handle (il trattino in alto) appare subito */
+.goal-modal-handle, .modal-handle, .ripmenu-handle, .entry-menu-handle {
+  opacity: 1;
+}
+
+/* Confirm popup: scale-in spring (stiffness 500, damping 30) */
+@keyframes confirmScaleIn {
+  0%   { transform: scale(0.86) translateZ(0); opacity: 0; }
+  60%  { transform: scale(1.02) translateZ(0); opacity: 1; }
+  100% { transform: scale(1.00) translateZ(0); opacity: 1; }
+}
 .confirm-popup-box {
-  transform: scale(0.92) translateZ(0) !important;
-  transition: transform 0.30s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  transform: scale(0.86) translateZ(0) !important;
+  opacity: 0;
 }
 .confirm-popup-ov.open .confirm-popup-box {
-  transform: scale(1) translateZ(0) !important;
+  animation: confirmScaleIn 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
 }
 /* SVG smooth rendering dentro le modali */
 .goal-modal-sheet svg, .modal-sheet svg, .lwheel-sheet svg, .ripmenu-sheet svg, .entry-menu-sheet svg {
