@@ -2022,11 +2022,10 @@ body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
   will-change: opacity;
 }
 
-/* Keyframes spring drop-in (stiffness 400, damping 32 di framer-motion
-   tradotti in CSS via cubic-bezier con leggero overshoot a -6px) */
+/* Keyframes smooth drop-in: slide up senza overshoot.
+   Profilo "ease-out" lineare-decelerato, niente effetto rimbalzo */
 @keyframes sheetDropIn {
   0%   { transform: translate3d(0, 100%, 0); opacity: 0; }
-  60%  { transform: translate3d(0, -6px, 0); opacity: 1; }
   100% { transform: translate3d(0, 0, 0);    opacity: 1; }
 }
 /* Animazione di uscita simmetrica e veloce */
@@ -2059,7 +2058,7 @@ body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
 .lwheel-ov.open .lwheel-sheet,
 .ripmenu-ov.open .ripmenu-sheet,
 .entry-menu-ov.open .entry-menu-sheet {
-  animation: sheetDropIn 0.52s cubic-bezier(0.34, 1.32, 0.50, 1) forwards;
+  animation: sheetDropIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Stagger sui figli diretti del sheet: appaiono 120ms dopo */
@@ -2076,18 +2075,17 @@ body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
   opacity: 1;
 }
 
-/* Confirm popup: scale-in spring (stiffness 500, damping 30) */
+/* Confirm popup: scale-in smooth senza overshoot */
 @keyframes confirmScaleIn {
-  0%   { transform: scale(0.86) translateZ(0); opacity: 0; }
-  60%  { transform: scale(1.02) translateZ(0); opacity: 1; }
+  0%   { transform: scale(0.92) translateZ(0); opacity: 0; }
   100% { transform: scale(1.00) translateZ(0); opacity: 1; }
 }
 .confirm-popup-box {
-  transform: scale(0.86) translateZ(0) !important;
+  transform: scale(0.92) translateZ(0) !important;
   opacity: 0;
 }
 .confirm-popup-ov.open .confirm-popup-box {
-  animation: confirmScaleIn 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+  animation: confirmScaleIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
 }
 /* SVG smooth rendering dentro le modali */
 .goal-modal-sheet svg, .modal-sheet svg, .lwheel-sheet svg, .ripmenu-sheet svg, .entry-menu-sheet svg {
