@@ -24,7 +24,7 @@ body {
 
 #app {
   height: auto !important;
-  min-height: 100svh !important;
+  min-height: 100dvh !important;
   overflow: visible !important;
   isolation: isolate;
 }
@@ -33,7 +33,7 @@ body {
   position: static !important;
   inset: auto !important;
   display: none !important;
-  min-height: 100svh;
+  min-height: 100dvh;
   opacity: 1 !important;
   transform: none !important;
   transition: opacity 160ms ease !important;
@@ -54,7 +54,7 @@ body {
 
 .auth-screen,
 .pin-screen {
-  min-height: 100svh;
+  min-height: 100dvh;
   padding-bottom: calc(40px + var(--keyboard-inset)) !important;
 }
 
@@ -83,7 +83,7 @@ body {
 
 .modal-sheet {
   width: 100%;
-  max-height: calc(100svh - env(safe-area-inset-top) - 8px);
+  max-height: calc(100dvh - env(safe-area-inset-top) - 8px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   transform: none !important;
