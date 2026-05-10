@@ -1971,7 +1971,14 @@ body {
 .wiz-icon svg { display: block; }
 
 /* ── GOAL MODAL SHEET — taller scrollable for wizard ── */
-.goal-modal-sheet.tall { max-height: 86vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.goal-modal-sheet.tall {
+  max-height: var(--app-vh, 86dvh);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-bottom: 80px;
+  scroll-padding-top: 24px;
+  overscroll-behavior: contain;
+}
 
 /* ── iOS ZOOM PREVENT — inputs >= 16px ── */
 input:not([type=checkbox]):not([type=radio]), textarea, select {
@@ -2004,41 +2011,47 @@ body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
 .lwheel-header { cursor: grab; touch-action: none; }
 
 /* ── MODAL OVERLAYS COPRONO SEMPRE TUTTO LO SCHERMO ──
-   (no app visibile sotto quando la tastiera apre) */
+   Backdrop opaco + blur per nascondere completamente l'app sotto.
+   100dvh per supportare il keyboard inset di iOS 17+ */
 .goal-modal-ov, .modal-ov, .lwheel-ov, .ripmenu-ov, .entry-menu-ov, .confirm-popup-ov {
   inset: 0 !important;
-  height: 100% !important;
+  height: 100dvh !important;
+  background: rgba(0,0,0,0.42) !important;
+  backdrop-filter: blur(10px) saturate(0.9);
+  -webkit-backdrop-filter: blur(10px) saturate(0.9);
+  transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  will-change: opacity;
 }
-/* I fogli salgono sopra la tastiera tramite margin-bottom = altezza tastiera */
-.goal-modal-sheet, .modal-sheet, .lwheel-sheet, .ripmenu-sheet, .entry-menu-sheet, .confirm-popup-box {
-  margin-bottom: var(--keyboard-offset, 0px);
-  transition: margin-bottom 0.20s ease-out, transform 0.36s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.30s ease-out;
+/* Sheets posizionati ASSOLUTI al fondo del visual viewport.
+   Cosi' aderiscono alla tastiera senza buchi sotto, indipendentemente
+   dal flex layout dell'overlay. */
+.goal-modal-sheet, .modal-sheet, .lwheel-sheet, .ripmenu-sheet, .entry-menu-sheet {
+  position: absolute !important;
+  left: 0; right: 0; margin: 0 auto !important;
+  bottom: var(--keyboard-offset, 0px) !important;
+  width: 100% !important; max-width: 430px !important;
+  transition: bottom 0.20s ease-out, transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.32s ease-out;
   will-change: transform, opacity;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  transform: translateY(100%) translateZ(0);
+  transform: translate3d(0, 100%, 0);
 }
 .goal-modal-ov.open .goal-modal-sheet,
 .modal-ov.open .modal-sheet,
 .lwheel-ov.open .lwheel-sheet,
 .ripmenu-ov.open .ripmenu-sheet,
-.entry-menu-ov.open .entry-menu-sheet { transform: translateY(0) translateZ(0); }
-/* Confirm popup: scale invece di slide */
+.entry-menu-ov.open .entry-menu-sheet { transform: translate3d(0, 0, 0); }
+/* Confirm popup: scale + fade, centrato */
 .confirm-popup-box {
-  transform: scale(0.88) translateZ(0) !important;
+  transform: scale(0.92) translateZ(0) !important;
+  transition: transform 0.30s cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 .confirm-popup-ov.open .confirm-popup-box {
   transform: scale(1) translateZ(0) !important;
 }
-/* Overlay fade più fluido */
-.goal-modal-ov, .modal-ov, .lwheel-ov, .ripmenu-ov, .entry-menu-ov, .confirm-popup-ov {
-  transition: opacity 0.30s cubic-bezier(0.32, 0.72, 0, 1) !important;
-  will-change: opacity;
-}
-/* Le SVG dentro i bottoni: rendering smooth, niente pop-in */
+/* SVG smooth rendering dentro le modali */
 .goal-modal-sheet svg, .modal-sheet svg, .lwheel-sheet svg, .ripmenu-sheet svg, .entry-menu-sheet svg {
   shape-rendering: geometricPrecision;
-  -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
 
