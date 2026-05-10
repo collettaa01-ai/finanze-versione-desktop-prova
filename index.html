@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#1a1c1c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -623,18 +623,19 @@ body {
   border-radius: 2px; margin: 0 auto 18px;
 }
 .modal-ttl { font-size: 16px; font-weight: 600; color: var(--dark); margin-bottom: 16px; letter-spacing: -0.02em; }
-.type-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.type-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
 .type-btn {
-  padding: 11px; border-radius: var(--r-xs);
-  font-size: 13px; font-weight: 500;
+  padding: 13px 6px; border-radius: 12px;
+  font-size: 13px; font-weight: 600;
   font-family: var(--font);
-  border: 0.5px solid var(--border-mid);
-  background: var(--surface-low); color: var(--dark-soft);
-  cursor: pointer; transition: all 0.15s;
+  border: 1.5px solid rgba(0,0,0,0.10);
+  background: rgba(0,0,0,0.03); color: var(--dark-soft);
+  cursor: pointer; transition: all 0.18s;
+  -webkit-tap-highlight-color: transparent;
 }
-.type-btn.act-in { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
-.type-btn.act-out { background: var(--red-bg); border-color: #f0b4b4; color: var(--red); }
-.type-btn.off { opacity: 0.35; }
+.type-btn.act-in { background: rgba(34,197,94,0.12); border-color: #22C55E; color: #16A34A; }
+.type-btn.act-out { background: rgba(239,68,68,0.12); border-color: #EF4444; color: #DC2626; }
+.type-btn.off { opacity: 0.45; }
 .fg { margin-bottom: 12px; }
 .fl {
   font-size: 10px; font-weight: 500;
@@ -660,23 +661,29 @@ body {
   border-color: var(--dark);
 }
 .btn-ok {
-  width: 100%; padding: 13px;
-  background: var(--dark); color: #fff;
-  font-size: 14px; font-weight: 600;
+  width: 100%; padding: 15px;
+  background: var(--ov-primary); color: #fff;
+  font-size: 16px; font-weight: 600;
   font-family: var(--font);
-  border: none; border-radius: var(--r-xs);
+  border: none; border-radius: 14px;
   cursor: pointer; margin-top: 4px;
   transition: opacity 0.15s, transform 0.1s;
   letter-spacing: -0.01em;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 14px rgba(124,58,237,0.28);
 }
-.btn-ok:active { transform: scale(0.98); }
+.btn-ok:active { transform: scale(0.98); opacity: 0.92; }
 .btn-ok.loading { opacity: 0.5; pointer-events: none; }
 .btn-cancel {
-  width: 100%; padding: 10px;
-  background: none; border: none;
-  color: var(--dark-soft); font-size: 12px; font-weight: 300;
-  font-family: var(--font); cursor: pointer; margin-top: 2px;
+  width: 100%; padding: 15px;
+  background: rgba(0,0,0,0.07); border: none;
+  color: var(--ov-text2); font-size: 16px; font-weight: 600;
+  font-family: var(--font); cursor: pointer; margin-top: 10px;
+  border-radius: 14px;
+  transition: opacity 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
+.btn-cancel:active { opacity: 0.7; }
 
 /* ── MODAL TABS ── */
 .modal-tabs {
@@ -1977,7 +1984,34 @@ body.modal-open #app, body.modal-open .ov-scroll, body.modal-open .ins-scroll {
 /* I fogli salgono sopra la tastiera tramite margin-bottom = altezza tastiera */
 .goal-modal-sheet, .modal-sheet, .lwheel-sheet, .ripmenu-sheet, .entry-menu-sheet, .confirm-popup-box {
   margin-bottom: var(--keyboard-offset, 0px);
-  transition: margin-bottom 0.18s ease-out, transform 0.30s cubic-bezier(0.32,0.72,0,1);
+  transition: margin-bottom 0.20s ease-out, transform 0.36s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.30s ease-out;
+  will-change: transform, opacity;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateY(100%) translateZ(0);
+}
+.goal-modal-ov.open .goal-modal-sheet,
+.modal-ov.open .modal-sheet,
+.lwheel-ov.open .lwheel-sheet,
+.ripmenu-ov.open .ripmenu-sheet,
+.entry-menu-ov.open .entry-menu-sheet { transform: translateY(0) translateZ(0); }
+/* Confirm popup: scale invece di slide */
+.confirm-popup-box {
+  transform: scale(0.88) translateZ(0) !important;
+}
+.confirm-popup-ov.open .confirm-popup-box {
+  transform: scale(1) translateZ(0) !important;
+}
+/* Overlay fade più fluido */
+.goal-modal-ov, .modal-ov, .lwheel-ov, .ripmenu-ov, .entry-menu-ov, .confirm-popup-ov {
+  transition: opacity 0.30s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  will-change: opacity;
+}
+/* Le SVG dentro i bottoni: rendering smooth, niente pop-in */
+.goal-modal-sheet svg, .modal-sheet svg, .lwheel-sheet svg, .ripmenu-sheet svg, .entry-menu-sheet svg {
+  shape-rendering: geometricPrecision;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 /* ── BODY LOCK WHEN MODAL OPEN (anti-scroll-chaining) ── */
@@ -3129,6 +3163,8 @@ const CIRC = 2*Math.PI*24;
 // ── UTILS ──
 async function sha256(s){ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)); return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); }
 function eur(n){ return '€\u00A0'+Number(n||0).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+// Parse importo in maniera tollerante: accetta sia "5.50" che "5,50"
+function parseAmount(v){ const n = parseFloat(String(v == null ? '' : v).replace(',', '.')); return isFinite(n) ? n : 0; }
 function fdate(d){ return new Date(d).toLocaleDateString('it-IT',{day:'2-digit',month:'short'})+' '+new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
 function setBtn(id,on){ const b=document.getElementById(id); if(b) b.classList.toggle('loading',on); }
@@ -3326,8 +3362,8 @@ function switchTab(tab){
 
 // ── BALANCES ──
 function onBalInput(){
-  S.cc=parseFloat(document.getElementById('ov-in-cc').value)||0;
-  S.cash=parseFloat(document.getElementById('ov-in-cash').value)||0;
+  S.cc=parseAmount(document.getElementById('ov-in-cc').value)||0;
+  S.cash=parseAmount(document.getElementById('ov-in-cash').value)||0;
   renderCircle();
   clearTimeout(balTimer);
   balTimer=setTimeout(saveProfile,1200);
@@ -3476,7 +3512,7 @@ function selectDay(d) {
 async function confirmRecurring() {
   if (!planType) { toast('Seleziona Entrata o Uscita'); return; }
   if (!planDay) { toast('Scegli il giorno del mese'); return; }
-  const amt = parseFloat(document.getElementById('plan-amt').value);
+  const amt = parseAmount(document.getElementById('plan-amt').value);
   if (!amt || amt <= 0) { toast('Importo non valido'); return; }
   const freqVal = parseInt(document.getElementById('plan-freq-val').value) || 1;
   const freqUnit = document.getElementById('plan-freq-unit').value;
@@ -3522,7 +3558,7 @@ function setType(t){
 
 async function confirmTx(){
   if(!txType){ toast('Seleziona Entrata o Uscita'); return; }
-  const amt=parseFloat(document.getElementById('inp-amt').value);
+  const amt=parseAmount(document.getElementById('inp-amt').value);
   if(!amt||amt<=0){ toast('Importo non valido'); return; }
   const conto=document.getElementById('sel-conto').value;
   const desc=document.getElementById('inp-desc').value||'—';
@@ -4059,7 +4095,7 @@ function openNewDebtModal(){
 function closeNewDebtModal(){ document.getElementById('new-debt-modal').classList.remove('open'); }
 function saveNewDebt(){
   const title = document.getElementById('new-debt-title-inp').value.trim();
-  const amount = parseFloat(document.getElementById('new-debt-amount-inp').value) || 0;
+  const amount = parseAmount(document.getElementById('new-debt-amount-inp').value) || 0;
   const desc = document.getElementById('new-debt-desc-inp').value.trim();
   if(!title || !amount) return;
   const d = { id: Date.now().toString(), title, total: amount, paid: 0, desc, history: [], created: new Date().toISOString() };
@@ -4104,7 +4140,7 @@ function toggleDebtContribMode(mode){
 }
 function applyDebtContrib(){
   if(!_contribDebtId || !_debtContribMode) return;
-  const amt = parseFloat(document.getElementById('debt-contrib-amount-inp').value) || 0;
+  const amt = parseAmount(document.getElementById('debt-contrib-amount-inp').value) || 0;
   if(!amt) return;
   const d = debts.find(x => x.id === _contribDebtId);
   if(!d) return;
@@ -4327,7 +4363,7 @@ function openNewGoalModal(){
 function closeNewGoalModal(){ document.getElementById('new-goal-modal').classList.remove('open'); }
 function saveNewGoal(){
   const title = document.getElementById('new-goal-title-inp').value.trim();
-  const amount = parseFloat(document.getElementById('new-goal-amount-inp').value) || 0;
+  const amount = parseAmount(document.getElementById('new-goal-amount-inp').value) || 0;
   const desc = document.getElementById('new-goal-desc-inp').value.trim();
   if(!title || !amount) return;
   const g = { id: Date.now().toString(), title, target: amount, desc, saved: 0, history: [], created: new Date().toISOString() };
@@ -4372,7 +4408,7 @@ function toggleContribMode(mode){
 }
 function applyContrib(){
   if(!_contribGoalId || !_contribMode) return;
-  const amt = parseFloat(document.getElementById('contrib-amount-inp').value) || 0;
+  const amt = parseAmount(document.getElementById('contrib-amount-inp').value) || 0;
   if(!amt) return;
   const g = goals.find(x => x.id === _contribGoalId);
   if(!g) return;
@@ -4856,7 +4892,7 @@ function closeEditEntryModal(){ document.getElementById('edit-entry-modal').clas
 function saveEditEntry(){
   const r = _getEditEntry(); if(!r){ closeEditEntryModal(); return; }
   if(_editEntryMode === 'amount'){
-    const newAmt = parseFloat(document.getElementById('edit-entry-amount-inp').value) || 0;
+    const newAmt = parseAmount(document.getElementById('edit-entry-amount-inp').value) || 0;
     if(newAmt <= 0){ closeEditEntryModal(); return; }
     const oldAmt = r.entry.amount;
     const delta = newAmt - oldAmt;
@@ -4991,7 +5027,7 @@ function saveNewBox(){
   const cat = _wizState.category;
   const name = document.getElementById('wiz-name-inp').value.trim();
   const icon = _wizState.icon;
-  const amount = parseFloat(document.getElementById('wiz-amount-inp').value) || 0;
+  const amount = parseAmount(document.getElementById('wiz-amount-inp').value) || 0;
   const desc = document.getElementById('wiz-desc-inp').value.trim();
   if(!cat){ toast('Seleziona una categoria'); return; }
   if(!name){ toast('Inserisci un nome'); return; }
@@ -5148,7 +5184,7 @@ saveEditEntry = async function(){
   if(_editTarget && _editTarget.kind === 'tx'){
     const r = _getEditEntry(); if(!r){ closeEditEntryModal(); return; }
     if(_editEntryMode === 'amount'){
-      const newAmt = parseFloat(document.getElementById('edit-entry-amount-inp').value) || 0;
+      const newAmt = parseAmount(document.getElementById('edit-entry-amount-inp').value) || 0;
       if(newAmt <= 0){ closeEditEntryModal(); return; }
       const oldAmt = Number(r.tx.importo);
       const delta = newAmt - oldAmt;
