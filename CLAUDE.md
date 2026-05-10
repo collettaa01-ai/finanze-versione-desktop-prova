@@ -25,9 +25,23 @@ icons/       — icon-192.png, icon-512.png
 - Usare CSS custom properties (design tokens in `:root`) per colori e spaziature
 
 ## Comandi utili
-- **Avviare in locale**: aprire `index.html` in un browser (o usare Live Server in VS Code)
-- **Deploy**: `git push origin main` → GitHub Pages si aggiorna automaticamente
+- **Dev server con hot reload**: `vite` (apre http://localhost:5173, ricarica al salvataggio)
+- **Format codice**: `prettier --write index.html app.js sw.js styles.css`
+- **Audit PWA / performance**: `lighthouse https://collettaa01-ai.github.io/finanze-versione-desktop-prova/ --view`
+- **Deploy production**: `git push origin main` (GitHub Pages auto-deploy)
+- **Deploy preview**: `vercel` (URL temporaneo per testare branch)
 - **Testare PWA**: Chrome DevTools → Application → Service Workers
+
+## MCP attivi per Claude Code
+- **github**: gestione repo, PR, issues
+- **playwright**: Claude apre la PWA in browser reale, clicca, fa screenshot, debug visuale
+- **context7**: pesca docs aggiornate (Supabase, Web APIs, Service Worker)
+- (opzionale) **supabase**: schema DB e query — richiede `SUPABASE_ACCESS_TOKEN` in settings.json
+
+## Quando chiedi a Claude di lavorare al progetto
+- Per debug UI: "apri la PWA con Playwright e..." (Claude la naviga da solo)
+- Per query/schema DB: lavora con context7 o supabase MCP
+- Prima di committare: chiedi sempre `prettier --write` per formattare
 
 ## Repository
 - GitHub: https://github.com/collettaa01-ai/finanze-versione-desktop-prova

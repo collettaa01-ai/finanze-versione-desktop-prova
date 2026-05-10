@@ -1,0 +1,6 @@
+node_modules/
+.vercel/
+*.min.js
+*.min.css
+icons/
+manifest.json
