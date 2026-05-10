@@ -818,7 +818,7 @@ body {
   --teal-1: #0d2027; --teal-2: #0f2d38; --teal-border: rgba(255,255,255,0.10);
   --teal-text: rgba(255,255,255,0.90); --teal-sub: rgba(255,255,255,0.45);
 }
-#screen-home, #screen-insights { background: var(--ov-bg); }
+#screen-home, #screen-insights, #screen-attivita { background: var(--ov-bg); }
 
 /* ── OV SCROLL & HEADER ── */
 .ov-scroll {
@@ -1695,6 +1695,71 @@ body {
 .contrib-hist-date { font-family: var(--font); font-size: 10px; color: var(--ov-text3); white-space: nowrap; }
 .contrib-hist-empty { font-family: var(--font); font-size: 12px; color: var(--ov-text3); text-align: center; padding: 10px 0; }
 
+/* ── ATTIVITA' RECENTI FEED ── */
+.act-date-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 0 16px 12px; padding: 12px 14px;
+  background: white; border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.act-date-nav {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.04); border: none; cursor: pointer;
+  color: var(--ov-text2);
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, transform 0.1s;
+}
+.act-date-nav:active { background: rgba(0,0,0,0.08); transform: scale(0.94); }
+.act-date-center {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; padding: 4px 8px; border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s;
+}
+.act-date-center:active { background: rgba(124,58,237,0.06); }
+.act-date-label { font-family: var(--font); font-size: 15px; font-weight: 700; color: var(--ov-text); letter-spacing: -0.01em; }
+.act-date-sub { font-family: var(--font); font-size: 11px; color: var(--ov-text3); margin-top: 2px; }
+.act-feed { margin: 0 16px; padding-bottom: 100px; }
+.act-empty {
+  text-align: center; padding: 48px 24px;
+  font-family: var(--font); font-size: 14px; color: var(--ov-text3); line-height: 1.6;
+}
+.act-day-divider {
+  font-family: var(--font); font-size: 11px; font-weight: 600;
+  color: var(--ov-text3); text-transform: uppercase; letter-spacing: 0.06em;
+  margin: 14px 4px 8px;
+}
+.act-item {
+  display: flex; align-items: center; gap: 12px;
+  background: white; border-radius: 14px;
+  padding: 12px 14px; margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.act-icon {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+}
+.act-icon.tx-in     { background: linear-gradient(135deg, #22C55E, #16A34A); }
+.act-icon.tx-out    { background: linear-gradient(135deg, #EF4444, #DC2626); }
+.act-icon.goal-create { background: linear-gradient(135deg, #7C3AED, #A78BFA); }
+.act-icon.goal-versa  { background: linear-gradient(135deg, #22C55E, #16A34A); }
+.act-icon.goal-detrai { background: linear-gradient(135deg, #F59E0B, #D97706); }
+.act-icon.debt-create { background: linear-gradient(135deg, #F97316, #EA580C); }
+.act-icon.debt-rimborso { background: linear-gradient(135deg, #22C55E, #16A34A); }
+.act-icon.debt-aumento  { background: linear-gradient(135deg, #EF4444, #DC2626); }
+.act-icon.scheduled { background: linear-gradient(135deg, #6B7280, #4B5563); opacity: 0.85; }
+.act-info { flex: 1; min-width: 0; }
+.act-title { font-family: var(--font); font-size: 14px; font-weight: 600; color: var(--ov-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.act-sub   { font-family: var(--font); font-size: 11px; color: var(--ov-text3); margin-top: 2px; }
+.act-meta  { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; }
+.act-amount { font-family: var(--mono); font-size: 14px; font-weight: 700; }
+.act-amount.pos { color: #16A34A; }
+.act-amount.neg { color: #DC2626; }
+.act-amount.neutral { color: var(--ov-text2); }
+.act-time { font-family: var(--font); font-size: 10px; color: var(--ov-text3); margin-top: 2px; }
+
 /* ── DEBT CARD ── */
 .debt-card-total-red { font-family: var(--mono); font-size: 16px; font-weight: 700; color: #EF4444; margin: 4px 0 2px; }
 .debt-card-bar-track { background: rgba(0,0,0,0.07); border-radius: 99px; height: 5px; margin: 6px 0 2px; overflow: hidden; }
@@ -2314,6 +2379,33 @@ body.modal-open {
         Nuova transazione
       </button>
 
+      <!-- ATTIVITA' RECENTI -->
+      <div style="margin:0 16px 12px; font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--ov-text); letter-spacing: -0.01em;">Attività recenti</div>
+      <div class="act-date-bar">
+        <button class="act-date-nav" onclick="actDateShift(-1)" aria-label="Giorno precedente">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="act-date-center" onclick="openActDatePicker()">
+          <div class="act-date-label" id="act-date-label">Oggi</div>
+          <div class="act-date-sub" id="act-date-sub">—</div>
+        </div>
+        <button class="act-date-nav" onclick="actDateShift(1)" aria-label="Giorno successivo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 19l7-7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="act-feed" id="act-feed">
+        <div class="act-empty">Nessuna attività in questa data.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATTIVITA' (tab) -->
+  <div class="screen" id="screen-attivita">
+    <div class="ov-scroll">
+      <div class="ov-header">
+        <div class="ov-header-title">Attività</div>
+      </div>
+
       <!-- Card Portafoglio -->
       <div class="ov-card" onclick="openPortScreen()">
         <div class="ov-card-top">
@@ -2334,7 +2426,7 @@ body.modal-open {
         </div>
       </div>
 
-      <!-- Card 2: Obiettivo -->
+      <!-- Card Obiettivo -->
       <div class="ov-card" onclick="openGoalsScreen()">
         <div class="ov-card-top">
           <div class="ov-card-title-row">
@@ -2364,7 +2456,7 @@ body.modal-open {
         <div class="ov-goal-prog-line"><span id="ov-goal-saved-vs-target">0 / —</span></div>
       </div>
 
-      <!-- Card 3: Debito -->
+      <!-- Card Debito -->
       <div class="ov-card" onclick="openDebtsScreen()">
         <div class="ov-card-top">
           <div class="ov-card-title-row">
@@ -2397,8 +2489,8 @@ body.modal-open {
         </div>
       </div>
 
-      <!-- FAB aggiungi -->
-      <div style="padding:0 16px 8px;display:flex;justify-content:flex-end;">
+      <!-- FAB aggiungi (nuovo box) -->
+      <div style="padding:0 16px 24px;display:flex;justify-content:flex-end;">
         <button onclick="openWizard()" style="width:52px;height:52px;border-radius:50%;background:var(--ov-primary);border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(124,58,237,0.35);cursor:pointer;-webkit-tap-highlight-color:transparent;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
         </button>
@@ -2433,7 +2525,7 @@ body.modal-open {
     </div>
   </div>
 
-  <!-- NAV BAR (2 tab) -->
+  <!-- NAV BAR (3 tab) -->
   <nav class="nav-bar" id="nav-bar" style="display:none">
     <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
       <svg viewBox="0 0 24 24" fill="none">
@@ -2443,6 +2535,14 @@ body.modal-open {
         <rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor"/>
       </svg>
       <span class="nav-label">Overview</span>
+    </div>
+    <div class="nav-item" id="nav-attivita" onclick="switchTab('attivita')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="16" rx="2.5"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+        <line x1="8" y1="14" x2="13" y2="14"/>
+      </svg>
+      <span class="nav-label">Attività</span>
     </div>
     <div class="nav-item" id="nav-insights" onclick="switchTab('insights')">
       <svg viewBox="0 0 24 24" fill="none">
@@ -3252,7 +3352,7 @@ function setBtn(id,on){ const b=document.getElementById(id); if(b) b.classList.t
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('visible'));
   document.getElementById(id).classList.add('visible');
-  document.getElementById('nav-bar').style.display=['screen-home','screen-insights'].includes(id)?'flex':'none';
+  document.getElementById('nav-bar').style.display=['screen-home','screen-attivita','screen-insights'].includes(id)?'flex':'none';
 }
 
 // ── AUTH ──
@@ -3429,13 +3529,14 @@ let curTab='home';
 function switchTab(tab){
   curTab=tab;
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('visible'));
-  ['home','insights'].forEach(t=>{
+  ['home','attivita','insights'].forEach(t=>{
     const s=document.getElementById('screen-'+t);
     const n=document.getElementById('nav-'+t);
     if(s) s.classList.toggle('visible',t===tab);
     if(n) n.classList.toggle('active',t===tab);
   });
   document.getElementById('nav-bar').style.display='flex';
+  if(tab==='home') renderAttivitaRecenti();
   if(tab==='insights') renderInsights();
 }
 
@@ -3673,7 +3774,7 @@ async function confirmTx(){
 }
 
 // ── RENDER ──
-function renderAll(){ renderCircle(); renderInsights(); renderDebtOverview(); renderPortOverview(); }
+function renderAll(){ renderCircle(); renderInsights(); renderDebtOverview(); renderPortOverview(); renderAttivitaRecenti(); }
 
 function txCard(tx){
   const sign=tx.type==='entrata'?'+':'−', icon=tx.type==='entrata'?'↑':'↓';
@@ -4314,6 +4415,199 @@ function renderInsights(){
   }).join('');
 }
 
+// ── ATTIVITA' RECENTI (Overview tab feed) ──
+let _actSelectedDate = new Date();
+_actSelectedDate.setHours(0,0,0,0);
+// Modalita' del wheel picker date: 'sched' | 'edit' | 'act'
+let _datePickerMode = 'sched';
+
+const ACT_ICONS = {
+  'tx-in':       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>',
+  'tx-out':      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>',
+  'goal-create': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
+  'goal-versa':  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>',
+  'goal-detrai': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>',
+  'debt-create': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+  'debt-rimborso': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  'debt-aumento':  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  'scheduled':   '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>',
+};
+
+function _sameDay(a, b){
+  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+
+function collectActivities(){
+  const acts = [];
+  // Transazioni live
+  (S.txs || []).forEach(tx => {
+    const d = new Date(tx.created_at);
+    acts.push({
+      date: d,
+      type: tx.type === 'entrata' ? 'tx-in' : 'tx-out',
+      title: tx.descrizione || (tx.type === 'entrata' ? 'Entrata' : 'Uscita'),
+      sub: (tx.conto === 'cc' ? 'Conto Corrente' : 'Contanti'),
+      amount: Number(tx.importo),
+      amountSign: tx.type === 'entrata' ? 'pos' : 'neg',
+      sign: tx.type === 'entrata' ? '+' : '−',
+    });
+  });
+  // Transazioni previste
+  const pendingTxs = JSON.parse(localStorage.getItem('pending_txs') || '[]');
+  pendingTxs.forEach(tx => {
+    const d = new Date(tx.date);
+    acts.push({
+      date: d,
+      type: 'scheduled',
+      title: (tx.descrizione || (tx.type === 'entrata' ? 'Entrata' : 'Uscita')) + ' (prevista)',
+      sub: (tx.conto === 'cc' ? 'Conto Corrente' : 'Contanti'),
+      amount: Number(tx.importo),
+      amountSign: tx.type === 'entrata' ? 'pos' : 'neg',
+      sign: tx.type === 'entrata' ? '+' : '−',
+    });
+  });
+  // Obiettivi: creazione + history + scheduled
+  (goals || []).forEach(g => {
+    if(g.created){
+      acts.push({
+        date: new Date(g.created),
+        type: 'goal-create',
+        title: 'Nuovo obiettivo: ' + g.title,
+        sub: 'Target € ' + Number(g.target||0).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}),
+        amount: 0, amountSign: 'neutral', sign: '',
+      });
+    }
+    (g.history || []).forEach(h => {
+      acts.push({
+        date: new Date(h.date),
+        type: h.type === 'versa' ? 'goal-versa' : 'goal-detrai',
+        title: g.title,
+        sub: h.type === 'versa' ? 'Contributo obiettivo' : 'Detrazione obiettivo',
+        amount: Number(h.amount),
+        amountSign: h.type === 'versa' ? 'pos' : 'neg',
+        sign: h.type === 'versa' ? '+' : '−',
+      });
+    });
+    (g.scheduled || []).forEach(s => {
+      acts.push({
+        date: new Date(s.date),
+        type: 'scheduled',
+        title: g.title + ' (previsto)',
+        sub: s.type === 'versa' ? 'Contributo obiettivo' : 'Detrazione obiettivo',
+        amount: Number(s.amount),
+        amountSign: s.type === 'versa' ? 'pos' : 'neg',
+        sign: s.type === 'versa' ? '+' : '−',
+      });
+    });
+  });
+  // Debiti: creazione + history + scheduled
+  (debts || []).forEach(d2 => {
+    if(d2.created){
+      acts.push({
+        date: new Date(d2.created),
+        type: 'debt-create',
+        title: 'Nuovo debito: ' + d2.title,
+        sub: 'Totale € ' + Number(d2.total||0).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}),
+        amount: 0, amountSign: 'neutral', sign: '',
+      });
+    }
+    (d2.history || []).forEach(h => {
+      acts.push({
+        date: new Date(h.date),
+        type: h.type === 'rimborso' ? 'debt-rimborso' : 'debt-aumento',
+        title: d2.title,
+        sub: h.type === 'rimborso' ? 'Quota rimborsata' : 'Aumento del debito',
+        amount: Number(h.amount),
+        amountSign: h.type === 'rimborso' ? 'pos' : 'neg',
+        sign: h.type === 'rimborso' ? '−' : '+',
+      });
+    });
+    (d2.scheduled || []).forEach(s => {
+      acts.push({
+        date: new Date(s.date),
+        type: 'scheduled',
+        title: d2.title + ' (previsto)',
+        sub: s.type === 'rimborso' ? 'Rimborso previsto' : 'Aumento previsto',
+        amount: Number(s.amount),
+        amountSign: s.type === 'rimborso' ? 'pos' : 'neg',
+        sign: s.type === 'rimborso' ? '−' : '+',
+      });
+    });
+  });
+  return acts;
+}
+
+function updateActDateLabel(){
+  const d = _actSelectedDate;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const yest = new Date(today.getTime() - 86400000);
+  const tom = new Date(today.getTime() + 86400000);
+  let label;
+  if(_sameDay(d, today)) label = 'Oggi';
+  else if(_sameDay(d, yest)) label = 'Ieri';
+  else if(_sameDay(d, tom)) label = 'Domani';
+  else label = d.toLocaleDateString('it-IT', {weekday: 'long'}).replace(/^./, c => c.toUpperCase());
+  const sub = d.toLocaleDateString('it-IT', {day: '2-digit', month: 'long', year: 'numeric'});
+  const labEl = document.getElementById('act-date-label');
+  const subEl = document.getElementById('act-date-sub');
+  if(labEl) labEl.textContent = label;
+  if(subEl) subEl.textContent = sub;
+}
+
+function renderAttivitaRecenti(){
+  updateActDateLabel();
+  const feed = document.getElementById('act-feed');
+  if(!feed) return;
+  const all = collectActivities();
+  const filtered = all
+    .filter(a => _sameDay(a.date, _actSelectedDate))
+    .sort((a, b) => b.date - a.date);
+  if(!filtered.length){
+    feed.innerHTML = '<div class="act-empty">Nessuna attività in questa data.</div>';
+    return;
+  }
+  feed.innerHTML = filtered.map(a => {
+    const t = a.date.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'});
+    const amt = a.amount > 0
+      ? `<span class="act-amount ${a.amountSign}">${a.sign} € ${a.amount.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`
+      : '';
+    return `<div class="act-item">
+      <div class="act-icon ${a.type}">${ACT_ICONS[a.type] || ACT_ICONS['scheduled']}</div>
+      <div class="act-info">
+        <div class="act-title">${a.title}</div>
+        <div class="act-sub">${a.sub}</div>
+      </div>
+      <div class="act-meta">${amt}<span class="act-time">${t}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function actDateShift(delta){
+  const d = new Date(_actSelectedDate);
+  d.setDate(d.getDate() + delta);
+  _actSelectedDate = d;
+  renderAttivitaRecenti();
+}
+
+function openActDatePicker(){
+  _datePickerMode = 'act';
+  buildSchedDateContent();
+  setupLWheelListeners(['sched-col-day','sched-col-hour','sched-col-min']);
+  document.getElementById('sched-date-picker').classList.add('open');
+  setTimeout(() => {
+    const dt = _actSelectedDate;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const dDate = new Date(dt); dDate.setHours(0,0,0,0);
+    const dayIdx = Math.max(0, Math.min(_schedDays.length-1, Math.round((dDate - today) / 86400000) + 60));
+    document.getElementById('sched-col-day').scrollTop = dayIdx * LWHEEL_H;
+    document.getElementById('sched-col-hour').scrollTop = 0;
+    document.getElementById('sched-col-min').scrollTop = 0;
+    lwheelHighlight('sched-col-day', dayIdx);
+    lwheelHighlight('sched-col-hour', 0);
+    lwheelHighlight('sched-col-min', 0);
+  }, 60);
+}
+
 // ── GOALS SYSTEM ──
 let goals = JSON.parse(localStorage.getItem('goals_data') || '[]');
 let pinnedGoalId = localStorage.getItem('pinned_goal_id') || null;
@@ -4695,9 +4989,18 @@ function confirmSchedDatePicker(){
   if(dayIdx >= 0 && dayIdx < _schedDays.length){
     const d = new Date(_schedDays[dayIdx]);
     d.setHours(hourIdx, minIdx * 5, 0, 0);
+    if(_datePickerMode === 'act'){
+      const dd = new Date(d); dd.setHours(0,0,0,0);
+      _actSelectedDate = dd;
+      closeSchedDatePicker();
+      _datePickerMode = 'sched';
+      renderAttivitaRecenti();
+      return;
+    }
     _schedState.when = d;
   }
   closeSchedDatePicker();
+  _datePickerMode = 'sched';
   updateSchedUI();
 }
 document.addEventListener('click', e => {
