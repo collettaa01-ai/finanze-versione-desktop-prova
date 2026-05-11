@@ -13,7 +13,7 @@
 <title>Tracks All Finances</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   @font-face {
     font-family: 'Geist';
@@ -175,10 +175,10 @@ body {
   50% { transform: scale(1.10); opacity: 0.85; }
 }
 .load-title {
-  font-family: 'Geist', sans-serif;
-  font-size: 22px; font-weight: 700;
-  color: #1a1c1c;
-  letter-spacing: -0.02em;
+  font-family: 'Plus Jakarta Sans', 'Geist', sans-serif;
+  font-size: 22px; font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.03em;
   margin-bottom: 14px;
 }
 .load-dots {
@@ -218,7 +218,7 @@ body {
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 14px;
 }
-.auth-logo h1 { font-size: 20px; font-weight: 600; color: var(--dark); letter-spacing: -0.02em; }
+.auth-logo h1 { font-family: 'Plus Jakarta Sans', var(--font); font-size: 22px; font-weight: 800; color: var(--dark); letter-spacing: -0.03em; }
 .auth-logo p { font-size: 13px; font-weight: 300; color: var(--dark-soft); margin-top: 3px; }
 .auth-form { display: flex; flex-direction: column; gap: 10px; }
 .auth-field { display: flex; flex-direction: column; gap: 5px; }
@@ -291,7 +291,7 @@ body {
   color: white;
 }
 .pin-icon svg { width: 28px; height: 28px; }
-.pin-header h2 { font-size: 24px; font-weight: 700; color: #1a1c1c; letter-spacing: -0.02em; }
+.pin-header h2 { font-family: 'Plus Jakarta Sans', 'Geist', sans-serif; font-size: 26px; font-weight: 800; color: #0F172A; letter-spacing: -0.03em; }
 .pin-header p { font-size: 14px; font-weight: 400; color: #747879; margin-top: 6px; }
 .pin-dots { display: flex; gap: 16px; margin-bottom: 40px; }
 .pin-dot {
@@ -589,12 +589,21 @@ body {
 }
 .nav-item {
   flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  align-items: center; justify-content: center; gap: 4px;
   cursor: pointer; padding: 4px 0;
+  -webkit-tap-highlight-color: transparent;
 }
-.nav-item svg { width: 22px; height: 22px; transition: opacity 0.15s; }
-.nav-item:not(.active) svg { opacity: 0.3; }
-.nav-item.active svg { opacity: 1; }
+.nav-item svg { width: 22px; height: 22px; transition: opacity 0.18s, color 0.18s, transform 0.15s; }
+.nav-item:not(.active) svg { opacity: 0.4; color: var(--dark-soft); }
+.nav-item.active svg { opacity: 1; color: var(--ov-primary); }
+.nav-item.active { transform: translateY(-1px); }
+.nav-label {
+  font-family: 'Plus Jakarta Sans', var(--font);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.02em;
+  transition: color 0.18s, opacity 0.18s;
+}
+.nav-item:not(.active) .nav-label { color: var(--dark-soft); opacity: 0.6; }
+.nav-item.active .nav-label { color: var(--ov-primary); }
 
 /* ── MODAL ── */
 .modal-ov {
@@ -801,23 +810,39 @@ body {
 }
 
 
-/* ── OVERVIEW THEME (purple / pink) ── */
+/* ── OVERVIEW THEME (Premium Finance) ── */
 :root {
-  --ov-bg: #f2f2f7;
+  --ov-bg: #F4F4F8;
   --ov-card: #ffffff;
   --ov-primary: #7C3AED;
+  --ov-primary-dark: #6D28D9;
+  --ov-primary-grad: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%);
+  --ov-gold: #F59E0B;          /* accent premium */
+  --ov-gold-grad: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
   --ov-pink: #EC4899;
   --ov-cc: #7C3AED;
   --ov-cash: #F472B6;
-  --ov-text: #1C1C1E;
-  --ov-text2: #6E6E73;
-  --ov-text3: #8E8E93;
-  --ov-shadow: 0 4px 20px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
-  --ov-radius: 22px;
+  --ov-asset: #10B981;         /* AF/asset green sophisticated */
+  --ov-liability: #EF4444;     /* PF/liability red */
+  --ov-text: #0F172A;          /* slate-900 piu' moderno di #1C1C1E */
+  --ov-text2: #475569;         /* slate-600 */
+  --ov-text3: #94A3B8;         /* slate-400 */
+  --ov-hairline: rgba(15,23,42,0.06);
+  --ov-shadow-sm: 0 1px 3px rgba(15,23,42,0.04), 0 1px 2px rgba(15,23,42,0.03);
+  --ov-shadow-md: 0 4px 20px rgba(15,23,42,0.06), 0 1px 4px rgba(15,23,42,0.04);
+  --ov-shadow-lg: 0 12px 40px rgba(15,23,42,0.12), 0 4px 12px rgba(15,23,42,0.06);
+  --ov-shadow-primary: 0 8px 24px rgba(124,58,237,0.28), 0 2px 6px rgba(124,58,237,0.18);
+  --ov-radius: 20px;
+  --ov-radius-lg: 24px;
+  --font-display: 'Plus Jakarta Sans', 'Geist', system-ui, sans-serif;
   /* keep teal refs for overlays */
   --teal-1: #0d2027; --teal-2: #0f2d38; --teal-border: rgba(255,255,255,0.10);
   --teal-text: rgba(255,255,255,0.90); --teal-sub: rgba(255,255,255,0.45);
 }
+/* Tabular figures su tutti i numeri (saldi, percentuali, importi) */
+.ov-saldo-amount, .ov-port-balance, .debt-card-total-red, .act-amount,
+.contrib-saved-val, .contrib-target-val, #ov-total, .goal-card-mini-pct,
+.ov-acc-inp, .ins-sum-amt, .stat-card .sa { font-feature-settings: 'tnum' 1, 'cv11' 1; }
 #screen-home, #screen-insights, #screen-attivita, #screen-patrimonio { background: var(--ov-bg); }
 
 /* ── OV SCROLL & HEADER ── */
@@ -830,8 +855,8 @@ body {
   padding: 56px 20px 12px;
 }
 .ov-header-title {
-  font-family: var(--font); font-size: 34px; font-weight: 700;
-  color: var(--ov-text); letter-spacing: -0.03em;
+  font-family: var(--font-display); font-size: 30px; font-weight: 800;
+  color: var(--ov-text); letter-spacing: -0.035em;
 }
 .ov-logout-btn {
   background: rgba(124,58,237,0.09); border: none; border-radius: 20px;
@@ -841,36 +866,37 @@ body {
 
 /* ── OV CARDS ── */
 .ov-card {
-  margin: 0 16px 16px; background: var(--ov-card);
-  border-radius: var(--ov-radius); box-shadow: var(--ov-shadow);
+  margin: 0 16px 14px; background: var(--ov-card);
+  border-radius: var(--ov-radius); box-shadow: var(--ov-shadow-md);
+  border: 0.5px solid var(--ov-hairline);
   overflow: hidden; cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.12s, box-shadow 0.12s;
+  transition: transform 0.12s, box-shadow 0.18s;
 }
-.ov-card:active { transform: scale(0.985); box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+.ov-card:active { transform: scale(0.985); box-shadow: var(--ov-shadow-sm); }
 .ov-card-top {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 18px 6px;
+  padding: 18px 18px 8px;
 }
-.ov-card-title-row { display: flex; align-items: center; gap: 8px; }
+.ov-card-title-row { display: flex; align-items: center; gap: 10px; }
 .ov-card-icon {
-  width: 28px; height: 28px; border-radius: 50%;
+  width: 30px; height: 30px; border-radius: 9px;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .ov-card-title {
-  font-family: var(--font); font-size: 14px; font-weight: 600;
-  color: var(--ov-text); letter-spacing: -0.01em;
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  color: var(--ov-text); letter-spacing: 0.02em; text-transform: uppercase;
 }
-.ov-card-date { font-family: var(--font); font-size: 12px; color: var(--ov-text3); }
+.ov-card-date { font-family: var(--font); font-size: 11px; color: var(--ov-text3); font-weight: 500; }
 
-/* Saldo body */
+/* Saldo body — hero number premium */
 .ov-saldo-body {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 18px 6px;
+  padding: 4px 18px 8px;
 }
 .ov-saldo-amount {
-  font-family: var(--mono); font-size: 36px; font-weight: 700;
-  color: var(--ov-text); letter-spacing: -0.04em; line-height: 1;
+  font-family: var(--mono); font-size: 38px; font-weight: 700;
+  color: var(--ov-text); letter-spacing: -0.045em; line-height: 1;
 }
 /* Account inputs */
 .ov-accounts {
@@ -2049,18 +2075,29 @@ body {
 .sched-extras.show + .goal-modal-btn { margin-top: 14px; }
 .sched-extras + .goal-modal-btn { margin-top: 14px; }
 
-/* ── NUOVA TRANSAZIONE BUTTON ── */
+/* ── NUOVA TRANSAZIONE BUTTON — premium gradient ── */
 .nuova-tx-btn {
   width: calc(100% - 32px);
-  margin: -4px 16px 16px;
-  padding: 14px;
-  background: var(--ov-primary); border: none; border-radius: 14px;
-  color: white; font-family: var(--font); font-size: 15px; font-weight: 600;
+  margin: -2px 16px 18px;
+  padding: 16px;
+  background: var(--ov-primary-grad); border: none; border-radius: 16px;
+  color: white; font-family: var(--font-display); font-size: 15px; font-weight: 700;
+  letter-spacing: -0.01em;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  box-shadow: 0 4px 14px rgba(124,58,237,0.28);
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: var(--ov-shadow-primary);
+  position: relative; overflow: hidden;
+  transition: transform 0.12s, box-shadow 0.18s;
 }
-.nuova-tx-btn:active { opacity: 0.92; }
+.nuova-tx-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 50%);
+  pointer-events: none;
+}
+.nuova-tx-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 14px rgba(124,58,237,0.22), 0 1px 4px rgba(124,58,237,0.12);
+}
 
 /* ── CRONOLOGIA EDIT BUTTON ── */
 .hist-menu-btn {
@@ -2352,9 +2389,11 @@ body.modal-open {
   <div class="screen auth-screen" id="screen-register">
     <div class="auth-logo">
       <div class="logo-mark">
-        <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
-          <path d="M4 13h6M13 4v6M13 16v6M16 13h6" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-          <circle cx="13" cy="13" r="3" fill="white"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M3 17.5 L8 11.5 L12 14 L17 7.5 L21 10" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="21" cy="10" r="2.5" fill="white"/>
+          <circle cx="8" cy="11.5" r="1.5" fill="white" opacity="0.6"/>
+          <circle cx="12" cy="14" r="1.5" fill="white" opacity="0.6"/>
         </svg>
       </div>
       <h1>Tracks All Finances</h1>
@@ -2374,9 +2413,11 @@ body.modal-open {
   <div class="screen auth-screen" id="screen-login">
     <div class="auth-logo">
       <div class="logo-mark">
-        <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
-          <path d="M4 13h6M13 4v6M13 16v6M16 13h6" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-          <circle cx="13" cy="13" r="3" fill="white"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M3 17.5 L8 11.5 L12 14 L17 7.5 L21 10" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="21" cy="10" r="2.5" fill="white"/>
+          <circle cx="8" cy="11.5" r="1.5" fill="white" opacity="0.6"/>
+          <circle cx="12" cy="14" r="1.5" fill="white" opacity="0.6"/>
         </svg>
       </div>
       <h1>Tracks All Finances</h1>
