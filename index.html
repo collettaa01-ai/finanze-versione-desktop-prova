@@ -818,7 +818,7 @@ body {
   --teal-1: #0d2027; --teal-2: #0f2d38; --teal-border: rgba(255,255,255,0.10);
   --teal-text: rgba(255,255,255,0.90); --teal-sub: rgba(255,255,255,0.45);
 }
-#screen-home, #screen-insights, #screen-attivita { background: var(--ov-bg); }
+#screen-home, #screen-insights, #screen-attivita, #screen-patrimonio { background: var(--ov-bg); }
 
 /* ── OV SCROLL & HEADER ── */
 .ov-scroll {
@@ -1695,6 +1695,117 @@ body {
 .contrib-hist-date { font-family: var(--font); font-size: 10px; color: var(--ov-text3); white-space: nowrap; }
 .contrib-hist-empty { font-family: var(--font); font-size: 12px; color: var(--ov-text3); text-align: center; padding: 10px 0; }
 
+/* ── PATRIMONIO ── */
+.pat-net-card {
+  background: white; border-radius: 18px; margin: 0 16px 14px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+.pat-net-label {
+  font-family: var(--font); font-size: 11px; font-weight: 600;
+  color: var(--ov-text3); text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.pat-net-value {
+  font-family: var(--mono); font-size: 28px; font-weight: 700;
+  color: var(--ov-text); letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.pat-bars { display: flex; flex-direction: column; gap: 10px; }
+.pat-bar-row { display: flex; flex-direction: column; gap: 6px; }
+.pat-bar-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--font); font-size: 12px;
+}
+.pat-bar-name { color: var(--ov-text2); font-weight: 500; }
+.pat-bar-val { font-family: var(--mono); font-weight: 700; color: var(--ov-text); }
+.pat-bar-track {
+  background: rgba(0,0,0,0.05); border-radius: 99px; height: 8px; overflow: hidden;
+}
+.pat-bar-fill {
+  height: 100%; border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pat-bar-fill.af { background: linear-gradient(90deg, #22C55E 0%, #16A34A 100%); }
+.pat-bar-fill.pf { background: linear-gradient(90deg, #EF4444 0%, #DC2626 100%); }
+
+.pat-section { margin: 0 16px 18px; }
+.pat-section-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.pat-section-title {
+  font-family: var(--font); font-size: 13px; font-weight: 700;
+  color: var(--ov-text); letter-spacing: -0.01em;
+}
+.pat-section-sum {
+  font-family: var(--mono); font-size: 13px; font-weight: 600;
+  color: var(--ov-text2);
+}
+.pat-item {
+  background: white; border-radius: 14px; padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.pat-item:active { transform: scale(0.985); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+.pat-item-icon {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.pat-item-icon.conto { background: rgba(124,58,237,0.10); color: var(--ov-primary); }
+.pat-item-icon.af    { background: rgba(34,197,94,0.10);  color: #16A34A; }
+.pat-item-icon.pf    { background: rgba(239,68,68,0.10);  color: #DC2626; }
+.pat-item-icon.carta { background: rgba(245,158,11,0.10); color: #D97706; }
+.pat-item-info { flex: 1; min-width: 0; }
+.pat-item-name {
+  font-family: var(--font); font-size: 14px; font-weight: 600; color: var(--ov-text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pat-item-meta {
+  font-family: var(--font); font-size: 11px; color: var(--ov-text3); margin-top: 2px;
+}
+.pat-item-val {
+  font-family: var(--mono); font-size: 14px; font-weight: 700;
+  flex-shrink: 0;
+}
+.pat-item-val.pos { color: #16A34A; }
+.pat-item-val.neg { color: #DC2626; }
+.pat-item-val.neutral { color: var(--ov-text); }
+.pat-empty {
+  text-align: center; padding: 16px;
+  font-family: var(--font); font-size: 12px; color: var(--ov-text3);
+}
+
+/* Wizard "tipo" picker (kind selector) */
+.pat-kind-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px; }
+.pat-kind {
+  padding: 13px 8px; border-radius: 12px;
+  border: 1.5px solid rgba(0,0,0,0.10); background: rgba(0,0,0,0.02);
+  font-family: var(--font); font-size: 12px; font-weight: 600; color: var(--ov-text2);
+  cursor: pointer; transition: all 0.18s;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+.pat-kind.selected { background: rgba(124,58,237,0.10); border-color: var(--ov-primary); color: var(--ov-primary); }
+.pat-kind svg { width: 22px; height: 22px; }
+
+/* Action buttons (acquista/vendi etc.) */
+.pat-action-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.pat-action-btn {
+  flex: 1; padding: 13px 6px; border-radius: 12px;
+  border: 1.5px solid rgba(0,0,0,0.10); background: rgba(0,0,0,0.03);
+  font-family: var(--font); font-size: 12px; font-weight: 600; color: var(--ov-text2);
+  cursor: pointer; transition: all 0.18s;
+  -webkit-tap-highlight-color: transparent;
+}
+.pat-action-btn.act-pos { background: rgba(34,197,94,0.12); border-color: #22C55E; color: #16A34A; }
+.pat-action-btn.act-neg { background: rgba(239,68,68,0.12); border-color: #EF4444; color: #DC2626; }
+.pat-action-btn.act-neu { background: rgba(124,58,237,0.10); border-color: var(--ov-primary); color: var(--ov-primary); }
+
 /* ── ATTIVITA' RECENTI FEED ── */
 .act-date-bar {
   display: flex; align-items: center; justify-content: space-between;
@@ -2498,6 +2609,80 @@ body.modal-open {
     </div>
   </div>
 
+  <!-- PATRIMONIO -->
+  <div class="screen" id="screen-patrimonio">
+    <div class="ov-scroll">
+      <div class="ov-header">
+        <div class="ov-header-title">Patrimonio</div>
+      </div>
+
+      <!-- Net worth + barre AF/PF -->
+      <div class="pat-net-card">
+        <div class="pat-net-label">Patrimonio netto</div>
+        <div class="pat-net-value" id="pat-net-value">€ 0,00</div>
+        <div class="pat-bars">
+          <div class="pat-bar-row">
+            <div class="pat-bar-head">
+              <span class="pat-bar-name">Attività finanziarie</span>
+              <span class="pat-bar-val" id="pat-af-val">€ 0,00</span>
+            </div>
+            <div class="pat-bar-track"><div class="pat-bar-fill af" id="pat-af-bar" style="width:0%"></div></div>
+          </div>
+          <div class="pat-bar-row">
+            <div class="pat-bar-head">
+              <span class="pat-bar-name">Passività finanziarie</span>
+              <span class="pat-bar-val" id="pat-pf-val">€ 0,00</span>
+            </div>
+            <div class="pat-bar-track"><div class="pat-bar-fill pf" id="pat-pf-bar" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sezione: Conti di pagamento -->
+      <div class="pat-section">
+        <div class="pat-section-hdr">
+          <span class="pat-section-title">Conti di pagamento</span>
+          <span class="pat-section-sum" id="pat-conti-sum">€ 0,00</span>
+        </div>
+        <div id="pat-conti-list"></div>
+      </div>
+
+      <!-- Sezione: Attività Finanziarie -->
+      <div class="pat-section">
+        <div class="pat-section-hdr">
+          <span class="pat-section-title">Attività finanziarie</span>
+          <span class="pat-section-sum" id="pat-af-sum">€ 0,00</span>
+        </div>
+        <div id="pat-af-list"><div class="pat-empty">Nessuna attività registrata</div></div>
+      </div>
+
+      <!-- Sezione: Passività Finanziarie -->
+      <div class="pat-section">
+        <div class="pat-section-hdr">
+          <span class="pat-section-title">Passività finanziarie</span>
+          <span class="pat-section-sum" id="pat-pf-sum">€ 0,00</span>
+        </div>
+        <div id="pat-pf-list"><div class="pat-empty">Nessuna passività registrata</div></div>
+      </div>
+
+      <!-- Sezione: Carte di credito -->
+      <div class="pat-section">
+        <div class="pat-section-hdr">
+          <span class="pat-section-title">Carte di credito</span>
+          <span class="pat-section-sum" id="pat-carte-sum">€ 0,00</span>
+        </div>
+        <div id="pat-carte-list"><div class="pat-empty">Nessuna carta registrata</div></div>
+      </div>
+
+      <!-- FAB aggiungi -->
+      <div style="padding:0 16px 32px;display:flex;justify-content:flex-end;">
+        <button onclick="openPatNewWizard()" style="width:52px;height:52px;border-radius:50%;background:var(--ov-primary);border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(124,58,237,0.35);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- INSIGHTS -->
   <div class="screen" id="screen-insights">
     <div class="ins-scroll">
@@ -2543,6 +2728,14 @@ body.modal-open {
         <line x1="8" y1="14" x2="13" y2="14"/>
       </svg>
       <span class="nav-label">Attività</span>
+    </div>
+    <div class="nav-item" id="nav-patrimonio" onclick="switchTab('patrimonio')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 21h18"/>
+        <path d="M5 21V8l7-5 7 5v13"/>
+        <path d="M9 21V12h6v9"/>
+      </svg>
+      <span class="nav-label">Patrimonio</span>
     </div>
     <div class="nav-item" id="nav-insights" onclick="switchTab('insights')">
       <svg viewBox="0 0 24 24" fill="none">
@@ -3325,6 +3518,103 @@ body.modal-open {
   </div>
 </div>
 
+<!-- PATRIMONIO: Nuovo elemento wizard -->
+<div class="goal-modal-ov" id="pat-new-modal">
+  <div class="goal-modal-sheet tall">
+    <div class="goal-modal-handle"></div>
+    <div class="goal-modal-title">Nuovo elemento</div>
+
+    <span class="goal-modal-inp-lbl">Tipo</span>
+    <div class="pat-kind-grid">
+      <button class="pat-kind" data-kind="af" onclick="patPickKind('af')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        Attività finanziaria
+      </button>
+      <button class="pat-kind" data-kind="pf" onclick="patPickKind('pf')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 10.5 15.5 15.5 10.5 22 17"/><polyline points="8 17 2 17 2 11"/></svg>
+        Passività finanziaria
+      </button>
+      <button class="pat-kind" data-kind="carta" onclick="patPickKind('carta')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Carta di credito
+      </button>
+      <button class="pat-kind" data-kind="conto" onclick="patPickKind('conto')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>
+        Conto pagamento
+      </button>
+    </div>
+
+    <span class="goal-modal-inp-lbl">Nome</span>
+    <input type="text" class="goal-modal-inp text-inp" id="pat-new-name" placeholder="es. ETF MSCI World, Mutuo casa..."/>
+
+    <span class="goal-modal-inp-lbl">Tipo specifico (opzionale)</span>
+    <input type="text" class="goal-modal-inp text-inp" id="pat-new-type" placeholder="es. ETF / Azione / Mutuo / Visa..."/>
+
+    <span class="goal-modal-inp-lbl" id="pat-new-amt-lbl">Valore iniziale (€)</span>
+    <input type="number" class="goal-modal-inp" id="pat-new-amt" placeholder="0,00" step="0.01" min="0"/>
+
+    <div id="pat-new-conto-row">
+      <span class="goal-modal-inp-lbl" id="pat-new-conto-lbl">Conto interessato</span>
+      <select id="pat-new-conto" style="width:100%;padding:14px;border-radius:14px;border:1.5px solid rgba(0,0,0,0.10);background:rgba(0,0,0,0.03);font-family:var(--font);font-size:16px;color:var(--ov-text);">
+        <option value="cc">Conto Corrente</option>
+        <option value="cash">Contanti</option>
+        <option value="none">— Nessuno (solo registra)</option>
+      </select>
+    </div>
+
+    <button class="goal-modal-btn" onclick="savePatNew()" style="margin-top:14px">Crea</button>
+    <button class="goal-modal-btn secondary" onclick="closePatNewWizard()">Annulla</button>
+  </div>
+</div>
+
+<!-- PATRIMONIO: Modale azione su elemento esistente -->
+<div class="goal-modal-ov" id="pat-action-modal">
+  <div class="goal-modal-sheet tall">
+    <div class="goal-modal-handle"></div>
+    <div class="goal-modal-title" id="pat-act-title">Elemento</div>
+    <div style="font-family:var(--font);font-size:13px;color:var(--ov-text3);margin-bottom:6px" id="pat-act-sub"></div>
+    <div style="font-family:var(--mono);font-size:24px;font-weight:700;color:var(--ov-text);margin-bottom:14px" id="pat-act-current">€ 0,00</div>
+
+    <span class="goal-modal-inp-lbl">Azione</span>
+    <div class="pat-action-row" id="pat-act-row"></div>
+
+    <span class="goal-modal-inp-lbl" id="pat-act-amt-lbl">Importo (€)</span>
+    <input type="number" class="goal-modal-inp" id="pat-act-amt" placeholder="0,00" step="0.01" min="0"/>
+
+    <div id="pat-act-conto-row">
+      <span class="goal-modal-inp-lbl">Da / verso il conto</span>
+      <select id="pat-act-conto" style="width:100%;padding:14px;border-radius:14px;border:1.5px solid rgba(0,0,0,0.10);background:rgba(0,0,0,0.03);font-family:var(--font);font-size:16px;color:var(--ov-text);">
+        <option value="cc">Conto Corrente</option>
+        <option value="cash">Contanti</option>
+        <option value="none">— Nessuno (solo registra)</option>
+      </select>
+    </div>
+
+    <button class="goal-modal-btn" onclick="applyPatAction()" style="margin-top:14px">Conferma</button>
+    <button class="goal-modal-btn secondary" onclick="closePatActionModal()">Annulla</button>
+
+    <div class="contrib-history">
+      <div class="contrib-hist-hdr">Cronologia</div>
+      <div class="contrib-hist-list" id="pat-act-hist-list">
+        <div class="contrib-hist-empty">Nessun movimento</div>
+      </div>
+    </div>
+
+    <button class="goal-modal-btn secondary" onclick="askDeletePatItem()" style="margin-top:14px;color:#EF4444">Elimina elemento</button>
+  </div>
+</div>
+
+<!-- PATRIMONIO: Conferma eliminazione -->
+<div class="confirm-popup-ov" id="pat-delete-confirm">
+  <div class="confirm-popup-box">
+    <div class="confirm-popup-text">Sicuro di voler eliminare questo elemento?</div>
+    <div class="confirm-popup-btns">
+      <button class="confirm-btn-cancel" onclick="closePatDeleteConfirm()">Annulla</button>
+      <button class="confirm-btn-delete" onclick="doDeletePatItem()">Elimina</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -3352,7 +3642,7 @@ function setBtn(id,on){ const b=document.getElementById(id); if(b) b.classList.t
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('visible'));
   document.getElementById(id).classList.add('visible');
-  document.getElementById('nav-bar').style.display=['screen-home','screen-attivita','screen-insights'].includes(id)?'flex':'none';
+  document.getElementById('nav-bar').style.display=['screen-home','screen-attivita','screen-patrimonio','screen-insights'].includes(id)?'flex':'none';
 }
 
 // ── AUTH ──
@@ -3529,7 +3819,7 @@ let curTab='home';
 function switchTab(tab){
   curTab=tab;
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('visible'));
-  ['home','attivita','insights'].forEach(t=>{
+  ['home','attivita','patrimonio','insights'].forEach(t=>{
     const s=document.getElementById('screen-'+t);
     const n=document.getElementById('nav-'+t);
     if(s) s.classList.toggle('visible',t===tab);
@@ -3537,6 +3827,7 @@ function switchTab(tab){
   });
   document.getElementById('nav-bar').style.display='flex';
   if(tab==='home') renderAttivitaRecenti();
+  if(tab==='patrimonio') renderPatrimonio();
   if(tab==='insights') renderInsights();
 }
 
@@ -3774,7 +4065,7 @@ async function confirmTx(){
 }
 
 // ── RENDER ──
-function renderAll(){ renderCircle(); renderInsights(); renderDebtOverview(); renderPortOverview(); renderAttivitaRecenti(); }
+function renderAll(){ renderCircle(); renderInsights(); renderDebtOverview(); renderPortOverview(); renderAttivitaRecenti(); renderPatrimonio(); }
 
 function txCard(tx){
   const sign=tx.type==='entrata'?'+':'−', icon=tx.type==='entrata'?'↑':'↓';
@@ -4607,6 +4898,375 @@ function openActDatePicker(){
     lwheelHighlight('sched-col-min', 0);
   }, 60);
 }
+
+// ── PATRIMONIO (Money Pro-style) ──
+let patrimonio = JSON.parse(localStorage.getItem('patrimonio_data') || '{"af":[],"pf":[],"carte":[],"conti":[]}');
+let _patNewKind = null;
+let _patActItem = null; // {kind, id} riferimento all'elemento aperto in azione
+let _patActMode = null; // azione selezionata (acquisto/smobilizzo/ecc)
+let _patDeleteTarget = null;
+
+function savePatrimonio(){ localStorage.setItem('patrimonio_data', JSON.stringify(patrimonio)); }
+
+// SVG icone per tipologie patrimonio
+const PAT_ICONS = {
+  conto: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>',
+  af:    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
+  pf:    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 10.5 15.5 15.5 10.5 22 17"/><polyline points="8 17 2 17 2 11"/></svg>',
+  carta: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+};
+
+// I "conti di pagamento" di base sono C/C principale e Contanti (S.cc, S.cash).
+// In sezione patrimonio mostriamo questi 2 più eventuali conti extra in patrimonio.conti
+function getContiPagamento(){
+  const conti = [
+    { id: '__cc',   nome: 'Conto Corrente', tipo: 'Principale', importo: S.cc || 0,   builtin: true },
+    { id: '__cash', nome: 'Contanti',       tipo: 'Liquidità',  importo: S.cash || 0, builtin: true },
+  ];
+  (patrimonio.conti || []).forEach(c => conti.push({ ...c, builtin: false }));
+  return conti;
+}
+
+function patSumAF(){ return (patrimonio.af || []).reduce((a,x) => a + Number(x.importo||0), 0); }
+function patSumPF(){ return (patrimonio.pf || []).reduce((a,x) => a + Number(x.importo||0), 0); }
+function patSumCarte(){ return (patrimonio.carte || []).reduce((a,x) => a + Number(x.importo||0), 0); }
+function patSumConti(){ return getContiPagamento().reduce((a,x) => a + Number(x.importo||0), 0); }
+
+function patNetWorth(){
+  return patSumConti() + patSumAF() - patSumPF() - patSumCarte();
+}
+
+function renderPatrimonio(){
+  // Net worth + barre
+  const netEl = document.getElementById('pat-net-value');
+  if(!netEl) return;
+  netEl.textContent = eur(patNetWorth());
+  const af = patSumAF(), pf = patSumPF();
+  document.getElementById('pat-af-val').textContent = eur(af);
+  document.getElementById('pat-pf-val').textContent = eur(pf);
+  const max = Math.max(af, pf, 1);
+  document.getElementById('pat-af-bar').style.width = (af / max * 100).toFixed(1) + '%';
+  document.getElementById('pat-pf-bar').style.width = (pf / max * 100).toFixed(1) + '%';
+
+  // Sezioni
+  const conti = getContiPagamento();
+  document.getElementById('pat-conti-sum').textContent = eur(patSumConti());
+  document.getElementById('pat-conti-list').innerHTML = conti.map(c =>
+    `<div class="pat-item" onclick="openPatAction('conto','${c.id}')">
+      <div class="pat-item-icon conto">${PAT_ICONS.conto}</div>
+      <div class="pat-item-info"><div class="pat-item-name">${c.nome}</div><div class="pat-item-meta">${c.tipo || 'Conto pagamento'}</div></div>
+      <div class="pat-item-val neutral">${eur(c.importo)}</div>
+    </div>`
+  ).join('');
+
+  document.getElementById('pat-af-sum').textContent = eur(af);
+  const afList = patrimonio.af || [];
+  document.getElementById('pat-af-list').innerHTML = afList.length
+    ? afList.map(x => `<div class="pat-item" onclick="openPatAction('af','${x.id}')">
+        <div class="pat-item-icon af">${PAT_ICONS.af}</div>
+        <div class="pat-item-info"><div class="pat-item-name">${x.nome}</div><div class="pat-item-meta">${x.tipo || 'Attività finanziaria'}</div></div>
+        <div class="pat-item-val pos">${eur(x.importo)}</div>
+      </div>`).join('')
+    : '<div class="pat-empty">Nessuna attività registrata</div>';
+
+  document.getElementById('pat-pf-sum').textContent = eur(pf);
+  const pfList = patrimonio.pf || [];
+  document.getElementById('pat-pf-list').innerHTML = pfList.length
+    ? pfList.map(x => `<div class="pat-item" onclick="openPatAction('pf','${x.id}')">
+        <div class="pat-item-icon pf">${PAT_ICONS.pf}</div>
+        <div class="pat-item-info"><div class="pat-item-name">${x.nome}</div><div class="pat-item-meta">${x.tipo || 'Passività'} · residuo</div></div>
+        <div class="pat-item-val neg">${eur(x.importo)}</div>
+      </div>`).join('')
+    : '<div class="pat-empty">Nessuna passività registrata</div>';
+
+  document.getElementById('pat-carte-sum').textContent = eur(patSumCarte());
+  const carteList = patrimonio.carte || [];
+  document.getElementById('pat-carte-list').innerHTML = carteList.length
+    ? carteList.map(x => `<div class="pat-item" onclick="openPatAction('carta','${x.id}')">
+        <div class="pat-item-icon carta">${PAT_ICONS.carta}</div>
+        <div class="pat-item-info"><div class="pat-item-name">${x.nome}</div><div class="pat-item-meta">${x.tipo || 'Carta'} · usato</div></div>
+        <div class="pat-item-val neg">${eur(x.importo)}</div>
+      </div>`).join('')
+    : '<div class="pat-empty">Nessuna carta registrata</div>';
+}
+
+// === NEW ELEMENT WIZARD ===
+function openPatNewWizard(){
+  _patNewKind = null;
+  document.getElementById('pat-new-name').value = '';
+  document.getElementById('pat-new-type').value = '';
+  document.getElementById('pat-new-amt').value = '';
+  document.querySelectorAll('.pat-kind').forEach(b => b.classList.remove('selected'));
+  document.getElementById('pat-new-modal').classList.add('open');
+}
+function closePatNewWizard(){ document.getElementById('pat-new-modal').classList.remove('open'); }
+function patPickKind(kind){
+  _patNewKind = kind;
+  document.querySelectorAll('.pat-kind').forEach(b => b.classList.toggle('selected', b.dataset.kind === kind));
+  // Adatta i label
+  const lbl = document.getElementById('pat-new-amt-lbl');
+  const contoLbl = document.getElementById('pat-new-conto-lbl');
+  if(kind === 'af')    { lbl.textContent = "Valore d'acquisto (€)"; contoLbl.textContent = "Conto da cui esce la liquidità"; }
+  else if(kind === 'pf') { lbl.textContent = "Importo del prestito (€)"; contoLbl.textContent = "Conto in cui entra la liquidità"; }
+  else if(kind === 'carta') { lbl.textContent = "Saldo usato attuale (€)"; contoLbl.textContent = "Conto (non rilevante per ora)"; }
+  else if(kind === 'conto') { lbl.textContent = "Saldo iniziale (€)"; contoLbl.textContent = "Conto (non rilevante per ora)"; }
+}
+
+function _patApplyLiquidity(conto, delta){
+  // delta positivo = aggiungi liquidità, negativo = togli
+  if(conto === 'cc')   S.cc   = Math.max(0, (S.cc || 0)   + delta);
+  if(conto === 'cash') S.cash = Math.max(0, (S.cash || 0) + delta);
+}
+
+async function savePatNew(){
+  const kind = _patNewKind;
+  if(!kind){ toast('Seleziona un tipo'); return; }
+  const nome = document.getElementById('pat-new-name').value.trim();
+  const tipo = document.getElementById('pat-new-type').value.trim();
+  const amt  = parseAmount(document.getElementById('pat-new-amt').value);
+  const conto = document.getElementById('pat-new-conto').value;
+  if(!nome){ toast('Inserisci un nome'); return; }
+  if(amt <= 0 && kind !== 'conto'){ toast('Inserisci un importo'); return; }
+  const id = 'p' + Date.now() + Math.random().toString(36).slice(2,7);
+  const now = new Date().toISOString();
+  // Effetto sulla liquidità in base al tipo
+  if(kind === 'af' && conto !== 'none')   _patApplyLiquidity(conto, -amt); // acquisto -> liquidità giù
+  if(kind === 'pf' && conto !== 'none')   _patApplyLiquidity(conto, +amt); // accensione -> liquidità su
+  // Conto pagamento: il saldo iniziale lo aggiungiamo SOLO al conto pagamento creato (non a c/c esistente)
+  const item = {
+    id, nome, tipo, importo: amt,
+    importoIniziale: amt,
+    history: [{ id: 'h'+Date.now(), type: kind==='af' ? 'acquisto' : kind==='pf' ? 'accensione' : 'creazione', amount: amt, conto, date: now }],
+    created: now,
+  };
+  if(kind === 'af')    patrimonio.af.push(item);
+  if(kind === 'pf')    patrimonio.pf.push(item);
+  if(kind === 'carta') patrimonio.carte.push(item);
+  if(kind === 'conto') patrimonio.conti.push(item);
+  savePatrimonio();
+  // Sincronizza i saldi nel DB e rinfresca UI
+  if((kind === 'af' || kind === 'pf') && conto !== 'none'){
+    const ccInp = document.getElementById('ov-in-cc'); if(ccInp) ccInp.value = S.cc || '';
+    const cashInp = document.getElementById('ov-in-cash'); if(cashInp) cashInp.value = S.cash || '';
+    try { await saveProfile(); } catch(e){}
+  }
+  closePatNewWizard();
+  renderPatrimonio();
+  renderAll();
+  toast('Creato');
+}
+document.addEventListener('click', e => {
+  const m = document.getElementById('pat-new-modal');
+  if(m && e.target === m) closePatNewWizard();
+});
+
+// === AZIONE su elemento esistente ===
+function _patFindItem(kind, id){
+  if(kind === 'conto'){
+    if(id === '__cc' || id === '__cash') return null; // built-in, gestiti separatamente
+    return (patrimonio.conti || []).find(x => x.id === id);
+  }
+  if(kind === 'af')    return (patrimonio.af    || []).find(x => x.id === id);
+  if(kind === 'pf')    return (patrimonio.pf    || []).find(x => x.id === id);
+  if(kind === 'carta') return (patrimonio.carte || []).find(x => x.id === id);
+  return null;
+}
+
+function openPatAction(kind, id){
+  _patActItem = { kind, id };
+  _patActMode = null;
+  let item = null, title = '', sub = '', current = 0, actions = [];
+  if(kind === 'conto' && (id === '__cc' || id === '__cash')){
+    title = id === '__cc' ? 'Conto Corrente' : 'Contanti';
+    sub = 'Conto pagamento';
+    current = id === '__cc' ? (S.cc || 0) : (S.cash || 0);
+    actions = [
+      { mode: 'modifica', label: 'Modifica saldo', cls: 'act-neu' },
+    ];
+  } else {
+    item = _patFindItem(kind, id);
+    if(!item){ return; }
+    title = item.nome;
+    sub = item.tipo || (kind === 'af' ? 'Attività finanziaria' : kind === 'pf' ? 'Passività finanziaria' : kind === 'carta' ? 'Carta di credito' : 'Conto pagamento');
+    current = Number(item.importo || 0);
+    if(kind === 'af') actions = [
+      { mode: 'acquisto',   label: 'Acquista (+)', cls: 'act-pos' },
+      { mode: 'smobilizzo', label: 'Vendi (−)',    cls: 'act-neg' },
+      { mode: 'aggiorna',   label: 'Aggiorna valore', cls: 'act-neu' },
+    ];
+    if(kind === 'pf') actions = [
+      { mode: 'accensione', label: 'Aumenta debito (+)', cls: 'act-neg' },
+      { mode: 'rimborso',   label: 'Rimborsa rata (−)',  cls: 'act-pos' },
+      { mode: 'aggiorna',   label: 'Aggiorna residuo',   cls: 'act-neu' },
+    ];
+    if(kind === 'carta') actions = [
+      { mode: 'spesa',     label: 'Spesa (+ usato)', cls: 'act-neg' },
+      { mode: 'pagamento', label: 'Paga (− usato)',  cls: 'act-pos' },
+    ];
+    if(kind === 'conto') actions = [
+      { mode: 'modifica', label: 'Modifica saldo', cls: 'act-neu' },
+    ];
+  }
+  document.getElementById('pat-act-title').textContent = title;
+  document.getElementById('pat-act-sub').textContent = sub;
+  document.getElementById('pat-act-current').textContent = eur(current);
+  document.getElementById('pat-act-amt').value = '';
+  document.getElementById('pat-act-row').innerHTML = actions.map(a =>
+    `<button class="pat-action-btn ${a.cls}" data-mode="${a.mode}" onclick="patPickAction('${a.mode}','${a.cls}')">${a.label}</button>`
+  ).join('');
+  // History
+  const hist = item && item.history ? item.history.slice().reverse() : [];
+  document.getElementById('pat-act-hist-list').innerHTML = hist.length
+    ? hist.map(h => {
+        const isPos = ['acquisto','accensione','spesa','aggiorna','modifica','creazione'].includes(h.type) ? false : true;
+        const sign = ['smobilizzo','rimborso','pagamento'].includes(h.type) ? '−' : ['acquisto','spesa','accensione'].includes(h.type) ? '+' : '·';
+        const d = new Date(h.date);
+        const ds = d.toLocaleDateString('it-IT',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+        return `<div class="contrib-hist-item"><div class="contrib-hist-dot ${isPos?'pos':'neg'}"></div><div class="contrib-hist-info"><span class="contrib-hist-amt">${sign} ${eur(h.amount)} <span style="font-weight:400;font-size:11px;color:var(--ov-text3)">${h.type}</span></span><span class="contrib-hist-date">${ds}</span></div></div>`;
+      }).join('')
+    : '<div class="contrib-hist-empty">Nessun movimento</div>';
+  document.getElementById('pat-action-modal').classList.add('open');
+}
+function closePatActionModal(){ document.getElementById('pat-action-modal').classList.remove('open'); _patActItem = null; _patActMode = null; }
+function patPickAction(mode, cls){
+  _patActMode = mode;
+  document.querySelectorAll('#pat-act-row .pat-action-btn').forEach(b => {
+    b.classList.remove('act-pos','act-neg','act-neu');
+    if(b.dataset.mode === mode){
+      b.classList.add(cls);
+    } else {
+      b.classList.add('act-pos','act-neg','act-neu'); b.classList.remove(cls);
+      // reset to default neutral look — re-apply original cls
+      const orig = b.getAttribute('onclick').match(/'(act-\w+)'/);
+      b.className = 'pat-action-btn ' + (orig ? orig[1] : 'act-neu');
+      b.style.opacity = '0.45';
+    }
+  });
+  // Re-apply: highlight selected, dim others
+  document.querySelectorAll('#pat-act-row .pat-action-btn').forEach(b => {
+    if(b.dataset.mode === mode){ b.style.opacity = '1'; b.style.transform = 'scale(1.02)'; }
+    else { b.style.opacity = '0.45'; b.style.transform = 'scale(1)'; }
+  });
+}
+
+async function applyPatAction(){
+  if(!_patActItem || !_patActMode){ toast('Seleziona un\'azione'); return; }
+  const amt = parseAmount(document.getElementById('pat-act-amt').value);
+  if(amt <= 0){ toast('Inserisci un importo'); return; }
+  const conto = document.getElementById('pat-act-conto').value;
+  const { kind, id } = _patActItem;
+  const now = new Date().toISOString();
+
+  // Caso built-in conto pagamento (C/C o Contanti)
+  if(kind === 'conto' && (id === '__cc' || id === '__cash')){
+    if(_patActMode === 'modifica'){
+      if(id === '__cc') S.cc = amt;
+      else S.cash = amt;
+      const ccInp = document.getElementById('ov-in-cc'); if(ccInp) ccInp.value = S.cc || '';
+      const cashInp = document.getElementById('ov-in-cash'); if(cashInp) cashInp.value = S.cash || '';
+      try { await saveProfile(); } catch(e){}
+    }
+    closePatActionModal();
+    renderAll();
+    renderPatrimonio();
+    toast('Saldo aggiornato');
+    return;
+  }
+
+  const item = _patFindItem(kind, id);
+  if(!item){ closePatActionModal(); return; }
+  if(!item.history) item.history = [];
+  const mode = _patActMode;
+
+  if(kind === 'af'){
+    if(mode === 'acquisto'){
+      item.importo = Number(item.importo) + amt;
+      if(conto !== 'none') _patApplyLiquidity(conto, -amt);
+      item.history.push({ id:'h'+Date.now(), type:'acquisto', amount: amt, conto, date: now });
+    }
+    if(mode === 'smobilizzo'){
+      item.importo = Math.max(0, Number(item.importo) - amt);
+      if(conto !== 'none') _patApplyLiquidity(conto, +amt);
+      item.history.push({ id:'h'+Date.now(), type:'smobilizzo', amount: amt, conto, date: now });
+    }
+    if(mode === 'aggiorna'){
+      item.importo = amt;
+      item.history.push({ id:'h'+Date.now(), type:'aggiorna', amount: amt, date: now });
+    }
+  } else if(kind === 'pf'){
+    if(mode === 'accensione'){
+      item.importo = Number(item.importo) + amt;
+      if(conto !== 'none') _patApplyLiquidity(conto, +amt);
+      item.history.push({ id:'h'+Date.now(), type:'accensione', amount: amt, conto, date: now });
+    }
+    if(mode === 'rimborso'){
+      item.importo = Math.max(0, Number(item.importo) - amt);
+      if(conto !== 'none') _patApplyLiquidity(conto, -amt);
+      item.history.push({ id:'h'+Date.now(), type:'rimborso', amount: amt, conto, date: now });
+    }
+    if(mode === 'aggiorna'){
+      item.importo = amt;
+      item.history.push({ id:'h'+Date.now(), type:'aggiorna', amount: amt, date: now });
+    }
+  } else if(kind === 'carta'){
+    if(mode === 'spesa'){
+      item.importo = Number(item.importo) + amt;
+      item.history.push({ id:'h'+Date.now(), type:'spesa', amount: amt, date: now });
+    }
+    if(mode === 'pagamento'){
+      item.importo = Math.max(0, Number(item.importo) - amt);
+      if(conto !== 'none') _patApplyLiquidity(conto, -amt);
+      item.history.push({ id:'h'+Date.now(), type:'pagamento', amount: amt, conto, date: now });
+    }
+  } else if(kind === 'conto'){
+    if(mode === 'modifica'){
+      item.importo = amt;
+      item.history.push({ id:'h'+Date.now(), type:'modifica', amount: amt, date: now });
+    }
+  }
+  savePatrimonio();
+  // Aggiorna UI saldi e DB
+  if(['af','pf','carta'].includes(kind) && conto !== 'none'){
+    const ccInp = document.getElementById('ov-in-cc'); if(ccInp) ccInp.value = S.cc || '';
+    const cashInp = document.getElementById('ov-in-cash'); if(cashInp) cashInp.value = S.cash || '';
+    try { await saveProfile(); } catch(e){}
+  }
+  closePatActionModal();
+  renderAll();
+  renderPatrimonio();
+  toast('Operazione registrata');
+}
+
+// === DELETE ===
+function askDeletePatItem(){
+  if(!_patActItem) return;
+  if(_patActItem.kind === 'conto' && (_patActItem.id === '__cc' || _patActItem.id === '__cash')){
+    toast('Conti di base non eliminabili');
+    return;
+  }
+  _patDeleteTarget = _patActItem;
+  document.getElementById('pat-delete-confirm').classList.add('open');
+}
+function closePatDeleteConfirm(){ document.getElementById('pat-delete-confirm').classList.remove('open'); _patDeleteTarget = null; }
+function doDeletePatItem(){
+  if(!_patDeleteTarget){ closePatDeleteConfirm(); return; }
+  const { kind, id } = _patDeleteTarget;
+  if(kind === 'af')    patrimonio.af    = (patrimonio.af||[]).filter(x => x.id !== id);
+  if(kind === 'pf')    patrimonio.pf    = (patrimonio.pf||[]).filter(x => x.id !== id);
+  if(kind === 'carta') patrimonio.carte = (patrimonio.carte||[]).filter(x => x.id !== id);
+  if(kind === 'conto') patrimonio.conti = (patrimonio.conti||[]).filter(x => x.id !== id);
+  savePatrimonio();
+  closePatDeleteConfirm();
+  closePatActionModal();
+  renderPatrimonio();
+  renderAll();
+  toast('Elemento eliminato');
+}
+
+document.addEventListener('click', e => {
+  const m = document.getElementById('pat-action-modal');
+  if(m && e.target === m) closePatActionModal();
+});
 
 // ── GOALS SYSTEM ──
 let goals = JSON.parse(localStorage.getItem('goals_data') || '[]');
