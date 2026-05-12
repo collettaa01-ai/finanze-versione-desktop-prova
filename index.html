@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
-<meta name="theme-color" content="#0E1113">
+<meta name="theme-color" content="#F7F6F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Finances">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
@@ -62,51 +62,55 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* ── DESIGN TOKENS — Custode (dark premium) ──
-   Strategia: Committed dark, off-black tinto cool. Un solo accento giallo-luce
-   riservato a stati attivi / valori positivi / FAB. Hairline al posto delle
-   shadow. Nessun gradient. Cifre con tabular numerics su Geist Mono.
+/* ── DESIGN TOKENS — Custode (light premium) ──
+   Strategia: bianco-caldo dominante. L'inchiostro è l'unico accento:
+   i CTA sono neri su bianco. Hairline al posto delle ombre. Nessun
+   gradient. Cifre con tabular numerics su Geist Mono. Disciplina di
+   Trade Republic applicata al chiaro, non al buio.
 */
 :root {
-  /* Surfaces — scala tonale, mai #000 puro */
-  --bg: #0E1113;            /* sfondo app */
-  --surface: #14181B;       /* superficie base (sezioni piatte) */
-  --surface-low: #11151A;   /* leggermente più scura del bg per contrast */
-  --surface-1: #1A1F23;     /* superficie sollevata (input, sezioni interattive) */
-  --surface-2: #232930;     /* hover/pressed */
-  --surface-high: #1A1F23;  /* alias legacy */
+  /* Surfaces — bianco caldo, mai #fff puro */
+  --bg: #F7F6F2;            /* sfondo app, leggera tinta warm */
+  --surface: #FFFFFF;       /* superficie base (cards, sezioni "container") */
+  --surface-low: #F2F1EC;   /* superficie ribassata (chip, input subtle) */
+  --surface-1: #FBFAF6;     /* superficie leggermente sollevata (input field) */
+  --surface-2: #EDEBE5;     /* hover/pressed, divider area */
+  --surface-high: #FFFFFF;  /* alias legacy */
 
-  /* Foreground — bianco caldo, mai #fff puro */
-  --fg: #F2F1ED;            /* testo primario */
-  --fg-1: #B6B5AF;          /* secondario */
-  --fg-2: #7D7B74;          /* terziario / label */
-  --fg-3: #56544E;          /* quaternario / disabled */
+  /* Foreground — near-black caldo, mai #000 puro */
+  --fg: #14130F;            /* testo primario / inchiostro */
+  --fg-1: #4D4B45;          /* secondario */
+  --fg-2: #86847D;          /* terziario / label */
+  --fg-3: #C0BDB4;          /* quaternario / disabled */
 
-  /* Legacy aliases — i componenti pre-esistenti referenziano questi nomi */
+  /* Legacy aliases — componenti pre-esistenti referenziano questi nomi */
   --dark: var(--fg);
   --dark-mid: var(--fg-1);
   --dark-soft: var(--fg-2);
 
   /* Hairline — bordi sottili al posto delle ombre */
-  --border: rgba(242,241,237,0.07);
-  --border-mid: rgba(242,241,237,0.13);
-  --border-strong: rgba(242,241,237,0.22);
+  --border: rgba(20,19,15,0.08);
+  --border-mid: rgba(20,19,15,0.14);
+  --border-strong: rgba(20,19,15,0.24);
 
-  /* Accent — un solo giallo-luce, usato col contagocce */
-  --accent: #F1DC7C;            /* Trade Republic-ish warm yellow */
-  --accent-hi: #FFE89A;          /* hover/focus */
-  --accent-soft: rgba(241,220,124,0.12);
+  /* Accent — l'inchiostro è l'accento: CTA neri, attivi neri.
+     Nessuna tinta colorata. Manteniamo i nomi --accent/--accent-hi/--accent-soft
+     per compatibilità con tutto il CSS già scritto. */
+  --accent: #14130F;
+  --accent-hi: #2A2823;
+  --accent-soft: rgba(20,19,15,0.06);
+  --on-accent: #FBFAF6;     /* testo su accent (CTA): bianco caldo */
 
-  /* Stati semantici — desaturati, mai neon */
-  --positive: #7FC09B;
-  --positive-soft: rgba(127,192,155,0.10);
-  --negative: #D8857E;
-  --negative-soft: rgba(216,133,126,0.10);
+  /* Stati semantici — desaturati, usati il minimo indispensabile */
+  --positive: #1F6A4A;      /* forest green inchiostrato */
+  --positive-soft: rgba(31,106,74,0.08);
+  --negative: #9A3537;      /* terracotta dark */
+  --negative-soft: rgba(154,53,55,0.08);
 
   /* Alias legacy */
   --green: var(--positive);
   --green-bg: var(--positive-soft);
-  --green-border: rgba(127,192,155,0.22);
+  --green-border: rgba(31,106,74,0.22);
   --red: var(--negative);
   --red-bg: var(--negative-soft);
 
@@ -114,17 +118,17 @@
   --font: 'Geist', system-ui, sans-serif;
   --mono: 'GeistMono', 'Geist', ui-monospace, monospace;
 
-  /* Radii — più contenuti, premium-asciutto */
+  /* Radii — premium-asciutto */
   --r-xs: 6px;
   --r-sm: 8px;
   --r-md: 10px;
   --r-lg: 12px;
   --r-xl: 16px;
 
-  /* Shadow — quasi assenti, una sola per overlay/modal scrim */
+  /* Shadow — quasi assenti */
   --shadow-sm: none;
-  --shadow-md: 0 1px 0 var(--border) inset;
-  --shadow-lg: 0 -24px 60px -20px rgba(0,0,0,0.55);
+  --shadow-md: none;
+  --shadow-lg: 0 -24px 60px -20px rgba(20,19,15,0.10);
 }
 
 /* Tabular figures globali per tutti i valori numerici */
@@ -207,9 +211,10 @@ body {
 }
 .load-svg {
   width: 100%; height: 100%;
+  color: var(--accent);
   animation: load-rotate 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
-.load-svg .load-track { stroke: var(--border); }
+.load-svg .load-track { stroke: var(--fg); stroke-opacity: 0.10; }
 .load-arc {
   stroke: var(--accent);
   animation: load-dash 1.6s ease-in-out infinite;
@@ -312,7 +317,7 @@ body {
 .auth-field input::placeholder { color: var(--fg-3); }
 .auth-btn {
   margin-top: 18px; padding: 16px;
-  background: var(--accent); color: #1A1500;
+  background: var(--accent); color: var(--on-accent);
   font-size: 14px; font-weight: 600;
   font-family: var(--font);
   border: none; border-radius: 999px;
@@ -508,7 +513,7 @@ body {
 /* ── BUTTONS ── */
 .btn-new {
   width: 100%; padding: 15px;
-  background: var(--accent); color: #1A1500;
+  background: var(--accent); color: var(--on-accent);
   font-size: 14px; font-weight: 600;
   font-family: var(--font);
   border: none; border-radius: 999px;
@@ -657,7 +662,7 @@ body {
   transition: background 0.18s, border-color 0.18s, color 0.18s;
 }
 .chip:hover { background: var(--surface-1); color: var(--fg); }
-.chip.active { background: var(--accent); border-color: var(--accent); color: #1A1500; font-weight: 500; }
+.chip.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 500; }
 
 /* ── NAV BAR — dark con hairline e accent attivo ── */
 .nav-bar {
@@ -690,10 +695,10 @@ body {
 .nav-item:not(.active) .nav-label { color: var(--fg-3); }
 .nav-item.active .nav-label { color: var(--accent); }
 
-/* ── MODAL — bottom sheet dark, scrim tinto, no blur ── */
+/* ── MODAL — bottom sheet, scrim tinto leggero, no blur ── */
 .modal-ov {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(20,19,15,0.32);
   z-index: 600;
   display: flex; align-items: flex-end; justify-content: center;
   opacity: 0; pointer-events: none; visibility: hidden;
@@ -770,7 +775,7 @@ body {
 .fg input[type=number], .fg input[type=text] { font-variant-numeric: tabular-nums; }
 .btn-ok {
   width: 100%; padding: 16px;
-  background: var(--accent); color: #1A1500;
+  background: var(--accent); color: var(--on-accent);
   font-size: 15px; font-weight: 600;
   font-family: var(--font);
   border: none; border-radius: 999px;
@@ -863,7 +868,7 @@ body {
 }
 .cal-day:hover { background: var(--surface-2); color: var(--fg); }
 .cal-day.selected {
-  background: var(--accent); color: #1A1500; font-weight: 600;
+  background: var(--accent); color: var(--on-accent); font-weight: 600;
 }
 .cal-day.empty { cursor: default; color: var(--fg-3); }
 
@@ -910,17 +915,17 @@ body {
 }
 
 
-/* ── OVERVIEW / SCHERMATE PRINCIPALI — unificato al tema Custode ── */
+/* ── OVERVIEW / SCHERMATE PRINCIPALI — unificato al tema Custode light ── */
 :root {
   --ov-bg: var(--bg);
   --ov-card: var(--surface);
-  --ov-primary: var(--accent);           /* ex-viola → accent giallo-luce */
+  --ov-primary: var(--accent);           /* ink-as-accent: near-black */
   --ov-primary-dark: var(--accent-hi);
-  --ov-primary-grad: var(--accent);      /* nessun gradiente, solo accent piatto */
+  --ov-primary-grad: var(--accent);      /* nessun gradiente */
   --ov-gold: var(--accent);
   --ov-gold-grad: var(--accent);
   --ov-pink: var(--fg-1);                /* ex-rosa → foreground secondario */
-  --ov-cc: var(--accent);                /* donut C/C: accent */
+  --ov-cc: var(--accent);                /* donut C/C: accent (ink) */
   --ov-cash: var(--fg-2);                /* donut contanti: fg secondario */
   --ov-asset: var(--positive);
   --ov-liability: var(--negative);
@@ -930,13 +935,13 @@ body {
   --ov-hairline: var(--border);
   --ov-shadow-sm: none;
   --ov-shadow-md: none;
-  --ov-shadow-lg: 0 -24px 60px -20px rgba(0,0,0,0.55);
+  --ov-shadow-lg: 0 -24px 60px -20px rgba(20,19,15,0.10);
   --ov-shadow-primary: none;
   --ov-shadow: none;                     /* alias usato altrove */
   --ov-radius: 14px;
   --ov-radius-lg: 16px;
   --font-display: 'Geist', system-ui, sans-serif;
-  /* Teal overlays — riconvertiti a tonali dark coerenti */
+  /* Teal overlays — riconvertiti a tonali light coerenti */
   --teal-1: var(--bg);
   --teal-2: var(--surface);
   --teal-border: var(--border);
@@ -2667,7 +2672,7 @@ body.modal-open {
 .ins-empty { color: var(--fg-2) !important; }
 
 /* Goal modal */
-.goal-modal-ov { background: rgba(0,0,0,0.55) !important; }
+.goal-modal-ov { background: rgba(20,19,15,0.32) !important; }
 .goal-modal-sheet {
   background: var(--surface) !important;
   border: 1px solid var(--border) !important;
@@ -2689,12 +2694,13 @@ body.modal-open {
   box-shadow: none !important;
 }
 
-/* Toast */
+/* Toast — pillola scura su light per leggibilità immediata */
 .toast {
-  background: var(--surface-2) !important;
-  color: var(--fg) !important;
-  border: 1px solid var(--border-strong) !important;
-  box-shadow: none !important;
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+  border: none !important;
+  border-radius: 999px !important;
+  box-shadow: 0 6px 24px -8px rgba(20,19,15,0.18) !important;
 }
 
 /* PWA install banner / iOS tip */
@@ -2833,8 +2839,8 @@ text { fill: var(--fg) !important; }
 .top-bar { color: var(--fg); }
 
 /* Color scheme nativo (date pickers, scrollbars) */
-html { color-scheme: dark; }
-::selection { background: var(--accent); color: #1A1500; }
+html { color-scheme: light; }
+::selection { background: var(--accent); color: var(--on-accent); }
 
 /* Saldi inline che usavano colori vivi */
 .ov-port-balance, .ov-goal-val {
@@ -2875,8 +2881,8 @@ svg text[fill="#8E8E93"] { fill: var(--fg-2) !important; }
       <svg class="load-svg" viewBox="0 0 80 80">
         <defs>
         </defs>
-        <circle class="load-track" cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="1.5"/>
-        <circle class="load-arc" cx="40" cy="40" r="32" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="60 201" transform="rotate(-90 40 40)"/>
+        <circle class="load-track" cx="40" cy="40" r="32" fill="none" stroke="currentColor" stroke-opacity="0.10" stroke-width="1.5"/>
+        <circle class="load-arc" cx="40" cy="40" r="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="60 201" transform="rotate(-90 40 40)"/>
       </svg>
       <div class="load-coin">
         <span class="load-euro">€</span>
@@ -3146,8 +3152,8 @@ svg text[fill="#8E8E93"] { fill: var(--fg-2) !important; }
 
       <!-- FAB aggiungi (nuovo box) -->
       <div style="padding:0 16px 24px;display:flex;justify-content:flex-end;">
-        <button onclick="openWizard()" class="fab-primary" style="width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.18s ease-out, transform 0.1s ease-out;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#1A1500" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <button onclick="openWizard()" class="fab-primary" style="width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--on-accent);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.18s ease-out, transform 0.1s ease-out;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </button>
       </div>
     </div>
@@ -3220,8 +3226,8 @@ svg text[fill="#8E8E93"] { fill: var(--fg-2) !important; }
 
       <!-- FAB aggiungi -->
       <div style="padding:0 16px 32px;display:flex;justify-content:flex-end;">
-        <button onclick="openPatNewWizard()" class="fab-primary" style="width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.18s ease-out, transform 0.1s ease-out;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#1A1500" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <button onclick="openPatNewWizard()" class="fab-primary" style="width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--on-accent);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.18s ease-out, transform 0.1s ease-out;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </button>
       </div>
     </div>
@@ -3595,7 +3601,7 @@ svg text[fill="#8E8E93"] { fill: var(--fg-2) !important; }
     <div class="goals-empty" id="debts-empty">Nessun debito ancora.<br>Premi + per aggiungerne uno.</div>
   </div>
   <button class="goals-fab" onclick="openNewDebtModal()">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#1A1500" stroke-width="2.2" stroke-linecap="round"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
 </div>
 
@@ -3695,7 +3701,7 @@ svg text[fill="#8E8E93"] { fill: var(--fg-2) !important; }
     <div class="goals-empty" id="goals-empty">Nessun obiettivo ancora.<br>Premi + per crearne uno.</div>
   </div>
   <button class="goals-fab" onclick="openNewGoalModal()">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#1A1500" stroke-width="2.2" stroke-linecap="round"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
 </div>
 
@@ -3845,7 +3851,7 @@ svg text[fill="#8E8E93"] { fill: var(--fg-2) !important; }
     <div class="goals-empty" id="port-empty">Nessuna transazione ancora.<br>Premi + per aggiungerne una.</div>
   </div>
   <button class="goals-fab" onclick="openModal()">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#1A1500" stroke-width="2.2" stroke-linecap="round"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   </button>
 </div>
 
